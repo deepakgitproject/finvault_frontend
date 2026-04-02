@@ -1,0 +1,321 @@
+<div class="layout-container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar glass-card-strong">
+    <div class="brand">
+      <div class="logo">FinVault</div>
+      <div class="subtitle">PREMIUM MANAGEMENT</div>
+    </div>
+    <nav class="nav-links">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        Dashboard
+      </a>
+      <a routerLink="/cards" class="nav-item">
+        <span class="material-symbols-outlined">credit_card</span>
+        Cards
+      </a>
+      <a routerLink="/bills" class="nav-item">
+        <span class="material-symbols-outlined">receipt_long</span>
+        Bills
+      </a>
+      <a routerLink="/payments" class="nav-item">
+        <span class="material-symbols-outlined">payments</span>
+        Payments
+      </a>
+      <a routerLink="/scheduled" class="nav-item">
+        <span class="material-symbols-outlined">event_upcoming</span>
+        Scheduled
+      </a>
+      <a routerLink="/notifications" class="nav-item">
+        <span class="material-symbols-outlined">notifications</span>
+        Notifications
+      </a>
+      <a routerLink="/profile" class="nav-item active">
+        <span class="material-symbols-outlined">person_pin</span>
+        Profile
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="upgrade-btn">Upgrade to Elite</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    
+    <!-- HEADER HERO SECTION -->
+    <section class="hero-banner glass-card-strong">
+      <div class="hero-left">
+        <div class="avatar-container">
+          <div class="avatar">AP</div>
+          <div class="verified-badge">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+        </div>
+        <div class="user-info">
+          <h1 class="user-name">Alexander Pierce</h1>
+          <div class="user-role">PREMIER MEMBER</div>
+          <div class="stats-pills">
+            <div class="stat-pill glass-pill">
+              <span class="material-symbols-outlined">shield_person</span>
+              Member Since 2021
+            </div>
+            <div class="stat-pill glass-pill mono-val">
+              <span class="material-symbols-outlined">credit_card</span>
+              4 Active Cards
+            </div>
+            <div class="stat-pill glass-pill">
+              <span class="material-symbols-outlined">star</span>
+              Elite Tier
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <button class="btn-outlined-primary" (click)="toggleEditMode()">
+          <span class="material-symbols-outlined">edit</span>
+          Edit Profile
+        </button>
+        <button class="icon-only-btn">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- CONTENT 2 COLUMNS -->
+    <div class="two-columns">
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+        
+        <!-- Card 1: Personal Info -->
+        <div class="info-card glass-card-strong">
+          <div class="card-header">
+            <div class="title-wrap">
+              <span class="material-symbols-outlined">person</span>
+              <h2>Personal Information</h2>
+            </div>
+            <button class="icon-only-btn" (click)="toggleEditMode()">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="field-row">
+              <div class="field-label">FULL NAME</div>
+              <div class="field-value">Alexander Pierce</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">EMAIL</div>
+              <div class="field-value">alex.pierce@gmail.com</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">PHONE</div>
+              <div class="field-value mono-val">+1 (555) 234-5678</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">DATE OF BIRTH</div>
+              <div class="field-value mono-val">March 15, 1990</div>
+            </div>
+            <div class="field-row">
+              <div class="field-label">ADDRESS</div>
+              <div class="field-value">123 Vault Street, New York, NY 10001</div>
+            </div>
+          </div>
+          @if (editMode()) {
+            <div class="card-footer">
+               <button class="btn-gradient">Save Changes</button>
+            </div>
+          }
+        </div>
+
+        <!-- Card 2: Security -->
+        <div class="info-card glass-card-strong mt-24">
+          <div class="card-header">
+            <div class="title-wrap">
+              <span class="material-symbols-outlined">lock</span>
+              <h2>Security</h2>
+            </div>
+          </div>
+          <div class="card-body no-gap">
+            <!-- Row 1 -->
+            <div class="security-row" (click)="togglePasswords()">
+              <div class="sec-left">
+                <span class="material-symbols-outlined">key</span>
+                <span class="sec-label">Change Password</span>
+              </div>
+              <div class="sec-right">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </div>
+            </div>
+            @if (showCurrentPassword()) {
+              <div class="password-dropdown">
+                 <input type="password" class="glass-input" placeholder="Current Password">
+                 <input type="password" class="glass-input" placeholder="New Password">
+                 <input type="password" class="glass-input" placeholder="Confirm Password">
+                 <button class="btn-primary-small">Update Password</button>
+              </div>
+            }
+
+            <!-- Row 2 -->
+            <div class="security-row">
+              <div class="sec-left">
+                <span class="material-symbols-outlined">phone_iphone</span>
+                <div class="sec-label-col">
+                  <span class="sec-label">Two-Factor Authentication</span>
+                  <span class="sec-sub">Authenticator app enabled</span>
+                </div>
+              </div>
+              <div class="sec-right">
+                <label class="toggle-switch">
+                  <input type="checkbox" checked hidden>
+                  <div class="toggle-track">
+                    <div class="toggle-thumb"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="security-row">
+              <div class="sec-left">
+                <span class="material-symbols-outlined">devices</span>
+                <span class="sec-label">Active Sessions</span>
+              </div>
+              <div class="sec-right row-actions">
+                <div class="badge-pill mono-val">2 devices</div>
+                <a href="javascript:void(0)" class="manage-link">Manage</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-col">
+        
+        <!-- Card 3: Preferences -->
+        <div class="info-card glass-card-strong">
+          <div class="card-header">
+            <div class="title-wrap">
+              <span class="material-symbols-outlined">tune</span>
+              <h2>Preferences</h2>
+            </div>
+          </div>
+          <div class="card-body prefs-body">
+            
+            <div class="pref-row">
+              <div class="pref-left">
+                <span class="material-symbols-outlined">notifications</span>
+                <span>Email Notifications</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked hidden>
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </label>
+            </div>
+
+            <div class="pref-row">
+              <div class="pref-left">
+                <span class="material-symbols-outlined">dark_mode</span>
+                <span>Dark Mode</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" hidden>
+                <div class="toggle-track"><div class="toggle-thumb"></div></div>
+              </label>
+            </div>
+
+            <div class="pref-row">
+              <div class="pref-left">
+                <span class="material-symbols-outlined">language</span>
+                <span>Language</span>
+              </div>
+              <div class="pref-right">
+                <span class="value">English (US)</span>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </div>
+            </div>
+
+            <div class="pref-row">
+              <div class="pref-left">
+                <span class="material-symbols-outlined">currency_exchange</span>
+                <span>Currency</span>
+              </div>
+              <div class="pref-right">
+                <span class="value">USD ($)</span>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </div>
+            </div>
+
+            <div class="pref-row">
+              <div class="pref-left">
+                <span class="material-symbols-outlined">schedule</span>
+                <span>Timezone</span>
+              </div>
+              <div class="pref-right">
+                <span class="value">EST (UTC-5)</span>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card 4: Account Stats -->
+        <div class="info-card glass-card-strong mt-24 pos-relative">
+          <div class="ambient-orb"></div>
+          <div class="card-header pos-relative">
+            <div class="title-wrap">
+              <span class="material-symbols-outlined">insights</span>
+              <h2>Account Overview</h2>
+            </div>
+          </div>
+          <div class="stats-grid pos-relative">
+            <div class="stat-box">
+              <div class="stat-val mono-val">$48,240</div>
+              <div class="stat-lbl">Total Managed</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val mono-val">142</div>
+              <div class="stat-lbl">Transactions</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val mono-val">4,850</div>
+              <div class="stat-lbl">Reward Points</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-val mono-val">99.2%</div>
+              <div class="stat-lbl">Payment Rate</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="danger-zone glass-card mt-32">
+      <div class="danger-header">
+        <span class="material-symbols-outlined text-error">warning</span>
+        <h2 class="text-error">Danger Zone</h2>
+      </div>
+      <div class="danger-body">
+        <div class="danger-row">
+          <div class="danger-info">
+            <div class="danger-title">Deactivate Account</div>
+            <div class="danger-desc"><span class="material-symbols-outlined">pause</span> Temporarily disable your account and stop all scheduled payments.</div>
+          </div>
+          <button class="btn-outlined-error">Deactivate</button>
+        </div>
+        <div class="danger-row">
+          <div class="danger-info">
+            <div class="danger-title">Delete Account</div>
+            <div class="danger-desc"><span class="material-symbols-outlined">delete_forever</span> Permanently delete your account and all associated data.</div>
+          </div>
+          <button class="btn-error">Delete Account</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

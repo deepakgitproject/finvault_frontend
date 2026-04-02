@@ -1,0 +1,147 @@
+<!-- Ambient background -->
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- ─── HEADER ─────────────────────────────────────── -->
+<header class="site-header glass-card">
+  <!-- Logo -->
+  <div class="header-logo">
+    <div class="logo-icon">
+      <span class="material-symbols-outlined">shield_person</span>
+    </div>
+    <span class="logo-name">FinVault</span>
+  </div>
+
+  <!-- Nav links -->
+  <nav class="header-nav">
+    <a href="#home" class="nav-link active">Home</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#plans" class="nav-link">Plans</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </nav>
+
+  <!-- Sign Up -->
+  <div class="header-actions">
+    <button class="btn-ghost" routerLink="/auth/login">Login</button>
+    <button class="btn-outlined" routerLink="/auth/register">Sign Up</button>
+  </div>
+</header>
+
+<!-- ─── HERO SECTION ───────────────────────────────── -->
+<main class="hero-section" id="home">
+
+  <!-- Left: Text content -->
+  <div class="hero-left">
+    <div class="hero-badge">
+      <span class="material-symbols-outlined">verified</span>
+      Trusted by thousands
+    </div>
+
+    <p class="hero-sub">The card is key to</p>
+
+    <h1 class="hero-heading">
+      The Thinking<br>
+      <span class="hero-heading-accent">Behind the</span><br>
+      Money
+    </h1>
+
+    <p class="hero-desc">
+      Manage all your credit cards, bills and payments
+      from one secure, intelligent financial dashboard.
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn-primary" routerLink="/auth/register">
+        <span class="material-symbols-outlined">rocket_launch</span>
+        Get Started
+      </button>
+      <button class="btn-outlined hero-outline-btn">
+        <span class="material-symbols-outlined">play_circle</span>
+        See How it Works
+      </button>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="hero-stats">
+      <div class="stat-pill">10K+ Users</div>
+      <div class="stat-divider"></div>
+      <div class="stat-pill">$2M+ Managed</div>
+      <div class="stat-divider"></div>
+      <div class="stat-pill">99.9% Uptime</div>
+    </div>
+
+    <!-- Social proof -->
+    <div class="social-proof">
+      <div class="avatars">
+        <div class="avatar av1">AK</div>
+        <div class="avatar av2">SR</div>
+        <div class="avatar av3">MR</div>
+        <div class="avatar-count">+5</div>
+      </div>
+      <p class="social-text">
+        Build your community and get more benefits.
+        <a href="#" class="social-link">Learn More</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Right: Floating glass cards -->
+  <div class="hero-right">
+    <div class="cards-scene">
+
+      <!-- Card 3 — back -->
+      <div class="credit-card card-frost">
+        <div class="card-chip"></div>
+        <div class="card-number mono">5478 · 3434 · 4421 · 0000</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Wallet Touch</span>
+          <span class="material-symbols-outlined card-net-icon">diamond</span>
+        </div>
+      </div>
+
+      <!-- Card 2 — middle -->
+      <div class="credit-card card-gold">
+        <div class="card-top-row">
+          <span class="card-label mono">VISA</span>
+          <span class="material-symbols-outlined card-wave">contactless_pay</span>
+        </div>
+        <div class="card-chip"></div>
+        <div class="card-number mono">5478 · 2535 · 4585 · 9123</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Primary Vault</span>
+          <span class="card-expiry mono">12/27</span>
+        </div>
+      </div>
+
+      <!-- Card 1 — front -->
+      <div class="credit-card card-dark">
+        <div class="card-top-row">
+          <span class="card-label mono">MASTERCARD</span>
+          <span class="material-symbols-outlined card-wave">contactless_pay</span>
+        </div>
+        <div class="card-chip"></div>
+        <div class="card-number mono">0001 · 7595 · 6585 · 5535</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Elite Member</span>
+          <span class="card-expiry mono">09/28</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+
+
+<!-- Coming Soon Toast -->
+@if (showToast()) {
+<div class="toast-coming-soon">
+  <span class="material-symbols-outlined">rocket_launch</span>
+  Coming Soon 🚀
+</div>
+}

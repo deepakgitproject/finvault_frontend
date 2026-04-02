@@ -1,0 +1,218 @@
+<div class="bills-page">
+
+    <!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar__logo">
+            <span class="sidebar__logo-mark">
+                <span class="material-symbols-outlined">finance_mode</span>
+            </span>
+            <div class="sidebar__logo-text">
+                <span class="sidebar__logo-name">FinVault</span>
+                <span class="sidebar__logo-tier">PREMIUM MANAGEMENT</span>
+            </div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <a class="sidebar__nav-link" routerLink="/dashboard">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/cards">
+                <span class="material-symbols-outlined">credit_card</span>
+                <span>Cards</span>
+            </a>
+            <a class="sidebar__nav-link sidebar__nav-link--active" routerLink="/bills">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <span>Bills</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/payments">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Payments</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/scheduled">
+                <span class="material-symbols-outlined">event_upcoming</span>
+                <span>Scheduled</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span>Notifications</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/profile">
+                <span class="material-symbols-outlined">person_pin</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar__upgrade">
+            <span class="material-symbols-outlined sidebar__upgrade-icon">rocket_launch</span>
+            <div class="sidebar__upgrade-text">
+                <span class="sidebar__upgrade-title">Upgrade to Elite</span>
+                <span class="sidebar__upgrade-sub">Unlock premium features</span>
+            </div>
+            <span class="material-symbols-outlined sidebar__upgrade-arrow">chevron_right</span>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════ MAIN -->
+    <main class="main-content">
+
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+            <div class="page-header__user">
+                <div class="page-header__avatar">AP</div>
+                <div class="page-header__user-info">
+                    <span class="page-header__name">Alexander Pierce</span>
+                    <span class="page-header__tier">PREMIER MEMBER</span>
+                </div>
+            </div>
+            <div class="page-header__actions">
+                <button class="page-header__icon-btn">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                </button>
+                <button class="page-header__icon-btn">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <button class="page-header__report-btn">
+                    <span class="material-symbols-outlined">download</span>
+                    Download Report
+                </button>
+            </div>
+        </header>
+
+        <!-- TITLE + FILTERS -->
+        <section class="title-section">
+            <div class="title-section__left">
+                <h1 class="title-section__heading">Your Bills</h1>
+                <p class="title-section__sub">Manage your monthly commitments and track pending payments with precision.
+                </p>
+            </div>
+            <div class="title-section__filters">
+                <button *ngFor="let f of filters" class="filter-pill" [class.filter-pill--active]="activeFilter() === f"
+                    (click)="setFilter(f)">
+                    {{ f }}
+                </button>
+                <button class="filter-pill filter-pill--dropdown">
+                    October
+                    <span class="material-symbols-outlined">expand_more</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- BILL GROUPS -->
+        <div class="bills-list">
+            <div *ngFor="let group of billGroups" class="bill-group" [class.bill-group--faded]="group.faded">
+
+                <!-- GROUP HEADER -->
+                <div class="bill-group__header">
+                    <span class="bill-group__month" [class.bill-group__month--muted]="group.faded">
+                        {{ group.month }}
+                    </span>
+                    <span class="bill-group__badge" [class.bill-group__badge--error]="group.badgeType === 'error'"
+                        [class.bill-group__badge--muted]="group.badgeType === 'muted'">
+                        {{ group.badgeLabel }}
+                    </span>
+                </div>
+
+                <!-- BILL ROWS -->
+                <div class="bill-card" *ngFor="let bill of group.bills">
+
+                    <!-- Icon + Title -->
+                    <div class="bill-card__identity">
+                        <div class="bill-card__icon-wrap" [ngClass]="'bill-card__icon-wrap--' + bill.iconBg">
+                            <span class="material-symbols-outlined">{{ bill.icon }}</span>
+                        </div>
+                        <div class="bill-card__title-block">
+                            <span class="bill-card__title">{{ bill.title }}</span>
+                            <span class="bill-card__subtitle">{{ bill.subtitle }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Due -->
+                    <div class="bill-card__amount-col">
+                        <span class="bill-card__amount-label">TOTAL DUE</span>
+                        <span class="bill-card__amount">{{ bill.totalDue }}</span>
+                    </div>
+
+                    <!-- Secondary Amount -->
+                    <div class="bill-card__amount-col">
+                        <span class="bill-card__amount-label">{{ bill.secondaryLabel }}</span>
+                        <span class="bill-card__amount"
+                            [class.bill-card__amount--paid]="bill.secondaryLabel === 'AMOUNT PAID' && bill.status === 'PAID'">
+                            {{ bill.secondaryAmount }}
+                        </span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="bill-card__status-col">
+                        <span class="bill-card__amount-label">STATUS</span>
+                        <span class="status-pill" [class.status-pill--overdue]="bill.status === 'OVERDUE'"
+                            [class.status-pill--pending]="bill.status === 'PENDING'"
+                            [class.status-pill--paid]="bill.status === 'PAID'">
+                            {{ bill.status }}
+                        </span>
+                    </div>
+
+                    <!-- Action -->
+                    <button class="bill-card__action"
+                        [class.bill-card__action--primary]="bill.actionStyle === 'primary'"
+                        [class.bill-card__action--muted]="bill.actionStyle === 'muted'">
+                        <span class="material-symbols-outlined">{{ bill.actionIcon }}</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM ROW -->
+        <div class="bottom-row">
+
+            <!-- Auto-Pay Card -->
+            <div class="autopay-card">
+                <div class="autopay-card__content">
+                    <h3 class="autopay-card__title">Upcoming Auto-Pay</h3>
+                    <p class="autopay-card__body">
+                        You have <strong>4 recurring bills</strong> scheduled for the next 7 days
+                        totaling <strong>$542.10</strong>. Ensure your primary vault balance is sufficient.
+                    </p>
+                    <button class="autopay-card__btn">
+                        <span class="material-symbols-outlined">autorenew</span>
+                        Manage Auto-Pay
+                    </button>
+                </div>
+                <span class="material-symbols-outlined autopay-card__watermark">autorenew</span>
+            </div>
+
+            <!-- Monthly Stats Card -->
+            <div class="stats-card">
+                <span class="stats-card__label">MONTHLY AVERAGE</span>
+                <div class="stats-card__amount-row">
+                    <span class="stats-card__amount">$2,840</span>
+                    <span class="stats-card__change">+12%</span>
+                </div>
+
+                <div class="stats-card__bars">
+                    <div class="stats-bar">
+                        <div class="stats-bar__labels">
+                            <span class="stats-bar__name">Utilities</span>
+                            <span class="stats-bar__pct">42%</span>
+                        </div>
+                        <div class="stats-bar__track">
+                            <div class="stats-bar__fill stats-bar__fill--primary" style="width: 42%"></div>
+                        </div>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stats-bar__labels">
+                            <span class="stats-bar__name">Rent &amp; Housing</span>
+                            <span class="stats-bar__pct">58%</span>
+                        </div>
+                        <div class="stats-bar__track">
+                            <div class="stats-bar__fill stats-bar__fill--secondary" style="width: 58%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

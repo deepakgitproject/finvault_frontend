@@ -1,0 +1,181 @@
+<!-- Ambient Orbs -->
+<div class="ambient-orb orb-top-right"></div>
+<div class="ambient-orb orb-bottom-left"></div>
+
+<div class="page-layout">
+  
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <span class="brand-name">FinVault</span>
+        <span class="brand-sub">PREMIUM MANAGEMENT</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/dashboard" class="nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        Dashboard
+      </a>
+      <a routerLink="/cards" class="nav-item active">
+        <span class="material-symbols-outlined">credit_card</span>
+        Cards
+      </a>
+      <a routerLink="/bills" class="nav-item">
+        <span class="material-symbols-outlined">receipt_long</span>
+        Bills
+      </a>
+      <a routerLink="/payments" class="nav-item">
+        <span class="material-symbols-outlined">payments</span>
+        Payments
+      </a>
+      <a routerLink="/scheduled" class="nav-item">
+        <span class="material-symbols-outlined">event_upcoming</span>
+        Scheduled
+      </a>
+      <a routerLink="/notifications" class="nav-item">
+        <span class="material-symbols-outlined">notifications</span>
+        Notifications
+      </a>
+      <a routerLink="/profile" class="nav-item">
+        <span class="material-symbols-outlined">person_pin</span>
+        Profile
+      </a>
+    </nav>
+
+    <!-- Sidebar Bottom Avatar -->
+    <div class="sidebar-profile">
+      <div class="profile-info">
+        <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Alex" alt="Avatar" class="avatar-sm">
+        <div class="profile-text">
+          <span class="profile-name">Alex Sterling</span>
+          <span class="profile-tier">Elite Member</span>
+        </div>
+      </div>
+      <button class="btn-upgrade-sm">UPGRADE TO ELITE</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="page-title-block">
+        <h1 class="page-heading">Digital Vault</h1>
+        <p class="page-desc">Manage your elite credit portfolio and spending limits.</p>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="search-pill glass-card">
+          <span class="material-symbols-outlined text-muted">search</span>
+          <input type="text" placeholder="Search cards..." class="search-input">
+        </div>
+        <button class="icon-btn glass-card">
+          <span class="material-symbols-outlined">account_balance_wallet</span>
+        </button>
+        <button class="icon-btn glass-card">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- CREDIT CARDS GRID -->
+    <section class="cards-grid-section">
+      <div class="cards-grid">
+        
+        <!-- Real Cards -->
+        @for (card of cards; track card.number) {
+          <div class="card-column">
+            <!-- 3D Card wrapper -->
+            <div class="card-3d-wrapper">
+              <div class="credit-card {{card.bgClass}}">
+                <div class="card-top">
+                  <span class="material-symbols-outlined text-muted">{{ card.icon }}</span>
+                  <span class="card-type-label" [style.color]="card.typeColor">{{ card.type }}</span>
+                </div>
+                
+                <div class="card-middle">
+                  <div class="card-number mono">{{ card.number }}</div>
+                </div>
+  
+                <div class="card-bottom">
+                  <div>
+                    <span class="tiny-label">HOLDER</span>
+                    <div class="card-holder mono">{{ card.holder }}</div>
+                  </div>
+                  <div class="text-right">
+                    <span class="tiny-label">EXPIRES</span>
+                    <div class="card-expiry mono">{{ card.expires }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Limit Usage Tracker natively placed right underneath actual card wrapper -->
+            <div class="limit-tracker">
+              <div class="limit-labels">
+                <span class="limit-label-left">LIMIT USAGE</span>
+                <span class="limit-label-right">{{ card.limitUsed }} / {{ card.limitTotal }}</span>
+              </div>
+              <div class="limit-bar-bg">
+                <div class="limit-bar-fill" [style.width.%]="card.usagePercent" [style.background]="card.barBg"></div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Placeholder 'Link New Card' -->
+        <div class="card-column">
+          <div class="new-card-placeholder">
+            <div class="add-circle">
+              <span class="material-symbols-outlined">add</span>
+            </div>
+            <span class="new-card-title">Link New Card</span>
+            <span class="new-card-sub">Add to your premium collection</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RECENT TRANSACTIONS + TIER STATUS -->
+    <section class="bottom-section">
+      <h2 class="section-title">Recent Card Transactions</h2>
+      
+      <div class="bottom-content">
+        <!-- Transactions List -->
+        <div class="transactions-panel">
+          @for (txn of transactions; track txn.title) {
+            <div class="transaction-row">
+              <div class="txn-left">
+                <div class="txn-icon-circle {{ txn.bgClass }}">
+                  <span class="material-symbols-outlined">{{ txn.icon }}</span>
+                </div>
+                <div class="txn-details">
+                  <span class="txn-title">{{ txn.title }}</span>
+                  <span class="txn-sub">{{ txn.subtitle }}</span>
+                </div>
+              </div>
+              <div class="txn-amount mono">{{ txn.amount }}</div>
+            </div>
+          }
+        </div>
+
+        <!-- Tier Update Panel -->
+        <div class="tier-panel glass-card-strong">
+          <div class="tier-icon-circle">
+            <span class="material-symbols-outlined">military_tech</span>
+          </div>
+          <h3 class="tier-title">Tier Update</h3>
+          <p class="tier-desc">
+            You are <strong>$2,400</strong> away from unlocking the <span class="text-primary-bold">Crystal Vault</span> tier rewards.
+          </p>
+          <a href="#" class="tier-link">VIEW BENEFITS</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>

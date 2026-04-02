@@ -1,0 +1,167 @@
+<!-- Ambient background blobs -->
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Main layout -->
+<div class="login-layout">
+
+  <!-- LEFT SIDE — Hero with floating cards -->
+  <div class="hero-side">
+
+    <!-- Branding -->
+    <div class="brand">
+      <div class="brand-icon">
+        <span class="material-symbols-outlined">shield_person</span>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">FinVault</span>
+        <span class="brand-tagline">Your Secure Financial Terminal</span>
+      </div>
+    </div>
+
+    <!-- Hero text -->
+    <div class="hero-text">
+      <p class="hero-sub">The card is key to</p>
+      <h1 class="hero-heading">
+        The Thinking<br>
+        <span>Behind the</span><br>
+        Money
+      </h1>
+      <p class="hero-desc">
+        Manage all your credit cards, bills and payments
+        from one secure, intelligent dashboard.
+      </p>
+    </div>
+
+    <!-- Floating glass credit cards -->
+    <div class="cards-scene">
+
+      <!-- Card 3 — back (frost) -->
+      <div class="credit-card card-frost">
+        <div class="card-chip"></div>
+        <div class="card-number mono">0142 3658 4526 1573</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Wallet Touch</span>
+          <div class="card-logo">
+            <span class="material-symbols-outlined">diamond</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 — middle (purple) -->
+      <div class="credit-card card-purple">
+        <div class="card-top-row">
+          <span class="card-label mono">VISA</span>
+          <span class="material-symbols-outlined card-wave">contactless_pay</span>
+        </div>
+        <div class="card-chip"></div>
+        <div class="card-number mono">5478 2535 4585 91.23</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Primary Vault</span>
+          <span class="card-expiry mono">12/27</span>
+        </div>
+      </div>
+
+      <!-- Card 1 — front (blue) -->
+      <div class="credit-card card-blue">
+        <div class="card-top-row">
+          <span class="card-label mono">MASTERCARD</span>
+          <span class="material-symbols-outlined card-wave">contactless_pay</span>
+        </div>
+        <div class="card-chip"></div>
+        <div class="card-number mono">0001 7595 6585 5535</div>
+        <div class="card-bottom">
+          <span class="card-holder mono">Elite Member</span>
+          <span class="card-expiry mono">09/28</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom social proof -->
+    <div class="social-proof">
+      <div class="avatars">
+        <div class="avatar av1">AK</div>
+        <div class="avatar av2">SR</div>
+        <div class="avatar av3">MR</div>
+        <div class="avatar-count">+5</div>
+      </div>
+      <p class="social-text">
+        Join thousands managing smarter.
+        <a href="#" class="social-link">Learn More</a>
+      </p>
+    </div>
+
+  </div>
+
+  <!-- RIGHT SIDE — Login form -->
+  <div class="form-side">
+    <div class="form-card glass-card-strong">
+
+      <!-- Form header -->
+      <div class="form-header">
+        <h2 class="form-title">Welcome Back</h2>
+        <p class="form-subtitle">Access your secure financial terminal</p>
+      </div>
+
+      <!-- Form -->
+      <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <div class="field-group">
+          <label class="field-label label-uppercase">Identity</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">alternate_email</span>
+            <input type="email" class="glass-input" placeholder="your@email.com" formControlName="email" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label-row">
+            <label class="field-label label-uppercase">Secret</label>
+            <a href="#" class="forgot-link">Forgot Cipher?</a>
+          </div>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <input type="password" class="glass-input glass-input-mono" placeholder="••••••••••••"
+              formControlName="password" />
+          </div>
+        </div>
+
+        @if (authService.errorMessage()) {
+        <div class="error-message" style="color: #ff4d4d; margin-bottom: 20px; font-size: 0.9rem; margin-top: -10px;">
+          {{ authService.errorMessage() }}
+        </div>
+        }
+
+        <button type="submit" class="btn-primary submit-btn" [disabled]="loginForm.invalid || authService.isLoading()">
+          @if (authService.isLoading()) {
+          <span class="material-symbols-outlined btn-icon spinner">sync</span>
+          Authenticating...
+          } @else {
+          <span class="material-symbols-outlined btn-icon">lock_open</span>
+          Authenticate Vault
+          }
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="form-divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">new here?</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Footer link -->
+      <p class="form-footer">
+        Need secure access?
+        <a routerLink="/auth/register" class="footer-link">Initialize New Account</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

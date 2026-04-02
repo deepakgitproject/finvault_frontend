@@ -1,0 +1,285 @@
+<div class="pay-bill-page">
+
+    <!-- ══════════════════════════════════════════ SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar__logo">
+            <span class="sidebar__logo-mark">
+                <span class="material-symbols-outlined">finance_mode</span>
+            </span>
+            <div class="sidebar__logo-text">
+                <span class="sidebar__logo-name">FinVault</span>
+                <span class="sidebar__logo-tier">PREMIUM MANAGEMENT</span>
+            </div>
+        </div>
+
+        <nav class="sidebar__nav">
+            <a class="sidebar__nav-link" routerLink="/dashboard">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/cards">
+                <span class="material-symbols-outlined">credit_card</span>
+                <span>Cards</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/bills">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <span>Bills</span>
+            </a>
+            <a class="sidebar__nav-link sidebar__nav-link--active" routerLink="/payments">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Payments</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/scheduled">
+                <span class="material-symbols-outlined">event_upcoming</span>
+                <span>Scheduled</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/notifications">
+                <span class="material-symbols-outlined">notifications</span>
+                <span>Notifications</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/profile">
+                <span class="material-symbols-outlined">person_pin</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar__upgrade">
+            <span class="material-symbols-outlined sidebar__upgrade-icon">rocket_launch</span>
+            <div class="sidebar__upgrade-text">
+                <span class="sidebar__upgrade-title">Upgrade to Elite</span>
+                <span class="sidebar__upgrade-sub">Unlock premium features</span>
+            </div>
+            <span class="material-symbols-outlined sidebar__upgrade-arrow">chevron_right</span>
+        </div>
+    </aside>
+
+    <!-- ══════════════════════════════════════════ MAIN -->
+    <main class="main-content">
+
+        <!-- Page Header -->
+        <header class="page-header">
+            <div class="page-header__user">
+                <div class="page-header__avatar">AP</div>
+                <div class="page-header__user-info">
+                    <span class="page-header__name">Alexander Pierce</span>
+                    <span class="page-header__tier">PREMIER MEMBER</span>
+                </div>
+            </div>
+            <div class="page-header__actions">
+                <button class="page-header__icon-btn">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                </button>
+                <button class="page-header__icon-btn">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <button class="page-header__report-btn">
+                    <span class="material-symbols-outlined">download</span>
+                    Download Report
+                </button>
+            </div>
+        </header>
+
+        <!-- Title -->
+        <section class="title-section">
+            <div>
+                <h1 class="title-section__heading">Make a Payment</h1>
+                <p class="title-section__sub">Initiate a secure payment from your vault. OTP verification required.</p>
+            </div>
+        </section>
+
+        <!-- Success toast -->
+        <div class="toast toast--success" *ngIf="successMessage()">
+            <span class="material-symbols-outlined">check_circle</span>
+            {{ successMessage() }}
+        </div>
+
+        <!-- ══════════════════════════════════════════ FORM CARD -->
+        <div class="form-card">
+
+            <div class="form-card__inner">
+
+                <!-- Left: Icon + info -->
+                <div class="form-card__left">
+                    <div class="form-card__icon-ring">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <h2 class="form-card__left-title">Secure Payment</h2>
+                    <p class="form-card__left-body">
+                        All transactions are end-to-end encrypted and require OTP verification via your registered
+                        mobile number.
+                    </p>
+
+                    <div class="form-card__badge-row">
+                        <div class="form-card__badge">
+                            <span class="material-symbols-outlined">lock</span>
+                            256-bit SSL
+                        </div>
+                        <div class="form-card__badge">
+                            <span class="material-symbols-outlined">verified_user</span>
+                            2FA Enabled
+                        </div>
+                        <div class="form-card__badge">
+                            <span class="material-symbols-outlined">shield</span>
+                            PCI-DSS
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Form -->
+                <div class="form-card__right">
+
+                    <!-- Global error -->
+                    <div class="form-error" *ngIf="errorMessage() && !isModalOpen()">
+                        <span class="material-symbols-outlined">error</span>
+                        {{ errorMessage() }}
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">payments</span>
+                            Payment Amount
+                        </label>
+                        <div class="form-input-wrap form-input-wrap--amount">
+                            <span class="form-input-prefix">$</span>
+                            <input class="form-input form-input--amount" type="number" min="0.01" step="0.01"
+                                placeholder="0.00" [(ngModel)]="form.amount" name="amount" />
+                        </div>
+                    </div>
+
+                    <!-- Payment Type -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">category</span>
+                            Payment Type
+                        </label>
+                        <div class="form-input-wrap">
+                            <select class="form-input form-select" [(ngModel)]="form.paymentType" name="paymentType">
+                                <option *ngFor="let t of paymentTypes" [value]="t">{{ t }}</option>
+                            </select>
+                            <span class="material-symbols-outlined form-select-icon">expand_more</span>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">mail</span>
+                            Email Address
+                        </label>
+                        <div class="form-input-wrap">
+                            <input class="form-input" type="email" placeholder="you@example.com"
+                                [(ngModel)]="form.email" name="email" />
+                        </div>
+                    </div>
+
+                    <!-- User UUID -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">person</span>
+                            User ID
+                            <span class="form-label-hint">UUID v4</span>
+                        </label>
+                        <div class="form-input-wrap">
+                            <input class="form-input form-input--mono" type="text"
+                                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" [(ngModel)]="form.userId"
+                                name="userId" />
+                        </div>
+                    </div>
+
+                    <!-- Card UUID -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">credit_card</span>
+                            Card ID
+                            <span class="form-label-hint">UUID v4</span>
+                        </label>
+                        <div class="form-input-wrap">
+                            <input class="form-input form-input--mono" type="text"
+                                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" [(ngModel)]="form.cardId"
+                                name="cardId" />
+                        </div>
+                    </div>
+
+                    <!-- Bill UUID -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="material-symbols-outlined">receipt_long</span>
+                            Bill ID
+                            <span class="form-label-hint">UUID v4</span>
+                        </label>
+                        <div class="form-input-wrap">
+                            <input class="form-input form-input--mono" type="text"
+                                placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" [(ngModel)]="form.billId"
+                                name="billId" />
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="submit-btn" [class.submit-btn--loading]="isLoading()"
+                        [disabled]="!isFormValid() || isLoading()" (click)="initiatePayment()">
+                        <span class="material-symbols-outlined" *ngIf="!isLoading()">lock</span>
+                        <span class="submit-btn__spinner" *ngIf="isLoading()"></span>
+                        {{ isLoading() ? 'Processing…' : 'Initiate Secure Payment' }}
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ══════════════════════════════════════════ OTP MODAL -->
+    <div class="modal-overlay" *ngIf="isModalOpen()" (click)="closeModal()">
+        <div class="modal" (click)="$event.stopPropagation()">
+
+            <!-- Handlebar -->
+            <div class="modal__handlebar"></div>
+
+            <!-- Lock icon -->
+            <div class="modal__icon-ring">
+                <span class="material-symbols-outlined">lock</span>
+            </div>
+
+            <!-- Title -->
+            <h2 class="modal__title">Verify Identity</h2>
+
+            <!-- Subtitle -->
+            <p class="modal__subtitle">
+                We've sent a 6-digit secure code to your registered mobile number ending in
+                <strong>**89</strong>
+            </p>
+
+            <!-- OTP inputs -->
+            <div class="otp-row" (paste)="onOtpPaste($event)">
+                <input *ngFor="let digit of otpDigits(); let i = index" #otpInput class="otp-input"
+                    [class.otp-input--filled]="digit !== ''" type="text" inputmode="numeric" maxlength="1"
+                    [value]="digit" (input)="onOtpInput($event, i)" (keydown)="onOtpKeydown($event, i)" />
+            </div>
+
+            <!-- OTP error -->
+            <div class="modal__error" *ngIf="errorMessage()">
+                <span class="material-symbols-outlined">error</span>
+                {{ errorMessage() }}
+            </div>
+
+            <!-- Confirm button -->
+            <button class="modal__confirm-btn" [class.modal__confirm-btn--loading]="isConfirming()"
+                [disabled]="!isOtpComplete() || isConfirming()" (click)="confirmPayment()">
+                <span class="modal__confirm-btn__spinner" *ngIf="isConfirming()"></span>
+                <span class="material-symbols-outlined" *ngIf="!isConfirming()">check_circle</span>
+                {{ isConfirming() ? 'Verifying…' : 'Confirm Payment' }}
+            </button>
+
+            <!-- Resend -->
+            <div class="modal__resend">
+                <span class="modal__resend-link" [class.modal__resend-link--active]="canResend()"
+                    (click)="resendCode()">
+                    {{ canResend() ? 'Resend Code' : 'Resend Code (' + resendCountdown() + 's)' }}
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+</div>

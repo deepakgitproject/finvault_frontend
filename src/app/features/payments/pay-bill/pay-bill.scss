@@ -1,0 +1,849 @@
+// ═══════════════════════════════════════════════════════════════════
+//  FinVault — Make a Payment
+//  pay-bill.scss
+// ═══════════════════════════════════════════════════════════════════
+
+@mixin glass-strong {
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+@mixin label-tiny {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+// ── Root ──────────────────────────────────────────────────────────────
+.pay-bill-page {
+    display: flex;
+    min-height: 100vh;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SIDEBAR  (shared pattern)
+// ═══════════════════════════════════════════════════════════════════
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 16px 24px;
+    @include glass-strong;
+    box-shadow: 4px 0 32px rgba(107, 110, 249, 0.06);
+    z-index: 100;
+
+    &__logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 8px 28px;
+    }
+
+    &__logo-mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        .material-symbols-outlined {
+            color: #fff;
+            font-size: 1.2rem;
+        }
+    }
+
+    &__logo-name {
+        display: block;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+    }
+
+    &__logo-tier {
+        display: block;
+        @include label-tiny;
+        font-size: 0.55rem;
+        margin-top: 3px;
+    }
+
+    &__nav {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &__nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary, #4A4A6A);
+        transition: background 0.18s, color 0.18s;
+
+        .material-symbols-outlined {
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        &:hover {
+            background: rgba(107, 110, 249, 0.1);
+            color: var(--primary);
+        }
+
+        &--active {
+            background: var(--primary);
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(107, 110, 249, 0.35);
+
+            &:hover {
+                background: var(--primary);
+            }
+
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 1;
+            }
+        }
+    }
+
+    &__upgrade {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        cursor: pointer;
+        transition: opacity 0.2s, transform 0.2s;
+
+        &:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+    }
+
+    &__upgrade-icon {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 1.2rem;
+    }
+
+    &__upgrade-title {
+        display: block;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    &__upgrade-sub {
+        display: block;
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 1px;
+    }
+
+    &__upgrade-arrow {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        margin-left: auto;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MAIN CONTENT
+// ═══════════════════════════════════════════════════════════════════
+.main-content {
+    margin-left: 240px;
+    padding: 40px 44px;
+    flex: 1;
+    min-height: 100vh;
+}
+
+// ── Page Header ───────────────────────────────────────────────────────
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    &__avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(107, 110, 249, 0.35);
+    }
+
+    &__name {
+        display: block;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    &__tier {
+        display: block;
+        @include label-tiny;
+        margin-top: 2px;
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__icon-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        @include glass-strong;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary, #4A4A6A);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        transition: background 0.2s, color 0.2s, transform 0.15s;
+
+        .material-symbols-outlined {
+            font-size: 1.15rem;
+        }
+
+        &:hover {
+            background: rgba(107, 110, 249, 0.12);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+    }
+
+    &__report-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 999px;
+        @include glass-strong;
+        cursor: pointer;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+        transition: transform 0.15s, box-shadow 0.15s;
+
+        .material-symbols-outlined {
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(107, 110, 249, 0.18);
+        }
+    }
+}
+
+// ── Title Section ─────────────────────────────────────────────────────
+.title-section {
+    margin-bottom: 32px;
+
+    &__heading {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1.05;
+        margin: 0 0 8px;
+        letter-spacing: -0.02em;
+    }
+
+    &__sub {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.55;
+    }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    animation: fadeSlideIn 0.3s ease;
+
+    &--success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        color: #15803d;
+
+        .material-symbols-outlined {
+            color: #22C55E;
+            font-size: 1.1rem;
+        }
+    }
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FORM CARD
+// ═══════════════════════════════════════════════════════════════════
+.form-card {
+    @include glass-strong;
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 12px 40px rgba(120, 130, 210, 0.18);
+    margin-bottom: 40px;
+
+    &__inner {
+        display: flex;
+        gap: 48px;
+        align-items: flex-start;
+    }
+
+    // ── Left panel ──────────────────────────────────────────────────
+    &__left {
+        flex: 0 0 260px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding-top: 8px;
+    }
+
+    &__icon-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: rgba(107, 110, 249, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+
+        .material-symbols-outlined {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-variation-settings: 'FILL' 1;
+        }
+    }
+
+    &__left-title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 12px;
+    }
+
+    &__left-body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.855rem;
+        color: var(--text-muted);
+        line-height: 1.65;
+        margin: 0 0 28px;
+    }
+
+    &__badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    &__badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(107, 110, 249, 0.08);
+        border: 1px solid rgba(107, 110, 249, 0.15);
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 0.03em;
+
+        .material-symbols-outlined {
+            font-size: 0.85rem;
+        }
+    }
+
+    // ── Right: form ─────────────────────────────────────────────────
+    &__right {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+// ── Form primitives ───────────────────────────────────────────────────
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.22);
+    color: var(--error);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+
+    .material-symbols-outlined {
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    @include label-tiny;
+    font-size: 0.68rem;
+    margin-bottom: 8px;
+
+    .material-symbols-outlined {
+        font-size: 0.9rem;
+        color: var(--primary);
+    }
+}
+
+.form-label-hint {
+    margin-left: auto;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: rgba(136, 136, 170, 0.1);
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.form-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    &--amount {
+        .form-input {
+            padding-left: 32px;
+        }
+    }
+}
+
+.form-input-prefix {
+    position: absolute;
+    left: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.form-input {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(107, 110, 249, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    &::placeholder {
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+    &:focus {
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 0 0 3px rgba(107, 110, 249, 0.12);
+    }
+
+    &--mono {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.82rem;
+        letter-spacing: 0.02em;
+    }
+
+    &--amount {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    // Remove number spinners
+    &[type='number']::-webkit-inner-spin-button,
+    &[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    &[type='number'] {
+        -moz-appearance: textfield;
+    }
+}
+
+.form-select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 40px;
+}
+
+.form-select-icon {
+    position: absolute;
+    right: 12px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+// ── Submit button ─────────────────────────────────────────────────────
+.submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 28px;
+    margin-top: 8px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: #fff;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(107, 110, 249, 0.38);
+    transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    letter-spacing: 0.01em;
+
+    .material-symbols-outlined {
+        font-size: 1.1rem;
+    }
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(107, 110, 249, 0.48);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    &__spinner {
+        width: 18px;
+        height: 18px;
+        border: 2.5px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        flex-shrink: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  OTP MODAL
+// ═══════════════════════════════════════════════════════════════════
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(30, 30, 50, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlayIn 0.22s ease;
+}
+
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: rgba(230, 230, 235, 0.88);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 32px;
+    padding: 40px 40px 36px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14), 0 8px 24px rgba(107, 110, 249, 0.12);
+    position: relative;
+    animation: modalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    &__handlebar {
+        width: 40px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(107, 110, 249, 0.25);
+        margin: 0 auto 28px;
+    }
+
+    &__icon-ring {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: rgba(107, 110, 249, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+
+        .material-symbols-outlined {
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-variation-settings: 'FILL' 1;
+        }
+    }
+
+    &__title {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin: 0 0 10px;
+        letter-spacing: -0.01em;
+    }
+
+    &__subtitle {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.855rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin: 0;
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+    }
+
+    &__error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 10px 16px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: var(--error);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        animation: fadeSlideIn 0.2s ease;
+
+        .material-symbols-outlined {
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+    }
+
+    &__confirm-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 16px;
+        border-radius: 999px;
+        border: none;
+        background: var(--primary);
+        color: #fff;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(107, 110, 249, 0.38);
+        transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+
+        .material-symbols-outlined {
+            font-size: 1.1rem;
+        }
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(107, 110, 249, 0.48);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        &__spinner {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+    }
+
+    &__resend {
+        margin-top: 16px;
+    }
+
+    &__resend-link {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: default;
+        transition: color 0.2s;
+        user-select: none;
+
+        &--active {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.93) translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+// ── OTP inputs ────────────────────────────────────────────────────────
+.otp-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0 20px;
+}
+
+.otp-input {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--primary);
+    outline: none;
+    transition: box-shadow 0.2s, transform 0.15s;
+    caret-color: transparent;
+
+    &:focus {
+        box-shadow:
+            inset 0 2px 4px rgba(0, 0, 0, 0.06),
+            0 0 0 2.5px var(--primary),
+            0 4px 14px rgba(107, 110, 249, 0.22);
+        transform: scale(1.08);
+    }
+
+    &--filled {
+        background: rgba(107, 110, 249, 0.07);
+    }
+}

@@ -1,0 +1,226 @@
+<div class="finvault-shell">
+
+    <!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
+    <aside class="sidebar">
+        <div class="sidebar__brand">
+            <div class="sidebar__brand-logo">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+            </div>
+            <span class="sidebar__brand-name">FinVault</span>
+        </div>
+        <nav class="sidebar__nav">
+            <a class="sidebar__nav-link" routerLink="/dashboard">
+                <span class="material-symbols-outlined sidebar__nav-icon">grid_view</span>
+                <span class="sidebar__nav-label">Dashboard</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/cards">
+                <span class="material-symbols-outlined sidebar__nav-icon">credit_card</span>
+                <span class="sidebar__nav-label">Cards</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/bills">
+                <span class="material-symbols-outlined sidebar__nav-icon">receipt_long</span>
+                <span class="sidebar__nav-label">Bills</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/payments">
+                <span class="material-symbols-outlined sidebar__nav-icon">payments</span>
+                <span class="sidebar__nav-label">Payments</span>
+            </a>
+            <a class="sidebar__nav-link" routerLink="/scheduled">
+                <span class="material-symbols-outlined sidebar__nav-icon">schedule</span>
+                <span class="sidebar__nav-label">Scheduled</span>
+            </a>
+            <a class="sidebar__nav-link sidebar__nav-link--active" routerLink="/notifications">
+                <span class="material-symbols-outlined sidebar__nav-icon">notifications</span>
+                <span class="sidebar__nav-label">Notifications</span>
+                @if (hasUnread()) {
+                <span class="sidebar__badge">{{ unreadCount() }}</span>
+                }
+            </a>
+            <a class="sidebar__nav-link" routerLink="/profile">
+                <span class="material-symbols-outlined sidebar__nav-icon">manage_accounts</span>
+                <span class="sidebar__nav-label">Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar__footer">
+            <div class="sidebar__avatar">
+                <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="sidebar__user-info">
+                <span class="sidebar__user-name">Alex Morgan</span>
+                <span class="sidebar__user-role">Premium Member</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════ MAIN CONTENT ═══════════════════════ -->
+    <main class="main-content">
+
+        <!-- ── Page Header ─────────────────────────────────────────────── -->
+        <header class="page-header">
+            <div class="page-header__text">
+                <h1 class="page-header__title">Notifications</h1>
+                <p class="page-header__subtitle">
+                    Stay updated on your account activity and security alerts.
+                </p>
+            </div>
+
+            <div class="page-header__actions">
+                <!-- Filter toggle -->
+                <button class="btn btn--ghost" [class.btn--ghost-active]="filterUnread()" (click)="toggleFilter()"
+                    [disabled]="isLoading()" aria-label="Toggle unread filter">
+                    <span class="material-symbols-outlined">filter_list</span>
+                    {{ filterUnread() ? 'Show All' : 'Unread Only' }}
+                </button>
+
+                <!-- Mark All Read -->
+                <button class="btn btn--primary" (click)="markAllAsRead()"
+                    [disabled]="isMarkingAll() || !hasUnread() || isLoading()"
+                    aria-label="Mark all notifications as read">
+                    @if (isMarkingAll()) {
+                    <span class="btn__spinner"></span>
+                    Marking…
+                    } @else {
+                    <span class="material-symbols-outlined">done_all</span>
+                    Mark All as Read
+                    }
+                </button>
+            </div>
+        </header>
+
+        <!-- ── Stats Strip ──────────────────────────────────────────────── -->
+        <div class="stats-strip">
+            <div class="stat-pill">
+                <span class="stat-pill__icon material-symbols-outlined">inbox</span>
+                <span class="stat-pill__value">{{ notifications().length }}</span>
+                <span class="stat-pill__label">Total</span>
+            </div>
+            <div class="stat-pill stat-pill--accent">
+                <span class="stat-pill__icon material-symbols-outlined">mark_email_unread</span>
+                <span class="stat-pill__value">{{ unreadCount() }}</span>
+                <span class="stat-pill__label">Unread</span>
+            </div>
+            <div class="stat-pill stat-pill--success">
+                <span class="stat-pill__icon material-symbols-outlined">mark_email_read</span>
+                <span class="stat-pill__value">{{ notifications().length - unreadCount() }}</span>
+                <span class="stat-pill__label">Read</span>
+            </div>
+        </div>
+
+        <!-- ── Error Banner ─────────────────────────────────────────────── -->
+        @if (errorMessage()) {
+        <div class="error-banner" role="alert">
+            <span class="material-symbols-outlined error-banner__icon">error_outline</span>
+            <span class="error-banner__text">{{ errorMessage() }}</span>
+            <button class="btn btn--ghost btn--sm" (click)="fetchNotifications()">
+                Retry
+            </button>
+        </div>
+        }
+
+        <!-- ── Loading Skeleton ─────────────────────────────────────────── -->
+        @if (isLoading()) {
+        <div class="notification-list" aria-label="Loading notifications" aria-busy="true">
+            @for (i of [1,2,3,4,5]; track i) {
+            <div class="notification-card notification-card--skeleton">
+                <div class="skeleton skeleton--icon"></div>
+                <div class="skeleton-body">
+                    <div class="skeleton skeleton--title"></div>
+                    <div class="skeleton skeleton--text"></div>
+                    <div class="skeleton skeleton--text skeleton--text-short"></div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- ── Notification Feed ────────────────────────────────────────── -->
+        @if (!isLoading()) {
+        @if (displayedNotifications().length === 0) {
+        <div class="empty-state">
+            <div class="empty-state__icon">
+                <span class="material-symbols-outlined">notifications_off</span>
+            </div>
+            <h3 class="empty-state__title">
+                {{ filterUnread() ? 'All caught up!' : 'No notifications yet' }}
+            </h3>
+            <p class="empty-state__text">
+                {{ filterUnread()
+                ? 'You have no unread notifications. Great job staying on top of things.'
+                : 'When there is account activity, you will see your notifications here.' }}
+            </p>
+            @if (filterUnread()) {
+            <button class="btn btn--ghost" (click)="toggleFilter()">
+                View all notifications
+            </button>
+            }
+        </div>
+        } @else {
+        <div class="notification-list" role="list">
+            @for (notif of displayedNotifications(); track notif.id; let idx = $index) {
+            <article class="notification-card" [class.notification-card--unread]="!notif.isRead"
+                [class.notification-card--marking]="isBeingMarked(notif.id)" role="listitem"
+                [attr.aria-label]="notif.title" [style.animation-delay]="(idx * 0.06) + 's'">
+                <!-- Type Icon -->
+                <div class="notif-icon-wrap" [class]="getTypeIconClass(notif.type)">
+                    <span class="material-symbols-outlined notif-icon">
+                        {{ getTypeIcon(notif.type) }}
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="notif-body">
+                    <div class="notif-meta">
+                        <div class="notif-tags">
+                            <span class="tag tag--type">{{ notif.type }}</span>
+                            <span class="tag" [class]="getPriorityClass(notif.priority)">
+                                {{ notif.priority }}
+                            </span>
+                            @if (!notif.isRead) {
+                            <span class="tag tag--unread">New</span>
+                            }
+                        </div>
+                        <time class="notif-time" [attr.datetime]="notif.createdAt"
+                            [title]="notif.createdAt | date:'medium'">
+                            {{ formatDate(notif.createdAt) }}
+                        </time>
+                    </div>
+
+                    <h3 class="notif-title">{{ notif.title }}</h3>
+                    <p class="notif-message">{{ notif.message }}</p>
+
+                    @if (notif.channel) {
+                    <span class="notif-channel">
+                        <span class="material-symbols-outlined notif-channel__icon">
+                            {{ notif.channel === 'EMAIL' ? 'email' : notif.channel === 'SMS' ? 'sms' : 'hub' }}
+                        </span>
+                        via {{ notif.channel | titlecase }}
+                    </span>
+                    }
+                </div>
+
+                <!-- Actions -->
+                <div class="notif-actions">
+                    @if (!notif.isRead) {
+                    <button class="icon-btn icon-btn--read" (click)="markAsRead(notif.id)"
+                        [disabled]="isBeingMarked(notif.id)" aria-label="Mark as read" title="Mark as read">
+                        @if (isBeingMarked(notif.id)) {
+                        <span class="btn__spinner btn__spinner--sm"></span>
+                        } @else {
+                        <span class="material-symbols-outlined">check_circle</span>
+                        }
+                    </button>
+                    } @else {
+                    <span class="read-badge" title="Read">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </span>
+                    }
+                </div>
+            </article>
+            }
+        </div>
+        }
+        }
+
+    </main>
+</div>

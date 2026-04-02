@@ -1,1 +1,257 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  // Backgrounds
+  --bg-primary: #F0F4FF;
+  --bg-secondary: #E4EAFF;
+  --bg-blob-1: rgba(167, 139, 250, 0.35);
+  --bg-blob-2: rgba(107, 110, 249, 0.25);
+  --bg-blob-3: rgba(196, 210, 255, 0.40);
+
+  // Glass surfaces
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-border-soft: rgba(255, 255, 255, 0.45);
+  --glass-shadow: rgba(120, 130, 210, 0.18);
+
+  // Accent
+  --primary: #6B6EF9;
+  --primary-light: rgba(107, 110, 249, 0.12);
+  --primary-hover: #5558E0;
+  --secondary: #A78BFA;
+
+  // Text
+  --text-primary: #1A1A2E;
+  --text-secondary: #4A4A6A;
+  --text-muted: #8888AA;
+  --text-on-primary: #FFFFFF;
+
+  // Semantic
+  --success: #22C55E;
+  --success-bg: rgba(34, 197, 94, 0.12);
+  --warning: #F59E0B;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --error: #EF4444;
+  --error-bg: rgba(239, 68, 68, 0.12);
+
+  // Credit card colors (floating cards on hero)
+  --card-purple: rgba(139, 92, 246, 0.75);
+  --card-blue: rgba(99, 102, 241, 0.80);
+  --card-frost: rgba(219, 224, 255, 0.65);
+}
+
+// Reset
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  zoom: 0.90;
+
+  //   background: var(--bg-primary);
+  body {
+    background: linear-gradient(to left,
+        #b4acf6 0%,
+        #c6bcf5 25%,
+        #d1caf0 45%,
+        #e4dbf8 60%,
+        #ffffff 100%);
+    min-height: 100vh;
+    // keep whatever else is already there
+  }
+
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+// ─── Reusable Glass Card ─────────────────────────────────────
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.glass-card-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow:
+    0 12px 40px var(--glass-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+// ─── Input Fields ────────────────────────────────────────────
+.glass-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &:focus {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+}
+
+.glass-input-mono {
+  @extend .glass-input;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+// ─── Buttons ─────────────────────────────────────────────────
+.btn-primary {
+  width: 100%;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 12px;
+  padding: 15px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(107, 110, 249, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0px) scale(0.98);
+  }
+}
+
+.btn-outlined {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+  }
+}
+
+// ─── Status Pills ────────────────────────────────────────────
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+
+  &.paid {
+    color: var(--success);
+    background: var(--success-bg);
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+
+  &.pending {
+    color: var(--warning);
+    background: var(--warning-bg);
+    border-color: rgba(245, 158, 11, 0.25);
+  }
+
+  &.overdue {
+    color: var(--error);
+    background: var(--error-bg);
+    border-color: rgba(239, 68, 68, 0.25);
+  }
+}
+
+// ─── Typography helpers ──────────────────────────────────────
+.mono {
+  font-family: 'DM Mono', monospace;
+}
+
+.label-uppercase {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+// ─── Ambient background blobs ────────────────────────────────
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+
+    &.blob-1 {
+      width: 600px;
+      height: 600px;
+      top: -100px;
+      left: -150px;
+      background: var(--bg-blob-1);
+    }
+
+    &.blob-2 {
+      width: 500px;
+      height: 500px;
+      top: 40%;
+      right: -100px;
+      background: var(--bg-blob-2);
+    }
+
+    &.blob-3 {
+      width: 400px;
+      height: 400px;
+      bottom: -80px;
+      left: 35%;
+      background: var(--bg-blob-3);
+    }
+  }
+}
