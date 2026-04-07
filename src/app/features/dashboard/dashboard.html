@@ -149,7 +149,7 @@
             <!-- Brand Logo -->
             <div class="card-brand-logo">
               @if (card.network === 'visa') {
-                <span class="visa-logo">VISA</span>
+                <span class="visa-logo">{{ networkConfig[card.network]?.label || 'Visa' }}</span>
               }
               @if (card.network === 'mastercard') {
                 <div class="mastercard-logo">
@@ -158,10 +158,10 @@
                 </div>
               }
               @if (card.network === 'rupay') {
-                <span class="rupay-logo">RuPay</span>
+                <span class="rupay-logo">{{ networkConfig[card.network]?.label || 'RuPay' }}</span>
               }
               @if (card.network === 'amex') {
-                <span class="amex-logo">AMEX</span>
+                <span class="amex-logo">{{ networkConfig[card.network]?.label || 'Amex' }}</span>
               }
             </div>
 

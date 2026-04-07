@@ -51,6 +51,13 @@ export class DashboardComponent implements OnInit {
   // Reveal tracking
   revealingIds = signal<Set<string>>(new Set());
   private revealTimers: Record<string, any> = {};
+  
+  networkConfig: any = {
+    visa: { gradient: 'linear-gradient(135deg, #1a1f71, #0a0e3a)', label: 'Visa' },
+    mastercard: { gradient: 'linear-gradient(135deg, #eb001b, #f79e1b)', label: 'MasterCard' },
+    rupay: { gradient: 'linear-gradient(135deg, #004d40, #00695c)', label: 'RuPay' },
+    amex: { gradient: 'linear-gradient(135deg, #006fcf, #004a8f)', label: 'Amex' }
+  };
 
   transactions: any[] = [];
 
@@ -204,13 +211,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getGradient(card: DisplayCard): string {
-    const gradients: Record<string, string> = {
-      visa: 'linear-gradient(135deg, #1a1f71 0%, #0a0e3a 100%)',
-      mastercard: 'linear-gradient(135deg, #1a1a2e 0%, #0d0d1a 100%)',
-      rupay: 'linear-gradient(135deg, #004d40 0%, #00251a 100%)',
-      amex: 'linear-gradient(135deg, #006fcf 0%, #004a8f 100%)'
-    };
-    return gradients[card.network] || gradients['visa'];
+    return this.networkConfig[card.network]?.gradient || this.networkConfig['visa'].gradient;
   }
 
   getBarColor(card: DisplayCard): string {

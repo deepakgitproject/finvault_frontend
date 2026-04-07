@@ -74,7 +74,7 @@ export class CardsComponent implements OnInit {
   // --- Network config --------------------------------------------
   networkConfig: Record<CardNetwork, { gradient: string; label: string }> = {
     visa: { gradient: 'linear-gradient(135deg, #1a1f71, #0a0e3a)', label: 'Visa' },
-    mastercard: { gradient: 'linear-gradient(135deg, #1a1a2e, #2d2d44)', label: 'Mastercard' },
+    mastercard: { gradient: 'linear-gradient(135deg, #eb001b, #f79e1b)', label: 'MasterCard' },
     rupay: { gradient: 'linear-gradient(135deg, #004d40, #00695c)', label: 'RuPay' },
     amex: { gradient: 'linear-gradient(135deg, #006fcf, #004a8f)', label: 'Amex' }
   };

@@ -342,7 +342,7 @@ export class CardService {
   private mapApiCard(c: any): DisplayCard {
     const masked = c.maskedNumber || '****0000';
     const last4 = masked.replace(/[^0-9]/g, '').slice(-4);
-    const network = this.guessNetwork(masked);
+    const network = this.guessNetwork(c);
     const limit = c.creditLimit || 100000;
     const balance = c.currentBalance || 0;
 
@@ -364,14 +364,13 @@ export class CardService {
     };
   }
 
-  private guessNetwork(masked: string): DisplayCard['network'] {
-    const digits = masked?.replace(/[^0-9]/g, '') || '';
-    const first = digits.charAt(0) || '4';
-    if (first === '4') return 'visa';
-    if (first === '5') return 'mastercard';
-    if (first === '6') return 'rupay';
-    if (first === '3') return 'amex';
-    return 'visa';
+  private guessNetwork(card: any): DisplayCard['network'] {
+    const issuer = (card.issuerName || '').toLowerCase();
+    if (issuer.includes('visa')) return 'visa';
+    if (issuer.includes('master')) return 'mastercard';
+    if (issuer.includes('rupay') || issuer.includes('ru pay')) return 'rupay';
+    if (issuer.includes('amex') || issuer.includes('american')) return 'amex';
+    return 'visa'; // fallback
   }
 
   private networkPrefix(n: DisplayCard['network']): string {
