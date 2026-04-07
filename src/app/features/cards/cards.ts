@@ -80,6 +80,7 @@ export class CardsComponent implements OnInit {
   };
 
   networks: CardNetwork[] = ['visa', 'mastercard', 'rupay', 'amex'];
+  issuers: string[] = ['Visa', 'MasterCard', 'RuPay', 'Amex'];
 
   // --- Lifecycle -------------------------------------------------
   ngOnInit(): void {
@@ -178,6 +179,10 @@ export class CardsComponent implements OnInit {
       : `**** **** **** ${card.maskedNumber.replace(/\D/g, '').slice(-4)}`;
   }
 
+  getDisplayCvv(card: DisplayCard): string {
+    return card.showDetails ? card.fullCvv : card.cvv;
+  }
+
   getGradient(card: DisplayCard): string {
     return this.networkConfig[card.network]?.gradient || this.networkConfig['visa'].gradient;
   }
@@ -241,12 +246,21 @@ export class CardsComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     let val = input.value.replace(/\D/g, '').substring(0, 19);
     
-    // Auto-detect network from first digits
+    // Auto-detect network and issuer from first digits
     if (val.length >= 1) {
-      if (val.startsWith('4')) this.selectedNetwork.set('visa');
-      else if (val.startsWith('5')) this.selectedNetwork.set('mastercard');
-      else if (val.startsWith('3')) this.selectedNetwork.set('amex');
-      else if (val.startsWith('6')) this.selectedNetwork.set('rupay');
+      if (val.startsWith('4')) {
+        this.selectedNetwork.set('visa');
+        this.newCard.issuerName = 'Visa';
+      } else if (val.startsWith('5')) {
+        this.selectedNetwork.set('mastercard');
+        this.newCard.issuerName = 'MasterCard';
+      } else if (val.startsWith('3')) {
+        this.selectedNetwork.set('amex');
+        this.newCard.issuerName = 'Amex';
+      } else if (val.startsWith('6')) {
+        this.selectedNetwork.set('rupay');
+        this.newCard.issuerName = 'RuPay';
+      }
     }
 
     val = val.replace(/(\d{4})(?=\d)/g, '$1 ');

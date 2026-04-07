@@ -37,100 +37,103 @@
       <div class="cards-grid">
 
         @for (card of cards(); track card.id; let i = $index) {
-          <div class="card-column">
-            <div class="card-3d-wrapper">
-              <div class="credit-card" [style.background]="getGradient(card)">
+        <div class="card-column">
+          <div class="card-3d-wrapper">
+            <div class="credit-card" [style.background]="getGradient(card)">
 
-                <!-- EMV Chip -->
-                <div class="emv-chip">
-                  <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="0" y="0" width="50" height="40" rx="6" ry="6" fill="#c9a84c"/>
-                    <rect x="0" y="0" width="50" height="40" rx="6" ry="6" [attr.fill]="'url(#chipGrad' + i + ')'" />
-                    <line x1="0" y1="13" x2="50" y2="13" stroke="#b8962d" stroke-width="0.8"/>
-                    <line x1="0" y1="20" x2="50" y2="20" stroke="#b8962d" stroke-width="0.8"/>
-                    <line x1="0" y1="27" x2="50" y2="27" stroke="#b8962d" stroke-width="0.8"/>
-                    <line x1="25" y1="0" x2="25" y2="40" stroke="#b8962d" stroke-width="0.8"/>
-                    <defs>
-                      <linearGradient [attr.id]="'chipGrad' + i" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#dbb85c" stop-opacity="0.4"/>
-                        <stop offset="100%" stop-color="#a67c00" stop-opacity="0.2"/>
-                      </linearGradient>
-                    </defs>
-                  </svg>
+              <!-- EMV Chip -->
+              <div class="emv-chip">
+                <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0" y="0" width="50" height="40" rx="6" ry="6" fill="#c9a84c" />
+                  <rect x="0" y="0" width="50" height="40" rx="6" ry="6" [attr.fill]="'url(#chipGrad' + i + ')'" />
+                  <line x1="0" y1="13" x2="50" y2="13" stroke="#b8962d" stroke-width="0.8" />
+                  <line x1="0" y1="20" x2="50" y2="20" stroke="#b8962d" stroke-width="0.8" />
+                  <line x1="0" y1="27" x2="50" y2="27" stroke="#b8962d" stroke-width="0.8" />
+                  <line x1="25" y1="0" x2="25" y2="40" stroke="#b8962d" stroke-width="0.8" />
+                  <defs>
+                    <linearGradient [attr.id]="'chipGrad' + i" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#dbb85c" stop-opacity="0.4" />
+                      <stop offset="100%" stop-color="#a67c00" stop-opacity="0.2" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+
+              <!-- Eye toggle -->
+              <button class="card-eye-btn" (click)="toggleDetails(i); $event.stopPropagation()"
+                [class.loading]="revealingIds().has(card.id)" [disabled]="revealingIds().has(card.id)">
+                <span class="material-symbols-outlined">
+                  {{ revealingIds().has(card.id) ? 'sync' : (card.showDetails ? 'visibility_off' : 'visibility') }}
+                </span>
+              </button>
+
+              <!-- Deletion Button (Locked) -->
+              <button class="card-delete-btn" (click)="deleteCard(card.id); $event.stopPropagation()"
+                [disabled]="cardService.deletingIds().has(card.id)"
+                [class.loading]="cardService.deletingIds().has(card.id)">
+                <span class="material-symbols-outlined">
+                  {{ cardService.deletingIds().has(card.id) ? 'sync' : 'delete_forever' }}
+                </span>
+              </button>
+
+              <!-- Card body -->
+              <div class="card-body-content" (click)="card.showDetails ? copyToClipboard(card.fullNumber) : null">
+                <div class="card-name-row">
+                  <span class="card-issuer">{{ card.issuerName }}</span>
                 </div>
-
-                <!-- Eye toggle -->
-                <button class="card-eye-btn" 
-                        (click)="toggleDetails(i); $event.stopPropagation()"
-                        [class.loading]="revealingIds().has(card.id)"
-                        [disabled]="revealingIds().has(card.id)">
-                  <span class="material-symbols-outlined">
-                    {{ revealingIds().has(card.id) ? 'sync' : (card.showDetails ? 'visibility_off' : 'visibility') }}
-                  </span>
-                </button>
-
-                <!-- Deletion Button (Locked) -->
-                <button class="card-delete-btn" 
-                        (click)="deleteCard(card.id); $event.stopPropagation()"
-                        [disabled]="cardService.deletingIds().has(card.id)"
-                        [class.loading]="cardService.deletingIds().has(card.id)">
-                  <span class="material-symbols-outlined">
-                    {{ cardService.deletingIds().has(card.id) ? 'sync' : 'delete_forever' }}
-                  </span>
-                </button>
-
-                <!-- Card body -->
-                <div class="card-body-content" (click)="card.showDetails ? copyToClipboard(card.fullNumber) : null">
-                  <div class="card-name-row">
-                    <span class="card-issuer">{{ card.issuerName }}</span>
+                <div class="card-number mono" [class.clickable]="card.showDetails"
+                  [title]="card.showDetails ? 'Click to copy' : ''">
+                  {{ getDisplayNumber(card) }}
+                </div>
+                <div class="card-details-row">
+                  <div class="card-detail">
+                    <span class="card-detail-label">CARD HOLDER</span>
+                    <span class="card-detail-value">{{ card.cardholderName }}</span>
                   </div>
-                  <div class="card-number mono" [class.clickable]="card.showDetails" [title]="card.showDetails ? 'Click to copy' : ''">
-                    {{ getDisplayNumber(card) }}
+                  <div class="card-detail">
+                    <span class="card-detail-label">VALID THRU</span>
+                    <span class="card-detail-value">{{ formatExpiry(card) }}</span>
                   </div>
-                  <div class="card-details-row">
-                    <div class="card-detail">
-                      <span class="card-detail-label">CARD HOLDER</span>
-                      <span class="card-detail-value">{{ card.cardholderName }}</span>
-                    </div>
-                    <div class="card-detail">
-                      <span class="card-detail-label">VALID THRU</span>
-                      <span class="card-detail-value">{{ formatExpiry(card) }}</span>
-                    </div>
+                  <div class="card-detail">
+                    <span class="card-detail-label">CVV</span>
+                    <span class="card-detail-value mono">{{ getDisplayCvv(card) }}</span>
                   </div>
                 </div>
+              </div>
 
-                <!-- Network logo -->
-                <div class="card-brand-logo">
-                  @if (card.network === 'visa') {
-                    <span class="visa-logo">VISA</span>
-                  }
-                  @if (card.network === 'mastercard') {
-                    <div class="mastercard-logo">
-                      <div class="mc-circle mc-red"></div>
-                      <div class="mc-circle mc-orange"></div>
-                    </div>
-                  }
-                  @if (card.network === 'rupay') {
-                    <span class="rupay-logo">RuPay</span>
-                  }
-                  @if (card.network === 'amex') {
-                    <span class="amex-logo">AMERICAN EXPRESS</span>
-                  }
+              <!-- Network logo -->
+              <div class="card-brand-logo">
+                @if (card.network === 'visa') {
+                <span class="visa-logo">VISA</span>
+                }
+                @if (card.network === 'mastercard') {
+                <div class="mastercard-logo">
+                  <div class="mc-circle mc-red"></div>
+                  <div class="mc-circle mc-orange"></div>
                 </div>
+                }
+                @if (card.network === 'rupay') {
+                <span class="rupay-logo">RuPay</span>
+                }
+                @if (card.network === 'amex') {
+                <span class="amex-logo">AMERICAN EXPRESS</span>
+                }
+              </div>
 
-                <!-- Limit bar at bottom -->
-                <div class="card-bottom-bar">
-                  <div class="limit-header">
-                    <span>LIMIT USAGE</span>
-                    <span>{{ formatLimit(card.currentBalance) }} / {{ formatLimit(card.creditLimit) }}</span>
-                  </div>
-                  <div class="limit-track">
-                    <div class="limit-bar-fill" [style.width.%]="card.usagePercent" [style.background]="getBarColor(card)"></div>
-                  </div>
+              <!-- Limit bar at bottom -->
+              <div class="card-bottom-bar">
+                <div class="limit-header">
+                  <span>LIMIT USAGE</span>
+                  <span>{{ formatLimit(card.currentBalance) }} / {{ formatLimit(card.creditLimit) }}</span>
+                </div>
+                <div class="limit-track">
+                  <div class="limit-bar-fill" [style.width.%]="card.usagePercent"
+                    [style.background]="getBarColor(card)"></div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
         }
 
         <!-- Link New Card -->
@@ -154,25 +157,26 @@
       <div class="bottom-content">
         <div class="transactions-panel">
           @if (transactions.length > 0) {
-            @for (txn of transactions; track txn.title) {
-              <div class="transaction-row">
-                <div class="txn-left">
-                  <div class="txn-icon-circle {{ txn.bgClass || 'bg-indigo' }}">
-                    <span class="material-symbols-outlined">{{ txn.icon || 'receipt_long' }}</span>
-                  </div>
-                  <div class="txn-details">
-                    <span class="txn-title">{{ txn.title }}</span>
-                    <span class="txn-sub">{{ txn.subtitle }}</span>
-                  </div>
-                </div>
-                <div class="txn-amount mono" [class.text-error]="txn.isNegative">{{ txn.amount }}</div>
+          @for (txn of transactions; track txn.title) {
+          <div class="transaction-row">
+            <div class="txn-left">
+              <div class="txn-icon-circle {{ txn.bgClass || 'bg-indigo' }}">
+                <span class="material-symbols-outlined">{{ txn.icon || 'receipt_long' }}</span>
               </div>
-            }
-          } @else {
-            <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--text-muted);">
-              <span class="material-symbols-outlined" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;">history</span>
-              <p>No recent transactions</p>
+              <div class="txn-details">
+                <span class="txn-title">{{ txn.title }}</span>
+                <span class="txn-sub">{{ txn.subtitle }}</span>
+              </div>
             </div>
+            <div class="txn-amount mono" [class.text-error]="txn.isNegative">{{ txn.amount }}</div>
+          </div>
+          }
+          } @else {
+          <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--text-muted);">
+            <span class="material-symbols-outlined"
+              style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;">history</span>
+            <p>No recent transactions</p>
+          </div>
           }
         </div>
       </div>
@@ -190,9 +194,9 @@
     <div class="modal-header">
       <div class="modal-header-left">
         @if (modalStep() > 1) {
-          <button class="modal-back-btn" (click)="goBackToStep(modalStep() === 3 ? 2 : 1)">
-            <span class="material-symbols-outlined">arrow_back</span>
-          </button>
+        <button class="modal-back-btn" (click)="goBackToStep(modalStep() === 3 ? 2 : 1)">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
         }
         <h2 class="modal-title">
           @if (modalStep() === 1) { Select Card Network }
@@ -220,26 +224,26 @@
       <p class="modal-subtitle">Choose your card network to get started</p>
       <div class="network-grid">
         @for (net of networks; track net) {
-          <button class="network-card" [style.background]="networkConfig[net].gradient" (click)="selectNetwork(net)">
-            <div class="network-card-inner">
-              @if (net === 'visa') {
-                <span class="visa-logo visa-logo--lg">VISA</span>
-              }
-              @if (net === 'mastercard') {
-                <div class="mastercard-logo mastercard-logo--lg">
-                  <div class="mc-circle mc-red"></div>
-                  <div class="mc-circle mc-orange"></div>
-                </div>
-              }
-              @if (net === 'rupay') {
-                <span class="rupay-logo rupay-logo--lg">RuPay</span>
-              }
-              @if (net === 'amex') {
-                <span class="amex-logo amex-logo--lg">AMERICAN EXPRESS</span>
-              }
-              <span class="network-label">{{ networkConfig[net].label }}</span>
+        <button class="network-card" [style.background]="networkConfig[net].gradient" (click)="selectNetwork(net)">
+          <div class="network-card-inner">
+            @if (net === 'visa') {
+            <span class="visa-logo visa-logo--lg">VISA</span>
+            }
+            @if (net === 'mastercard') {
+            <div class="mastercard-logo mastercard-logo--lg">
+              <div class="mc-circle mc-red"></div>
+              <div class="mc-circle mc-orange"></div>
             </div>
-          </button>
+            }
+            @if (net === 'rupay') {
+            <span class="rupay-logo rupay-logo--lg">RuPay</span>
+            }
+            @if (net === 'amex') {
+            <span class="amex-logo amex-logo--lg">AMERICAN EXPRESS</span>
+            }
+            <span class="network-label">{{ networkConfig[net].label }}</span>
+          </div>
+        </button>
         }
       </div>
     </div>
@@ -264,7 +268,8 @@
             <span class="material-symbols-outlined">credit_card</span>
             Card Number
           </label>
-          <input class="form-input form-input--mono" type="text" placeholder="4532 8841 0092 1145" [value]="newCard.cardNumber" (input)="formatCardInput($event)" maxlength="19" />
+          <input class="form-input form-input--mono" type="text" placeholder="4562 4899 5686 3542"
+            [value]="newCard.cardNumber" (input)="formatCardInput($event)" maxlength="19" />
         </div>
 
         <!-- Expiry Month + Year -->
@@ -272,15 +277,15 @@
           <label class="form-label">Month</label>
           <select class="form-input form-select" [(ngModel)]="newCard.expiryMonth">
             @for (m of months; track m) {
-              <option [ngValue]="m">{{ m < 10 ? '0' + m : m }}</option>
-            }
+            <option [ngValue]="m">{{ m < 10 ? '0' + m : m }}</option>
+                }
           </select>
         </div>
         <div class="form-group form-group--third">
           <label class="form-label">Year</label>
           <select class="form-input form-select" [(ngModel)]="newCard.expiryYear">
             @for (y of years; track y) {
-              <option [ngValue]="y">{{ y }}</option>
+            <option [ngValue]="y">{{ y }}</option>
             }
           </select>
         </div>
@@ -291,7 +296,8 @@
             <span class="material-symbols-outlined">lock</span>
             CVV
           </label>
-          <input class="form-input form-input--mono" type="password" placeholder="123" [(ngModel)]="newCard.cvv" maxlength="4" />
+          <input class="form-input form-input--mono" type="password" placeholder="123" [(ngModel)]="newCard.cvv"
+            maxlength="4" />
         </div>
 
         <!-- Issuer/Bank Name -->
@@ -300,7 +306,12 @@
             <span class="material-symbols-outlined">account_balance</span>
             Issuer / Bank
           </label>
-          <input class="form-input" type="text" placeholder="HDFC Bank" [(ngModel)]="newCard.issuerName" />
+          <select class="form-input form-select" [(ngModel)]="newCard.issuerName">
+            <option value="" disabled selected>Select Issuer</option>
+            @for (issuer of issuers; track issuer) {
+              <option [value]="issuer">{{ issuer }}</option>
+            }
+          </select>
         </div>
 
         <!-- Credit Limit -->
@@ -311,7 +322,8 @@
           </label>
           <div class="form-input-wrap">
             <span class="form-prefix">Rs.</span>
-            <input class="form-input form-input--prefixed" type="number" placeholder="500000" [(ngModel)]="newCard.creditLimit" />
+            <input class="form-input form-input--prefixed" type="number" placeholder="500000"
+              [(ngModel)]="newCard.creditLimit" />
           </div>
         </div>
 
@@ -323,7 +335,7 @@
           </label>
           <select class="form-input form-select" [(ngModel)]="newCard.billingCycleStartDay">
             @for (d of billingDays; track d) {
-              <option [ngValue]="d">{{ d }}</option>
+            <option [ngValue]="d">{{ d }}</option>
             }
           </select>
         </div>
@@ -345,11 +357,11 @@
         <div class="credit-card credit-card--preview" [style.background]="networkConfig[selectedNetwork()!].gradient">
           <div class="emv-chip">
             <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-              <rect x="0" y="0" width="50" height="40" rx="6" ry="6" fill="#c9a84c"/>
-              <line x1="0" y1="13" x2="50" y2="13" stroke="#b8962d" stroke-width="0.8"/>
-              <line x1="0" y1="20" x2="50" y2="20" stroke="#b8962d" stroke-width="0.8"/>
-              <line x1="0" y1="27" x2="50" y2="27" stroke="#b8962d" stroke-width="0.8"/>
-              <line x1="25" y1="0" x2="25" y2="40" stroke="#b8962d" stroke-width="0.8"/>
+              <rect x="0" y="0" width="50" height="40" rx="6" ry="6" fill="#c9a84c" />
+              <line x1="0" y1="13" x2="50" y2="13" stroke="#b8962d" stroke-width="0.8" />
+              <line x1="0" y1="20" x2="50" y2="20" stroke="#b8962d" stroke-width="0.8" />
+              <line x1="0" y1="27" x2="50" y2="27" stroke="#b8962d" stroke-width="0.8" />
+              <line x1="25" y1="0" x2="25" y2="40" stroke="#b8962d" stroke-width="0.8" />
             </svg>
           </div>
           <div class="card-body-content">
@@ -364,14 +376,18 @@
               </div>
               <div class="card-detail">
                 <span class="card-detail-label">VALID THRU</span>
-                <span class="card-detail-value">{{ (newCard.expiryMonth < 10 ? '0' : '') + newCard.expiryMonth }}/{{ ('' + newCard.expiryYear).slice(-2) }}</span>
+                <span class="card-detail-value">{{ (newCard.expiryMonth < 10 ? '0' : '' ) + newCard.expiryMonth }}/{{
+                    ('' + newCard.expiryYear).slice(-2) }}</span>
               </div>
             </div>
           </div>
           <div class="card-brand-logo">
             @if (selectedNetwork() === 'visa') { <span class="visa-logo">VISA</span> }
             @if (selectedNetwork() === 'mastercard') {
-              <div class="mastercard-logo"><div class="mc-circle mc-red"></div><div class="mc-circle mc-orange"></div></div>
+            <div class="mastercard-logo">
+              <div class="mc-circle mc-red"></div>
+              <div class="mc-circle mc-orange"></div>
+            </div>
             }
             @if (selectedNetwork() === 'rupay') { <span class="rupay-logo">RuPay</span> }
             @if (selectedNetwork() === 'amex') { <span class="amex-logo">AMERICAN EXPRESS</span> }
@@ -399,7 +415,8 @@
         </div>
         <div class="review-row">
           <span class="review-label">Expiry</span>
-          <span class="review-value">{{ (newCard.expiryMonth < 10 ? '0' : '') + newCard.expiryMonth }}/{{ newCard.expiryYear }}</span>
+          <span class="review-value">{{ (newCard.expiryMonth < 10 ? '0' : '' ) + newCard.expiryMonth }}/{{
+              newCard.expiryYear }}</span>
         </div>
         <div class="review-row">
           <span class="review-label">Issuer</span>
@@ -417,9 +434,9 @@
 
       <button class="modal-submit-btn" [disabled]="isSubmitting()" (click)="submitCard()">
         @if (isSubmitting()) {
-          <span class="btn-spinner"></span> Linking...
+        <span class="btn-spinner"></span> Linking...
         } @else {
-          <span class="material-symbols-outlined">verified</span> Link Card
+        <span class="material-symbols-outlined">verified</span> Link Card
         }
       </button>
     </div>
@@ -430,4 +447,3 @@
 }
 
 <app-coming-soon />
-

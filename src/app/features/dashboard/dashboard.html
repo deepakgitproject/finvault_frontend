@@ -135,6 +135,10 @@
                     <span class="card-detail-value">{{ formatExpiry(card) }}</span>
                   </div>
                   <div class="card-detail">
+                    <span class="card-detail-label">CVV</span>
+                    <span class="card-detail-value mono">{{ getDisplayCvv(card) }}</span>
+                  </div>
+                  <div class="card-detail">
                     <span class="card-detail-label">CARD HOLDER</span>
                     <span class="card-detail-value">{{ card.cardholderName }}</span>
                   </div>

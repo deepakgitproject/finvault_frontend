@@ -199,6 +199,10 @@ export class DashboardComponent implements OnInit {
       : `**** **** **** ${card.maskedNumber.slice(-4)}`;
   }
 
+  getDisplayCvv(card: DisplayCard): string {
+    return card.showDetails ? card.fullCvv : card.cvv;
+  }
+
   getGradient(card: DisplayCard): string {
     const gradients: Record<string, string> = {
       visa: 'linear-gradient(135deg, #1a1f71 0%, #0a0e3a 100%)',

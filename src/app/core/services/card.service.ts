@@ -1,4 +1,4 @@
-﻿import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { ResetBusService } from './reset-bus.service';
@@ -17,6 +17,8 @@ export interface DisplayCard {
   cardholderName: string;
   maskedNumber: string;
   fullNumber: string;
+  cvv: string;
+  fullCvv: string;
   expiryMonth: number;
   expiryYear: number;
   issuerName: string;
@@ -176,7 +178,7 @@ export class CardService {
       }),
       catchError((err) => {
         // No signal mutation on failure - pessimistic strategy
-        this.globalUi.error('Failed to link card. Please try again.');
+        this.globalUi.error(err?.error?.message || 'Failed to link card. Please try again.');
         return throwSafe(err);
       }),
       finalize(() => {
@@ -307,7 +309,7 @@ export class CardService {
         // Update local signal to show details
         this._cards.update(list =>
           list.map(c => c.id === cardId
-            ? { ...c, fullNumber: data.cardNumber, showDetails: true }
+            ? { ...c, fullNumber: data.cardNumber, fullCvv: data.cvv, showDetails: true }
             : c
           )
         );
@@ -350,6 +352,8 @@ export class CardService {
       cardholderName: (c.cardholderName || 'CARD HOLDER').toUpperCase(),
       maskedNumber: c.maskedNumber || `****${last4}`,
       fullNumber: `${this.networkPrefix(network)}XX XXXX XXXX ${last4}`,
+      cvv: '***',
+      fullCvv: '',
       expiryMonth: c.expiryMonth || 12,
       expiryYear: c.expiryYear || 2028,
       issuerName: c.issuerName || 'Bank',
