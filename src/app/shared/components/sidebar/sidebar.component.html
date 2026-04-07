@@ -1,0 +1,45 @@
+<!-- FinVault Standardized Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand">
+      <span class="brand-name">FinVault</span>
+      <span class="brand-sub">PREMIUM MANAGEMENT</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">dashboard</span>
+      Dashboard
+    </a>
+    <a routerLink="/cards" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">credit_card</span>
+      Cards
+    </a>
+    <a routerLink="/bills" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">receipt_long</span>
+      Bills
+    </a>
+    <a routerLink="/payments" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">payments</span>
+      Payments
+    </a>
+    <a routerLink="/transactions" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">history</span>
+      Transactions
+    </a>
+    <a routerLink="/notifications" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">notifications</span>
+      Notifications
+      @if (notificationService.unreadCount() > 0) {
+        <span class="notif-badge">{{ notificationService.unreadCount() }}</span>
+      }
+    </a>
+    <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+      <span class="material-symbols-outlined">person_pin</span>
+      Profile
+    </a>
+  </nav>
+
+</aside>
+

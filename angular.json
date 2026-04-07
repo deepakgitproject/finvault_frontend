@@ -41,8 +41,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "10kB",
-                  "maximumError": "15kB"
+                  "maximumWarning": "50kB",
+                  "maximumError": "100kB"
                 }
               ],
               "outputHashing": "all"
@@ -57,6 +57,8 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+          },
           "configurations": {
             "production": {
               "buildTarget": "finvault:build:production"

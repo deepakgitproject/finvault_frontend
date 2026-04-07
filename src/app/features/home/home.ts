@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+﻿import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -23,3 +23,4 @@ export class HomeComponent {
     setTimeout(() => this.showToast.set(false), 3000);
   }
 }
+

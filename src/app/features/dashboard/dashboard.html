@@ -1,80 +1,36 @@
 <div class="dashboard-layout">
-  
-  <!-- LEFT SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="brand">
-        <span class="brand-name">FinVault</span>
-        <span class="brand-sub">PREMIUM MANAGEMENT</span>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a routerLink="/dashboard" class="nav-item active">
-        <span class="material-symbols-outlined">dashboard</span>
-        Dashboard
-      </a>
-      <a routerLink="/cards" class="nav-item">
-        <span class="material-symbols-outlined">credit_card</span>
-        Cards
-      </a>
-      <a routerLink="/bills" class="nav-item">
-        <span class="material-symbols-outlined">receipt_long</span>
-        Bills
-      </a>
-      <a routerLink="/payments" class="nav-item">
-        <span class="material-symbols-outlined">payments</span>
-        Payments
-      </a>
-      <a routerLink="/scheduled" class="nav-item">
-        <span class="material-symbols-outlined">event_upcoming</span>
-        Scheduled
-      </a>
-      <a routerLink="/notifications" class="nav-item">
-        <span class="material-symbols-outlined">notifications</span>
-        Notifications
-      </a>
-      <a routerLink="/profile" class="nav-item">
-        <span class="material-symbols-outlined">person_pin</span>
-        Profile
-      </a>
-    </nav>
-
-    <div class="sidebar-promo glass-card">
-      <h4 class="promo-title">Upgrade to Elite</h4>
-      <p class="promo-desc">Unlock higher limits and 5% cashback on all travel</p>
-      <button class="btn-upgrade">Upgrade Now</button>
-    </div>
-  </aside>
+  <!-- SIDEBAR -->
+  <app-sidebar />
 
   <!-- MAIN CONTENT -->
   <main class="main-content">
-    
+
     <!-- TOP BAR -->
     <header class="topbar">
       <div class="greeting">
-        <h1 class="welcome-text">Welcome back, Jordan</h1>
-        <p class="date-text">WEDNESDAY, OCTOBER 24, 2023</p>
+        <h1 class="welcome-text">Welcome back, {{ userName() }}</h1>
+        <p class="date-text">{{ todayDate }}</p>
       </div>
 
       <div class="activity-pill glass-card">
         <div class="pulse-dot"></div>
         <span class="act-label">Recent activity:</span>
-        <span class="act-desc">Payment confirmed for Chase Sapphire</span>
+        <span class="act-desc">System Active & Optimal</span>
       </div>
 
       <div class="topbar-actions">
-        <button class="icon-btn glass-card">
+        <app-theme-toggle />
+        <button class="icon-btn glass-card" (click)="onWalletClick()">
           <span class="material-symbols-outlined">account_balance_wallet</span>
         </button>
-        <button class="icon-btn glass-card">
-          <span class="material-symbols-outlined">settings</span>
-        </button>
         <div class="avatar-circle">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Jordan" alt="User Avatar" />
+          <img src="https://api.dicebear.com/7.x/notionists/svg?seed={{ userName() }}" alt="User Avatar" />
         </div>
       </div>
     </header>
+
+    <!-- Global Toasts -->
+    <app-toast />
 
     <!-- STATS ROW -->
     <section class="stats-row">
@@ -94,7 +50,9 @@
           <div class="icon-circle bg-pink">
             <span class="material-symbols-outlined text-error">warning</span>
           </div>
-          <span class="badge-urgent">URGENT</span>
+          @if (upcomingBillAmount !== 'Rs.0.00') {
+            <span class="badge-urgent">URGENT</span>
+          }
         </div>
         <span class="stat-label mt-3">Upcoming Bill</span>
         <h3 class="stat-title">{{ upcomingBillTitle }}</h3>
@@ -103,7 +61,7 @@
             <h2 class="stat-value error-text">{{ upcomingBillAmount }}</h2>
             <p class="stat-sub">{{ upcomingBillDue }}</p>
           </div>
-          <button class="btn-dark-pill">Pay Now</button>
+          <button class="btn-dark-pill" routerLink="/billing">Pay Now</button>
         </div>
       </div>
 
@@ -126,95 +84,144 @@
       <div class="section-header">
         <div>
           <h2 class="section-title">My Digital Vault</h2>
-          <p class="section-sub">3 Active Cards Managed</p>
+          <p class="section-sub">{{ cardService.cards().length }} Active Card{{ cardService.cards().length !== 1 ? 's' : '' }} Managed</p>
         </div>
-        <a routerLink="/cards" class="link-primary">View All Cards &rarr;</a>
+        <a routerLink="/cards" class="link-primary">View All Cards -></a>
       </div>
 
       <div class="cards-grid">
-        @for (card of cards; track card.number) {
-          <div class="card-3d-wrapper">
-            <div class="digital-card" [style.background]="card.gradient">
-              <div class="card-top">
-                <span class="card-name">{{ card.name }}</span>
-                <span class="material-symbols-outlined contact-icon">{{ card.type }}</span>
+        @for (card of dashboardCards(); track card.id) {
+        <div class="card-3d-wrapper">
+          <div class="digital-card" [style.background]="getGradient(card)">
+
+            <!-- EMV Chip -->
+            <div class="emv-chip">
+              <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="50" height="40" rx="6" ry="6" fill="#c9a84c" />
+                <rect x="0" y="0" width="50" height="40" rx="6" ry="6" [attr.fill]="'url(#chipGrad' + card.id + ')'" />
+                <line x1="0" y1="13" x2="50" y2="13" stroke="#b8962d" stroke-width="0.8" />
+                <line x1="0" y1="20" x2="50" y2="20" stroke="#b8962d" stroke-width="0.8" />
+                <line x1="0" y1="27" x2="50" y2="27" stroke="#b8962d" stroke-width="0.8" />
+                <line x1="25" y1="0" x2="25" y2="40" stroke="#b8962d" stroke-width="0.8" />
+                <defs>
+                  <linearGradient [attr.id]="'chipGrad' + card.id" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#dbb85c" stop-opacity="0.4" />
+                    <stop offset="100%" stop-color="#a67c00" stop-opacity="0.2" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Toggle visibility button -->
+            <button class="card-eye-btn" (click)="toggleCardDetails($index); $event.stopPropagation()"
+              [class.loading]="revealingIds().has(card.id)"
+              [disabled]="revealingIds().has(card.id)"
+              [attr.aria-label]="card.showDetails ? 'Hide card number' : 'Show card number'">
+              <span class="material-symbols-outlined">
+                {{ revealingIds().has(card.id) ? 'sync' : (card.showDetails ? 'visibility_off' : 'visibility') }}
+              </span>
+            </button>
+
+            <div class="card-body-content">
+              <div class="card-name-row">
+                <span class="card-name">{{ card.issuerName }}</span>
               </div>
+
               <div class="card-middle">
-                <div class="card-number">{{ card.number }}</div>
-                <div class="card-expiry">{{ card.expiry }}</div>
-              </div>
-              <div class="card-bottom">
-                <div class="limit-header">
-                  <span>CREDIT LIMIT USAGE</span>
-                  <span>{{ card.usage }}%</span>
-                </div>
-                <div class="limit-track">
-                  <div class="limit-bar" [style.width.%]="card.usage" [style.background]="card.barColor"></div>
+                <div class="card-number mono">{{ getDisplayNumber(card) }}</div>
+                <div class="card-details-row">
+                  <div class="card-detail">
+                    <span class="card-detail-label">VALID THRU</span>
+                    <span class="card-detail-value">{{ formatExpiry(card) }}</span>
+                  </div>
+                  <div class="card-detail">
+                    <span class="card-detail-label">CARD HOLDER</span>
+                    <span class="card-detail-value">{{ card.cardholderName }}</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <!-- Brand Logo -->
+            <div class="card-brand-logo">
+              @if (card.network === 'visa') {
+                <span class="visa-logo">VISA</span>
+              }
+              @if (card.network === 'mastercard') {
+                <div class="mastercard-logo">
+                  <div class="mc-circle mc-red"></div>
+                  <div class="mc-circle mc-orange"></div>
+                </div>
+              }
+              @if (card.network === 'rupay') {
+                <span class="rupay-logo">RuPay</span>
+              }
+              @if (card.network === 'amex') {
+                <span class="amex-logo">AMEX</span>
+              }
+            </div>
+
+            <!-- Credit limit bar at bottom -->
+            <div class="card-bottom-bar">
+              <div class="limit-header">
+                <span>CREDIT LIMIT USAGE</span>
+                <span>{{ card.usagePercent }}%</span>
+              </div>
+              <div class="limit-track">
+                <div class="limit-bar" [style.width.%]="card.usagePercent" [style.background]="getBarColor(card)"></div>
+              </div>
+            </div>
           </div>
+        </div>
+        } @empty {
+        <div class="card-3d-wrapper" style="grid-column: 1 / -1;">
+          <div class="new-card-placeholder" routerLink="/cards">
+            <div class="add-circle">
+              <span class="material-symbols-outlined">add</span>
+            </div>
+            <span class="new-card-title">Link Your First Card</span>
+            <span class="new-card-sub">Start managing your credit portfolio now</span>
+          </div>
+        </div>
         }
       </div>
     </section>
 
-    <!-- QUICK ACTIONS & ANALYTICS -->
-    <section class="bottom-row">
-      <!-- Quick Actions -->
-      <div class="quick-actions glass-card">
-        <div class="action-btn">
-          <div class="action-circle bg-primary-light hover-primary">
-            <span class="material-symbols-outlined text-primary">send</span>
-          </div>
-          <span class="action-label">QUICK PAY</span>
+    <!-- BOTTOM CONTENT -->
+    <section class="bottom-section" style="grid-template-columns: 1fr;">
+      <!-- Activity Feed -->
+      <div class="activity-panel glass-card">
+        <div class="section-header">
+          <h2 class="section-title">Global Activity</h2>
+          <span class="material-symbols-outlined text-muted">more_horiz</span>
         </div>
-        <div class="action-btn">
-          <div class="action-circle bg-secondary-light hover-secondary">
-            <span class="material-symbols-outlined text-secondary">add_card</span>
-          </div>
-          <span class="action-label">ADD CARD</span>
-        </div>
-        <div class="action-btn">
-          <div class="action-circle bg-tertiary-light hover-tertiary">
-            <span class="material-symbols-outlined text-tertiary">bar_chart</span>
-          </div>
-          <span class="action-label">ANALYTICS</span>
-        </div>
-        <div class="action-btn">
-          <div class="action-circle bg-muted-light hover-muted">
-            <span class="material-symbols-outlined text-muted">history</span>
-          </div>
-          <span class="action-label">HISTORY</span>
-        </div>
-      </div>
-
-      <!-- Analytics -->
-      <div class="insights-panel glass-card">
-        <div class="insights-header">
-          <span class="insights-title">Monthly Insights</span>
-          <span class="material-symbols-outlined text-muted">info</span>
-        </div>
-        <div class="bar-chart">
-          @for (height of barHeights; track $index) {
-            <div class="bar-wrapper">
-              <div class="chart-bar" 
-                   [style.height]="height" 
-                   [class.bar-primary]="$index % 2 === 0"
-                   [class.bar-secondary]="$index % 2 !== 0">
+        <div class="activity-list">
+          @if (transactions.length > 0) {
+            @for (txn of transactions; track $index) {
+            <div class="activity-item">
+              <div class="icon-box" [ngClass]="txn.bgClass || 'bg-indigo'">
+                <span class="material-symbols-outlined">{{ txn.icon || 'receipt_long' }}</span>
               </div>
+              <div class="activity-details">
+                <span class="item-title">{{ txn.title }}</span>
+                <span class="item-sub">{{ txn.subtitle }}</span>
+              </div>
+              <div class="item-amount" [class.text-error]="txn.isNegative">{{ txn.amount }}</div>
+            </div>
+            }
+          } @else {
+            <div class="empty-state">
+              <span class="material-symbols-outlined text-muted">history</span>
+              <p>No recent activity</p>
             </div>
           }
-        </div>
-        <div class="insights-footer">
-          SPENDING IS <span class="text-primary-bold">DOWN 8%</span> SINCE TUESDAY
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FLOATING ACTION BUTTON -->
-  <button class="fab-btn">
-    <span class="material-symbols-outlined">bolt</span>
-  </button>
 </div>
+
+<app-coming-soon />
+

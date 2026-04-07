@@ -1,0 +1,180 @@
+Select a definition
+
+Notification Service v1
+FinVault — Notification Service
+ v1 
+OAS 3.0
+/swagger/v1/swagger.json
+Notification Management & Event Consumer API
+
+
+Authorize
+Notifications
+
+
+GET
+/api/notifications/user/{userId}
+
+
+Parameters
+Try it out
+Name	Description
+userId *
+string($uuid)
+(path)
+userId
+isRead
+boolean
+(query)
+
+--
+page
+integer($int32)
+(query)
+Default value : 1
+
+1
+pageSize
+integer($int32)
+(query)
+Default value : 20
+
+20
+Responses
+Code	Description	Links
+200	
+OK
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "string",
+  "data": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "type": "string",
+      "title": "string",
+      "message": "string",
+      "channel": "string",
+      "priority": "string",
+      "isRead": true,
+      "readAt": "2026-03-31T16:34:28.950Z",
+      "referenceId": "string",
+      "createdAt": "2026-03-31T16:34:28.950Z"
+    }
+  ],
+  "errors": [
+    "string"
+  ]
+}
+No links
+
+GET
+/api/notifications/user/{userId}/unread-count
+
+
+Parameters
+Try it out
+Name	Description
+userId *
+string($uuid)
+(path)
+userId
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+PUT
+/api/notifications/{notificationId}/read
+
+
+Parameters
+Try it out
+Name	Description
+notificationId *
+string($uuid)
+(path)
+notificationId
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+PUT
+/api/notifications/user/{userId}/read-all
+
+
+Parameters
+Try it out
+Name	Description
+userId *
+string($uuid)
+(path)
+userId
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+NotificationService.API
+
+
+GET
+/health
+
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+Schemas
+NotificationResponse{
+id	string($uuid)
+userId	string($uuid)
+type	string
+nullable: true
+title	string
+nullable: true
+message	string
+nullable: true
+channel	string
+nullable: true
+priority	string
+nullable: true
+isRead	boolean
+readAt	string($date-time)
+nullable: true
+referenceId	string
+nullable: true
+createdAt	string($date-time)
+}
+NotificationResponseListApiResponse{
+success	boolean
+message	string
+nullable: true
+data	[
+nullable: true
+NotificationResponse{...}]
+errors	[
+nullable: true
+[...]]
+}

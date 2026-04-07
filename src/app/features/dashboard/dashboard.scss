@@ -7,7 +7,7 @@ $sidebar-width: 300px;
   z-index: 10;
 }
 
-// ─── SIDEBAR ──────────────────────────────────────────────────────────
+// --- SIDEBAR ----------------------------------------------------------
 .sidebar {
   position: fixed;
   top: 0;
@@ -127,7 +127,7 @@ $sidebar-width: 300px;
   }
 }
 
-// ─── MAIN CONTENT ─────────────────────────────────────────────────────
+// --- MAIN CONTENT -----------------------------------------------------
 .main-content {
   margin-left: $sidebar-width;
   padding: 40px 60px;
@@ -243,7 +243,7 @@ $sidebar-width: 300px;
   }
 }
 
-// ─── STATS ROW ────────────────────────────────────────────────────────
+// --- STATS ROW --------------------------------------------------------
 .stats-row {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
@@ -273,7 +273,7 @@ $sidebar-width: 300px;
 
 .stat-label {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.7rem;
+  font-size: 1.1rem;
   letter-spacing: 0.08em;
   color: var(--text-muted);
   margin-bottom: 12px;
@@ -282,7 +282,7 @@ $sidebar-width: 300px;
 
 .stat-value {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 3.5rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.03em;
@@ -453,7 +453,7 @@ $sidebar-width: 300px;
   }
 }
 
-// ─── CARDS SECTION ────────────────────────────────────────────────────
+// --- CARDS SECTION ----------------------------------------------------
 .cards-section {
   margin-bottom: 40px;
 }
@@ -495,93 +495,296 @@ $sidebar-width: 300px;
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  perspective: 1200px;
+  gap: 28px;
 }
 
 .card-3d-wrapper {
-  perspective: 1000px;
   cursor: pointer;
+  will-change: transform;
+  isolation: isolate;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.06);
+    z-index: 2;
+
+    .digital-card {
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-eye-btn {
+      opacity: 1;
+    }
+  }
 }
 
 .digital-card {
-  height: 200px;
-  border-radius: 24px;
-  padding: 24px;
+  position: relative;
+  height: 230px;
+  border-radius: 20px;
+  padding: 24px 24px 16px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   color: white;
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
-  transform: rotateY(-10deg) rotateX(5deg);
-  transform-style: preserve-3d;
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+
+  // Subtle card sheen
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.04) 100%);
+    pointer-events: none;
+    border-radius: 20px;
+  }
+}
+
+// --- ADD NEW CARD PLACEHOLDER -----------------------------------------
+.new-card-placeholder {
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  border-radius: 20px;
+  border: 2px dashed rgba(107, 110, 249, 0.3);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: rotateY(0deg) rotateX(0deg);
+    border-color: var(--primary);
+    transform: scale(1.03);
+    background: rgba(255, 255, 255, 0.7);
   }
 
-  .card-top {
+  .add-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
 
-    .card-name {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-
-    .contact-icon {
-      font-size: 24px;
-      opacity: 0.8;
+    .material-symbols-outlined {
+      font-size: 28px;
     }
   }
 
-  .card-middle {
-    margin-top: 20px;
-
-    .card-number {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 1.2rem;
-      letter-spacing: 0.15em;
-      opacity: 0.9;
-      margin-bottom: 8px;
-    }
-
-    .card-expiry {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 0.85rem;
-      opacity: 0.7;
-    }
+  .new-card-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
   }
+
+  .new-card-sub {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+}
+
+// EMV Chip
+.emv-chip {
+  width: 42px;
+  height: 32px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Eye toggle button
+.card-eye-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 0.5;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    opacity: 1;
+  }
+}
+
+// Card body
+.card-body-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1;
+}
+
+.card-name-row {
+  margin-bottom: 12px;
+
+  .card-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+}
+
+.card-middle {
+  .card-number {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 1.25rem;
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  }
+
+  .card-details-row {
+    display: flex;
+    gap: 24px;
+  }
+
+  .card-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .card-detail-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+  }
+
+  .card-detail-value {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.78rem;
+    opacity: 0.9;
+    letter-spacing: 0.04em;
+  }
+}
+
+// Brand logos
+.card-brand-logo {
+  position: absolute;
+  bottom: 46px;
+  right: 24px;
+  z-index: 2;
+}
+
+.visa-logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-style: italic;
+  color: white;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.mastercard-logo {
+  display: flex;
+  position: relative;
+  width: 52px;
+  height: 32px;
+
+  .mc-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+  }
+
+  .mc-red {
+    left: 0;
+    background: #EB001B;
+  }
+
+  .mc-orange {
+    left: 20px;
+    background: #F79E1B;
+    mix-blend-mode: hard-light;
+  }
+}
+
+.rupay-logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+// Card bottom bar
+.card-bottom-bar {
+  margin-top: auto;
+  z-index: 1;
 
   .limit-header {
     display: flex;
     justify-content: space-between;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 600;
     letter-spacing: 0.1em;
-    opacity: 0.8;
-    margin-bottom: 8px;
+    opacity: 0.7;
+    margin-bottom: 6px;
   }
 
   .limit-track {
-    height: 4px;
-    background: rgba(255, 255, 255, 0.2);
+    height: 3px;
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 2px;
     overflow: hidden;
 
     .limit-bar {
       height: 100%;
       border-radius: 2px;
+      transition: width 0.6s ease;
     }
   }
 }
 
-// ─── QUICK ACTIONS & ANALYTICS ────────────────────────────────────────
+// --- QUICK ACTIONS & ANALYTICS ----------------------------------------
 .bottom-row {
   display: flex;
   gap: 24px;
@@ -761,7 +964,7 @@ $sidebar-width: 300px;
   }
 }
 
-// ─── FLOATING ACTION BUTTON ───────────────────────────────────────────
+// --- FLOATING ACTION BUTTON -------------------------------------------
 .fab-btn {
   position: fixed;
   bottom: 40px;

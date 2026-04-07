@@ -1,0 +1,12 @@
+﻿@if (globalUiService.comingSoonVisible()) {
+<div class="coming-soon-toast glass-card" (click)="globalUiService.hideComingSoon()">
+  <div class="toast-icon">
+    <span class="material-symbols-outlined">rocket_launch</span>
+  </div>
+  <div class="toast-content">
+    <span class="toast-title">Coming Soon</span>
+    <p class="toast-desc">Wallet features are currently under development.</p>
+  </div>
+</div>
+}
+

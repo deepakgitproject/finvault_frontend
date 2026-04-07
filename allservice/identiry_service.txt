@@ -1,0 +1,367 @@
+Select a definition
+
+Identity Service v1
+FinVault — Identity Service
+ v1 
+OAS 3.0
+/swagger/v1/swagger.json
+Authentication & User Management API
+
+
+Authorize
+Auth
+
+
+POST
+/api/identity/auth/register
+
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "email": "string",
+  "password": "string",
+  "firstName": "string",
+  "lastName": "string"
+}
+Responses
+Code	Description	Links
+200	
+OK
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "success": true,
+  "message": "string",
+  "data": {
+    "accessToken": "string",
+    "refreshToken": "string",
+    "expiresIn": 0,
+    "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "email": "string",
+    "firstName": "string",
+    "role": "string",
+    "isEmailVerified": true
+  },
+  "errors": [
+    "string"
+  ]
+}
+No links
+400	
+Bad Request
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "type": "string",
+  "title": "string",
+  "status": 0,
+  "detail": "string",
+  "instance": "string",
+  "additionalProp1": "string",
+  "additionalProp2": "string",
+  "additionalProp3": "string"
+}
+No links
+
+POST
+/api/identity/auth/login
+
+
+Parameters
+Cancel
+Reset
+No parameters
+
+Request body
+
+application/json
+{
+  "email": "drago3917+test13@gmail.com",
+  "password": "Drago@3366"
+}
+Execute
+Clear
+Responses
+Curl
+
+curl -X 'POST' \
+  'http://localhost:5001/api/identity/auth/login' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "drago3917+test13@gmail.com",
+  "password": "Drago@3366"
+}'
+Request URL
+http://localhost:5001/api/identity/auth/login
+Server response
+Code	Details
+200	
+Response body
+Download
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhYTY5MTlhNC1iMDIxLTQyYTktOTg1NC02NTRlZmRlOTc0ZWUiLCJlbWFpbCI6ImRyYWdvMzkxNyt0ZXN0MTNAZ21haWwuY29tIiwianRpIjoiYjc5MjlhODMtNmYwNC00ZmM2LTg3NTMtMGVjYzg1MjVkMDY5IiwiZmlyc3ROYW1lIjoiRGVlcGFrIiwiaXNFbWFpbFZlcmlmaWVkIjoiVHJ1ZSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3NzQ5NjAxNzAsImlzcyI6ImZpbnZhdWx0LWlkZW50aXR5IiwiYXVkIjoiZmludmF1bHQtY2xpZW50cyJ9.Rqg_zaTWxGdVP8A87whwturpEqdqVucg8JefzJM0cpk",
+    "refreshToken": "PY+qPQ30FHMvp5RvqlCeIXrwrOxk4T7ysUoJYWXHQmcRljktWXrnyn9je6NK8HhsTtMwWlby94IvHlw0t2VjIg==",
+    "expiresIn": 900,
+    "userId": "aa6919a4-b021-42a9-9854-654efde974ee",
+    "email": "drago3917+test13@gmail.com",
+    "firstName": "Deepak",
+    "role": "User",
+    "isEmailVerified": true
+  },
+  "errors": []
+}
+Response headers
+ content-type: application/json; charset=utf-8 
+ date: Tue,31 Mar 2026 12:14:30 GMT 
+ server: Kestrel 
+ transfer-encoding: chunked 
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+POST
+/api/identity/auth/verify-email
+
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "otpCode": "string"
+}
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+POST
+/api/identity/auth/refresh
+
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "refreshToken": "string"
+}
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+POST
+/api/identity/auth/forgot-password
+
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "email": "string",
+  "purpose": "string"
+}
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+POST
+/api/identity/auth/reset-password
+
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "email": "string",
+  "otpCode": "string",
+  "newPassword": "string"
+}
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+IdentityService.API
+
+
+GET
+/health
+
+
+Parameters
+Cancel
+No parameters
+
+Execute
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+Users
+
+
+GET
+/api/identity/users/me
+
+
+Parameters
+Cancel
+No parameters
+
+Execute
+Responses
+Code	Description	Links
+200	
+OK
+
+No links
+
+Schemas
+AuthResponse{
+accessToken	string
+nullable: true
+refreshToken	string
+nullable: true
+expiresIn	integer($int32)
+userId	string($uuid)
+email	string
+nullable: true
+firstName	string
+nullable: true
+role	string
+nullable: true
+isEmailVerified	boolean
+}
+AuthResponseApiResponse{
+success	boolean
+message	string
+nullable: true
+data	AuthResponse{
+accessToken	string
+nullable: true
+refreshToken	string
+nullable: true
+expiresIn	integer($int32)
+userId	string($uuid)
+email	string
+nullable: true
+firstName	string
+nullable: true
+role	string
+nullable: true
+isEmailVerified	boolean
+}
+errors	[
+nullable: true
+[...]]
+}
+LoginUserCommand{
+email	string
+nullable: true
+password	string
+nullable: true
+}
+ProblemDetails{
+type	string
+nullable: true
+title	string
+nullable: true
+status	integer($int32)
+nullable: true
+detail	string
+nullable: true
+instance	string
+nullable: true
+}
+RefreshTokenCommand{
+refreshToken	string
+nullable: true
+}
+RegisterUserCommand{
+email	string
+nullable: true
+password	string
+nullable: true
+firstName	string
+nullable: true
+lastName	string
+nullable: true
+}
+ResetPasswordCommand{
+email	string
+nullable: true
+otpCode	string
+nullable: true
+newPassword	string
+nullable: true
+}
+SendOTPCommand{
+email	string
+nullable: true
+purpose	string
+nullable: true
+}
+VerifyEmailCommand{
+userId	string($uuid)
+otpCode	string
+nullable: true
+}

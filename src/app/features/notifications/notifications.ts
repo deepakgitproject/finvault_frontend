@@ -1,4 +1,4 @@
-import {
+﻿import {
     Component,
     OnInit,
     signal,
@@ -8,11 +8,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { NotificationService } from '../../core/services/notification.service';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
 
-// ─── Interfaces ────────────────────────────────────────────────────────────────
+
+// --- Interfaces ----------------------------------------------------------------
 
 export interface NotificationResponse {
     id: string;
@@ -49,22 +53,23 @@ export interface MarkReadApiResponse {
     errors: string[];
 }
 
-// ─── Component ─────────────────────────────────────────────────────────────────
+// --- Component -----------------------------------------------------------------
 
 @Component({
     selector: 'app-notifications',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, SidebarComponent, ThemeToggleComponent],
     templateUrl: './notifications.html',
     styleUrls: ['./notifications.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsComponent implements OnInit {
     private readonly http = inject(HttpClient);
+    private readonly router = inject(Router);
     private readonly BASE_URL = '/api/notifications';
-    readonly userId = '3fa85f64-5717-4562-b3fc-2c963f66afa6';
+    public readonly notificationService = inject(NotificationService);
 
-    // ── Signals ──────────────────────────────────────────────────────────────────
+    // -- Signals ------------------------------------------------------------------
     notifications = signal<NotificationResponse[]>([]);
     unreadCount = signal<number>(0);
     isLoading = signal<boolean>(false);
@@ -73,7 +78,7 @@ export class NotificationsComponent implements OnInit {
     errorMessage = signal<string | null>(null);
     filterUnread = signal<boolean>(false);
 
-    // ── Computed ─────────────────────────────────────────────────────────────────
+    // -- Computed -----------------------------------------------------------------
     displayedNotifications = computed(() => {
         const all = this.notifications();
         return this.filterUnread() ? all.filter(n => !n.isRead) : all;
@@ -81,28 +86,46 @@ export class NotificationsComponent implements OnInit {
 
     hasUnread = computed(() => this.unreadCount() > 0);
 
-    // ─── Lifecycle ────────────────────────────────────────────────────────────────
+    // --- Lifecycle ----------------------------------------------------------------
     ngOnInit(): void {
         this.fetchNotifications();
         this.fetchUnreadCount();
     }
 
-    // ─── API Calls ────────────────────────────────────────────────────────────────
+    // --- JWT userId helper --------------------------------------------------------
+    private getUserId(): string {
+        const token = localStorage.getItem('fv_access_token');
+        if (!token) return '';
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.sub || '';
+        } catch {
+            return '';
+        }
+    }
+
+    // --- API Calls ----------------------------------------------------------------
 
     fetchNotifications(): void {
+        const userId = this.getUserId();
         this.isLoading.set(true);
         this.errorMessage.set(null);
 
         const params = new HttpParams()
             .set('page', '1')
-            .set('pageSize', '20')
-            .set('isRead', 'false');
+            .set('pageSize', '20');
+
+        const url = userId
+            ? `${this.BASE_URL}/user/${userId}`
+            : null;
+
+        if (!url) {
+            this.isLoading.set(false);
+            return;
+        }
 
         this.http
-            .get<NotificationResponseListApiResponse>(
-                `${this.BASE_URL}/user/${this.userId}`,
-                { params }
-            )
+            .get<NotificationResponseListApiResponse>(url, { params })
             .pipe(
                 tap(res => {
                     if (res.success) {
@@ -122,14 +145,18 @@ export class NotificationsComponent implements OnInit {
     }
 
     fetchUnreadCount(): void {
+        const userId = this.getUserId();
+        if (!userId) return;
+
         this.http
             .get<UnreadCountApiResponse>(
-                `${this.BASE_URL}/user/${this.userId}/unread-count`
+                `${this.BASE_URL}/user/${userId}/unread-count`
             )
             .pipe(
                 tap(res => {
                     if (res.success) {
                         this.unreadCount.set(res.data ?? 0);
+                        this.notificationService.setUnreadCount(res.data ?? 0);
                     }
                 }),
                 catchError(err => {
@@ -153,7 +180,6 @@ export class NotificationsComponent implements OnInit {
             .pipe(
                 tap(res => {
                     if (res.success) {
-                        // Optimistic update: flip isRead on the signal array
                         this.notifications.update(list =>
                             list.map(n =>
                                 n.id === notificationId
@@ -162,6 +188,7 @@ export class NotificationsComponent implements OnInit {
                             )
                         );
                         this.unreadCount.update(c => Math.max(0, c - 1));
+                        this.notificationService.decrementUnreadCount();
                     }
                 }),
                 catchError(err => {
@@ -178,11 +205,14 @@ export class NotificationsComponent implements OnInit {
     }
 
     markAllAsRead(): void {
+        const userId = this.getUserId();
+        if (!userId) return;
+
         this.isMarkingAll.set(true);
 
         this.http
             .put<MarkReadApiResponse>(
-                `${this.BASE_URL}/user/${this.userId}/read-all`,
+                `${this.BASE_URL}/user/${userId}/read-all`,
                 {}
             )
             .pipe(
@@ -196,6 +226,7 @@ export class NotificationsComponent implements OnInit {
                             }))
                         );
                         this.unreadCount.set(0);
+                        this.notificationService.setUnreadCount(0);
                     }
                 }),
                 catchError(err => {
@@ -207,7 +238,27 @@ export class NotificationsComponent implements OnInit {
             .subscribe();
     }
 
-    // ─── UI Helpers ───────────────────────────────────────────────────────────────
+    // --- Notification click -> navigate by type ------------------------------------
+    onNotificationClick(notif: NotificationResponse): void {
+        // Mark as read if unread
+        if (!notif.isRead) {
+            this.markAsRead(notif.id);
+        }
+        // Route based on notification type
+        switch (notif.type?.toUpperCase()) {
+            case 'PAYMENT':
+                this.router.navigate(['/payments']);
+                break;
+            case 'SECURITY':
+                this.router.navigate(['/profile']);
+                break;
+            default:
+                // No navigation for SYSTEM or unknown types
+                break;
+        }
+    }
+
+    // --- UI Helpers ---------------------------------------------------------------
 
     toggleFilter(): void {
         this.filterUnread.update(v => !v);
@@ -219,29 +270,34 @@ export class NotificationsComponent implements OnInit {
 
     getTypeIcon(type: string): string {
         switch (type?.toUpperCase()) {
-            case 'PAYMENT': return 'payments';
+            case 'PAYMENT':  return 'payments';
             case 'SECURITY': return 'shield';
-            case 'SYSTEM': return 'settings';
-            default: return 'notifications';
+            case 'SYSTEM':   return 'settings';
+            default:         return 'notifications';
         }
     }
 
     getTypeIconClass(type: string): string {
         switch (type?.toUpperCase()) {
-            case 'PAYMENT': return 'icon--payment';
-            case 'SECURITY': return 'icon--security';
-            case 'SYSTEM': return 'icon--system';
-            default: return 'icon--default';
+            case 'PAYMENT':  return 'notif-icon-wrap icon--payment';
+            case 'SECURITY': return 'notif-icon-wrap icon--security';
+            case 'SYSTEM':   return 'notif-icon-wrap icon--system';
+            default:         return 'notif-icon-wrap icon--default';
         }
     }
 
     getPriorityClass(priority: string): string {
         switch (priority?.toUpperCase()) {
-            case 'HIGH': return 'priority--high';
-            case 'MEDIUM': return 'priority--medium';
-            case 'LOW': return 'priority--low';
-            default: return '';
+            case 'HIGH':   return 'tag priority--high';
+            case 'MEDIUM': return 'tag priority--medium';
+            case 'LOW':    return 'tag priority--low';
+            default:       return 'tag';
         }
+    }
+
+    isActionable(type: string): boolean {
+        const t = type?.toUpperCase();
+        return t === 'PAYMENT' || t === 'SECURITY';
     }
 
     formatDate(dateString: string): string {
@@ -258,7 +314,7 @@ export class NotificationsComponent implements OnInit {
         if (hours < 24) return `${hours}h ago`;
         if (days < 7) return `${days}d ago`;
 
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('en-IN', {
             month: 'short',
             day: 'numeric',
             year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
@@ -269,3 +325,4 @@ export class NotificationsComponent implements OnInit {
         return item.id;
     }
 }
+

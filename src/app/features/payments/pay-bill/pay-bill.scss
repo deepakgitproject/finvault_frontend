@@ -1,7 +1,7 @@
-// ═══════════════════════════════════════════════════════════════════
-//  FinVault — Make a Payment
+// -------------------------------------------------------------------
+//  FinVault - Make a Payment
 //  pay-bill.scss
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 
 @mixin glass-strong {
     background: var(--glass-bg-strong);
@@ -19,172 +19,34 @@
     color: var(--text-muted);
 }
 
-// ── Root ──────────────────────────────────────────────────────────────
+// -- Root --------------------------------------------------------------
 .pay-bill-page {
     display: flex;
     min-height: 100vh;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-//  SIDEBAR  (shared pattern)
-// ═══════════════════════════════════════════════════════════════════
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 240px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 28px 16px 24px;
-    @include glass-strong;
-    box-shadow: 4px 0 32px rgba(107, 110, 249, 0.06);
-    z-index: 100;
+// -------------------------------------------------------------------
+//  SIDEBAR (shared with dashboard)
+// -------------------------------------------------------------------
+$sidebar-width: 300px;
+@import '../../../shared/styles/sidebar';
 
-    &__logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 0 8px 28px;
-    }
-
-    &__logo-mark {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-
-        .material-symbols-outlined {
-            color: #fff;
-            font-size: 1.2rem;
-        }
-    }
-
-    &__logo-name {
-        display: block;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: var(--primary);
-        line-height: 1;
-    }
-
-    &__logo-tier {
-        display: block;
-        @include label-tiny;
-        font-size: 0.55rem;
-        margin-top: 3px;
-    }
-
-    &__nav {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    &__nav-link {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 11px 14px;
-        border-radius: 12px;
-        text-decoration: none;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--text-secondary, #4A4A6A);
-        transition: background 0.18s, color 0.18s;
-
-        .material-symbols-outlined {
-            font-size: 1.15rem;
-            flex-shrink: 0;
-        }
-
-        &:hover {
-            background: rgba(107, 110, 249, 0.1);
-            color: var(--primary);
-        }
-
-        &--active {
-            background: var(--primary);
-            color: #fff !important;
-            font-weight: 700;
-            box-shadow: 0 4px 16px rgba(107, 110, 249, 0.35);
-
-            &:hover {
-                background: var(--primary);
-            }
-
-            .material-symbols-outlined {
-                font-variation-settings: 'FILL' 1;
-            }
-        }
-    }
-
-    &__upgrade {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 16px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        cursor: pointer;
-        transition: opacity 0.2s, transform 0.2s;
-
-        &:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-        }
-    }
-
-    &__upgrade-icon {
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 1.2rem;
-    }
-
-    &__upgrade-title {
-        display: block;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #fff;
-    }
-
-    &__upgrade-sub {
-        display: block;
-        font-size: 0.68rem;
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: 1px;
-    }
-
-    &__upgrade-arrow {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 1rem;
-        margin-left: auto;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 //  MAIN CONTENT
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 .main-content {
-    margin-left: 240px;
-    padding: 40px 44px;
+    margin-left: $sidebar-width;
+    padding: 24px 32px;
     flex: 1;
     min-height: 100vh;
 }
 
-// ── Page Header ───────────────────────────────────────────────────────
+// -- Page Header -------------------------------------------------------
 .page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 
     &__user {
         display: flex;
@@ -280,30 +142,30 @@
     }
 }
 
-// ── Title Section ─────────────────────────────────────────────────────
+// -- Title Section -----------------------------------------------------
 .title-section {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 
     &__heading {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 3.5rem;
+        font-size: 2.2rem;
         font-weight: 800;
         color: var(--text-primary);
-        line-height: 1.05;
-        margin: 0 0 8px;
+        line-height: 1.1;
+        margin: 0 0 4px;
         letter-spacing: -0.02em;
     }
 
     &__sub {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: var(--text-muted);
         margin: 0;
-        line-height: 1.55;
+        line-height: 1.4;
     }
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────
+// -- Toast -------------------------------------------------------------
 .toast {
     display: flex;
     align-items: center;
@@ -340,23 +202,49 @@
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// -- Form Row --------------------------------------------------------
+.form-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+
+    .form-group {
+        flex: 1;
+        min-width: 0;
+        margin-bottom: 12px;
+    }
+
+    &--align-end {
+        align-items: flex-end;
+    }
+
+    @media (max-width: 640px) {
+        flex-direction: column;
+        gap: 0;
+        
+        .form-group {
+            width: 100%;
+        }
+    }
+}
+
+// -------------------------------------------------------------------
 //  FORM CARD
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 .form-card {
     @include glass-strong;
-    border-radius: 28px;
-    padding: 40px;
-    box-shadow: 0 12px 40px rgba(120, 130, 210, 0.18);
-    margin-bottom: 40px;
+    border-radius: 20px;
+    padding: 24px 32px;
+    box-shadow: 0 8px 32px rgba(120, 130, 210, 0.12);
+    margin-bottom: 24px;
 
     &__inner {
         display: flex;
-        gap: 48px;
+        gap: 32px;
         align-items: flex-start;
     }
 
-    // ── Left panel ──────────────────────────────────────────────────
+    // -- Left panel --------------------------------------------------
     &__left {
         flex: 0 0 260px;
         display: flex;
@@ -367,17 +255,17 @@
     }
 
     &__icon-ring {
-        width: 64px;
-        height: 64px;
-        border-radius: 20px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
         background: rgba(107, 110, 249, 0.12);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
 
         .material-symbols-outlined {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: var(--primary);
             font-variation-settings: 'FILL' 1;
         }
@@ -393,10 +281,10 @@
 
     &__left-body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.855rem;
+        font-size: 0.8rem;
         color: var(--text-muted);
-        line-height: 1.65;
-        margin: 0 0 28px;
+        line-height: 1.5;
+        margin: 0 0 20px;
     }
 
     &__badge-row {
@@ -424,7 +312,7 @@
         }
     }
 
-    // ── Right: form ─────────────────────────────────────────────────
+    // -- Right: form -------------------------------------------------
     &__right {
         flex: 1;
         min-width: 0;
@@ -434,7 +322,7 @@
     }
 }
 
-// ── Form primitives ───────────────────────────────────────────────────
+// -- Form primitives ---------------------------------------------------
 .form-error {
     display: flex;
     align-items: center;
@@ -456,7 +344,7 @@
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 .form-label {
@@ -555,10 +443,13 @@
 
     &[type='number'] {
         -moz-appearance: textfield;
+        appearance: textfield;
     }
 }
 
 .form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
     appearance: none;
     cursor: pointer;
     padding-right: 40px;
@@ -572,16 +463,16 @@
     pointer-events: none;
 }
 
-// ── Submit button ─────────────────────────────────────────────────────
+// -- Submit button -----------------------------------------------------
 .submit-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     width: 100%;
-    padding: 16px 28px;
-    margin-top: 8px;
-    border-radius: 16px;
+    padding: 13px 24px;
+    margin-top: 0;
+    border-radius: 12px;
     border: none;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     color: #fff;
@@ -625,9 +516,9 @@
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 //  OTP MODAL
-// ═══════════════════════════════════════════════════════════════════
+// -------------------------------------------------------------------
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -811,7 +702,7 @@
     }
 }
 
-// ── OTP inputs ────────────────────────────────────────────────────────
+// -- OTP inputs --------------------------------------------------------
 .otp-row {
     display: flex;
     gap: 12px;
@@ -845,5 +736,250 @@
 
     &--filled {
         background: rgba(107, 110, 249, 0.07);
+    }
+}
+
+// -------------------------------------------------------------------
+//  RECENT TRANSACTIONS SECTION
+// -------------------------------------------------------------------
+.transactions-section {
+    margin-top: 0;
+    margin-bottom: 0;
+    animation: fadeSlideIn 0.4s ease-out;
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 16px;
+
+        &__title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 2px;
+            letter-spacing: -0.01em;
+        }
+
+        &__subtitle {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+    }
+
+    .btn-refresh {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        @include glass-strong;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        transition: all 0.2s;
+
+        &:hover:not(:disabled) {
+            background: rgba(107, 110, 249, 0.1);
+            transform: rotate(180deg);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+    }
+}
+
+.transactions-card {
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.tx-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.tx-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(136, 136, 170, 0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: translateX(8px);
+    }
+
+    &__left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &__icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .material-symbols-outlined {
+            font-size: 1.4rem;
+        }
+
+        &--completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22C55E;
+        }
+
+        &--failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
+
+        &--pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+        }
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__desc {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    &__meta {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    &__right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &__amount-block {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+    }
+
+    &__amount {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    &__status {
+        @include label-tiny;
+        font-size: 0.6rem;
+        padding: 2px 8px;
+        border-radius: 6px;
+
+        &--completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #15803d;
+        }
+
+        &--failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: #b91c1c;
+        }
+
+        &--pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #b45309;
+        }
+    }
+
+    .btn-reverse {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(136, 136, 170, 0.2);
+        background: rgba(255, 255, 255, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border-color: rgba(239, 68, 68, 0.2);
+            transform: rotate(-90deg);
+        }
+
+        .material-symbols-outlined {
+            font-size: 1.1rem;
+        }
+    }
+}
+
+.tx-empty {
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+
+    .material-symbols-outlined {
+        font-size: 3rem;
+        opacity: 0.3;
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 768px) {
+    .transactions-section {
+        .section-header {
+            &__title {
+                font-size: 1.4rem;
+            }
+        }
+    }
+
+    .tx-item {
+        padding: 16px;
+
+        &__amount {
+            font-size: 1rem;
+        }
     }
 }

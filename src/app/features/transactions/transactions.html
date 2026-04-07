@@ -1,0 +1,72 @@
+<div class="page-layout">
+  <app-sidebar />
+  
+  <main class="main-content">
+    <header class="page-header">
+      <div class="header-left">
+        <h1 class="page-heading">Transaction History</h1>
+        <p class="page-desc">Review your recent payments and associated risk scoring.</p>
+      </div>
+      <div class="header-actions">
+        <app-theme-toggle />
+      </div>
+    </header>
+
+    <div class="transactions-container">
+      @if (isLoading()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading transactions...</p>
+        </div>
+      } @else if (transactions().length === 0) {
+        <div class="empty-state glass-card">
+          <span class="material-symbols-outlined empty-icon">history</span>
+          <h2>No Transactions Found</h2>
+          <p>You haven't made any transactions yet.</p>
+        </div>
+      } @else {
+        <div class="table-card glass-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Risk Assessment</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (txn of transactions(); track txn.id) {
+                <tr>
+                  <td class="td-date">{{ txn.createdAt | date:'mediumDate' }}<br><small>{{ txn.createdAt | date:'shortTime' }}</small></td>
+                  <td class="td-desc">{{ txn.description }}</td>
+                  <td class="td-type">
+                    <span class="type-pill" [class.type-reversal]="txn.type === 'Reversal'">
+                      {{ txn.type }}
+                    </span>
+                  </td>
+                  <td class="td-amount mono" [class.text-error]="txn.type !== 'Reversal'">
+                    {{ txn.type === 'Reversal' ? '+' : '-' }}Rs.{{ txn.amount | number:'1.2-2' }}
+                  </td>
+                  <td class="td-risk">
+                    @if (txn.isLoadingRisk) {
+                      <span class="loading-pulse">Analyzing...</span>
+                    } @else if (txn.riskBadge) {
+                      <div class="risk-badge {{ txn.riskBadge.colorClass }}">
+                        <span class="risk-dot"></span>
+                        {{ txn.riskBadge.label }} ({{ txn.riskBadge.score }})
+                      </div>
+                    } @else {
+                      <span class="text-muted">N/A</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </main>
+</div>

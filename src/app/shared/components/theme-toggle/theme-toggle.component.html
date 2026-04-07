@@ -1,0 +1,12 @@
+﻿<button class="theme-toggle" (click)="toggle()" 
+        [attr.aria-label]="'Switch to ' + (themeService.darkMode() ? 'light' : 'dark') + ' mode'"
+        [attr.aria-checked]="themeService.darkMode()"
+        role="switch">
+  <div class="toggle-track">
+    <div class="toggle-thumb" [class.dark]="themeService.darkMode()">
+      <span class="material-symbols-outlined icon moon" *ngIf="!themeService.darkMode()">dark_mode</span>
+      <span class="material-symbols-outlined icon sun" *ngIf="themeService.darkMode()">light_mode</span>
+    </div>
+  </div>
+</button>
+

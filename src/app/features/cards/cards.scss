@@ -1,4 +1,4 @@
-// ─── BACKGROUND AMBIENT ORBS ──────────────────────────────────────────
+// --- BACKGROUND AMBIENT ORBS ------------------------------------------
 .ambient-orb {
   position: fixed;
   border-radius: 50%;
@@ -24,7 +24,7 @@
   filter: blur(150px);
 }
 
-// ─── LAYOUT ───────────────────────────────────────────────────────────
+// --- LAYOUT -----------------------------------------------------------
 .page-layout {
   display: flex;
   min-height: 100vh;
@@ -32,151 +32,13 @@
   z-index: 10;
 }
 
-$sidebar-width: 240px;
+// -----------------------------------------------------------------------------
+// SIDEBAR (shared with dashboard)
+// -----------------------------------------------------------------------------
+$sidebar-width: 300px;
+@import '../../shared/styles/sidebar';
 
-// ─── SIDEBAR ──────────────────────────────────────────────────────────
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: $sidebar-width;
-  height: 100vh;
-  background: var(--glass-bg, rgba(255, 255, 255, 0.55));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-  padding: 32px 20px;
-  z-index: 50;
-
-  .sidebar-header {
-    margin-bottom: 40px;
-    padding-left: 12px;
-  }
-
-  .brand-name {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary);
-    letter-spacing: -0.04em;
-    display: block;
-  }
-
-  .brand-sub {
-    font-family: 'Space Grotesk', monospace;
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--text-secondary);
-    margin-top: -2px;
-  }
-
-  .sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: var(--text-secondary);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 500;
-    font-size: 0.95rem;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-
-    .material-symbols-outlined {
-      font-size: 20px;
-      opacity: 0.8;
-    }
-
-    &:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    &.active {
-      background: var(--primary);
-      color: #fff;
-
-      .material-symbols-outlined {
-        opacity: 1;
-        font-variation-settings: 'FILL' 1;
-      }
-    }
-  }
-
-  .sidebar-profile {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.4);
-
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .avatar-sm {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
-
-      .profile-text {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .profile-name {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-weight: 700;
-        font-size: 0.85rem;
-        color: var(--text-primary);
-      }
-
-      .profile-tier {
-        font-family: 'Space Grotesk', monospace;
-        font-size: 0.65rem;
-        color: var(--text-muted);
-      }
-    }
-
-    .btn-upgrade-sm {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      font-family: 'Space Grotesk', monospace;
-      font-weight: 600;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-
-      &:hover {
-        transform: translateY(-2px);
-      }
-
-      transition: transform 0.2s ease;
-    }
-  }
-}
-
-// ─── MAIN CONTENT ─────────────────────────────────────────────────────
+// --- MAIN CONTENT -----------------------------------------------------
 .main-content {
   margin-left: $sidebar-width;
   padding: 40px 60px;
@@ -184,7 +46,7 @@ $sidebar-width: 240px;
   max-width: 1600px;
 }
 
-// ─── HEADER ───────────────────────────────────────────────────────────
+// --- HEADER -----------------------------------------------------------
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -266,16 +128,15 @@ $sidebar-width: 240px;
   }
 }
 
-// ─── CARDS GRID ───────────────────────────────────────────────────────
+// --- CARDS GRID -------------------------------------------------------
 .cards-grid-section {
   margin-bottom: 56px;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 430px);
-  gap: 40px 48px;
-  perspective: 1200px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 36px;
   justify-content: flex-start;
 }
 
@@ -285,148 +146,353 @@ $sidebar-width: 240px;
   gap: 20px;
 }
 
-// Apply this same hover to dashboard cards
+// --- CARD HOVER (scale, no tilt) --------------------------------------
 .card-3d-wrapper {
-  perspective: 1000px;
   cursor: pointer;
+  will-change: transform;
+  isolation: isolate;
+  border-radius: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-  .credit-card {
-    transition: transform 0.4s ease;
-    transform: rotateY(0deg) rotateX(0deg);
-    transform-style: preserve-3d;
-  }
+  &:hover {
+    transform: scale(1.06);
+    z-index: 2;
 
-  &:hover .credit-card {
-    transform: rotateY(-8deg) rotateX(3deg) scale(1.02);
+    .credit-card {
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-eye-btn {
+      opacity: 1;
+    }
   }
 }
 
+// --- CREDIT CARD ------------------------------------------------------
 .credit-card {
-  width: 430px;
-  height: 230px;
-  border-radius: 24px;
-  padding: 32px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  border-radius: 20px;
+  padding: 28px 28px 18px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
 
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .card-type-label {
-    font-family: 'Space Grotesk', monospace;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-  }
-
-  .card-middle {
-    margin-top: 10px;
-
-    .card-number {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 1.6rem;
-      letter-spacing: 0.15em;
-      color: var(--text-primary);
-    }
-  }
-
-  .card-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-
-    .tiny-label {
-      display: block;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.6rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .card-holder,
-    .card-expiry {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      letter-spacing: 0.05em;
-    }
-
-    .text-right {
-      text-align: right;
-    }
+  // Subtle sheen overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    pointer-events: none;
+    border-radius: 20px;
   }
 }
 
-.card-infinite {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
+.credit-card--preview {
+  width: 380px;
+  max-width: 100%;
 }
 
-.card-elite {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-}
+// --- EMV CHIP ---------------------------------------------------------
+.emv-chip {
+  width: 42px;
+  height: 32px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  z-index: 1;
 
-.card-platinum {
-  background: rgba(230, 245, 230, 0.75);
-  backdrop-filter: blur(20px);
-}
-
-.limit-tracker {
-  padding: 0 16px;
-
-  .limit-labels {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-
-    .limit-label-left {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-    }
-
-    .limit-label-right {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .limit-bar-bg {
+  svg {
     width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 100px;
+    height: 100%;
+  }
+}
+
+// --- EYE TOGGLE -------------------------------------------------------
+.card-eye-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 0.4;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    opacity: 1;
+  }
+}
+
+// --- DELETE BUTTON ----------------------------------------------------
+.card-delete-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px; // Opposite side of eye toggle
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 0; // Show on hover
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+  z-index: 5;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.4);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.8 !important;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &.loading .material-symbols-outlined {
+    animation: rotateBtn 1s linear infinite;
+  }
+}
+
+.card-3d-wrapper:hover .card-delete-btn {
+  opacity: 1;
+}
+
+@keyframes rotateBtn {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// --- CARD BODY --------------------------------------------------------
+.card-body-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1;
+}
+
+.card-name-row {
+  margin-bottom: 10px;
+}
+
+.card-issuer {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.card-number {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 1.35rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 14px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: white;
+
+  &.clickable {
+    cursor: copy;
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+
+.card-details-row {
+  display: flex;
+  gap: 28px;
+}
+
+.card-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-detail-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  opacity: 0.55;
+  color: white;
+}
+
+.card-detail-value {
+  font-family: 'Space Grotesk', monospace;
+  font-size: 0.8rem;
+  opacity: 0.9;
+  letter-spacing: 0.04em;
+  color: white;
+}
+
+// --- BRAND LOGOS ------------------------------------------------------
+.card-brand-logo {
+  position: absolute;
+  bottom: 44px;
+  right: 28px;
+  z-index: 2;
+}
+
+.visa-logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-style: italic;
+  color: white;
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  &--lg {
+    font-size: 2rem;
+  }
+}
+
+.mastercard-logo {
+  display: flex;
+  position: relative;
+  width: 48px;
+  height: 28px;
+
+  .mc-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+  }
+
+  .mc-red {
+    left: 0;
+    background: #EB001B;
+  }
+
+  .mc-orange {
+    left: 18px;
+    background: #F79E1B;
+    mix-blend-mode: hard-light;
+  }
+
+  &--lg {
+    width: 64px;
+    height: 40px;
+
+    .mc-circle {
+      width: 40px;
+      height: 40px;
+    }
+
+    .mc-orange {
+      left: 24px;
+    }
+  }
+}
+
+.rupay-logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  &--lg {
+    font-size: 1.6rem;
+  }
+}
+
+.amex-logo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  &--lg {
+    font-size: 0.9rem;
+  }
+}
+
+// --- CARD LIMIT BAR ---------------------------------------------------
+.card-bottom-bar {
+  margin-top: auto;
+  z-index: 1;
+
+  .limit-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.58rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    opacity: 0.65;
+    margin-bottom: 6px;
+    color: white;
+  }
+
+  .limit-track {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
     overflow: hidden;
-    position: relative;
 
     .limit-bar-fill {
       height: 100%;
-      border-radius: 100px;
-      transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 }
 
-// ─── ADD NEW CARD PLACEHOLDER ─────────────────────────────────────────
+// --- ADD NEW CARD PLACEHOLDER -----------------------------------------
 .new-card-placeholder {
-  width: 430px;
-  height: 230px;
-  border-radius: 24px;
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  border-radius: 20px;
   border: 2px dashed rgba(107, 110, 249, 0.3);
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
@@ -439,7 +505,7 @@ $sidebar-width: 240px;
 
   &:hover {
     border-color: var(--primary);
-    transform: scale(1.02);
+    transform: scale(1.03);
     background: rgba(255, 255, 255, 0.7);
   }
 
@@ -474,7 +540,7 @@ $sidebar-width: 240px;
   }
 }
 
-// ─── RECENT TRANSACTIONS & TIER ───────────────────────────────────────
+// --- RECENT TRANSACTIONS & TIER ---------------------------------------
 .bottom-section {
   .section-title {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -525,17 +591,9 @@ $sidebar-width: 240px;
       justify-content: center;
       color: white;
 
-      &.bg-green {
-        background: #10B981;
-      }
-
-      &.bg-purple {
-        background: #8B5CF6;
-      }
-
-      &.bg-indigo {
-        background: #6366F1;
-      }
+      &.bg-green { background: #10B981; }
+      &.bg-purple { background: #8B5CF6; }
+      &.bg-indigo { background: #6366F1; }
     }
 
     .txn-details {
@@ -591,9 +649,7 @@ $sidebar-width: 240px;
     margin-bottom: 20px;
     color: var(--text-secondary);
 
-    .material-symbols-outlined {
-      font-size: 32px;
-    }
+    .material-symbols-outlined { font-size: 32px; }
   }
 
   .tier-title {
@@ -611,14 +667,8 @@ $sidebar-width: 240px;
     line-height: 1.5;
     margin: 0 0 24px 0;
 
-    strong {
-      color: var(--text-primary);
-    }
-
-    .text-primary-bold {
-      color: var(--primary);
-      font-weight: 700;
-    }
+    strong { color: var(--text-primary); }
+    .text-primary-bold { color: var(--primary); font-weight: 700; }
   }
 
   .tier-link {
@@ -638,4 +688,427 @@ $sidebar-width: 240px;
       color: white;
     }
   }
+}
+
+// -----------------------------------------------------------------------
+// MODAL
+// -----------------------------------------------------------------------
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  background: var(--glass-bg-strong, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(28px);
+  border-radius: 28px;
+  width: 580px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px 0;
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.modal-back-btn,
+.modal-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.12);
+    color: var(--text-primary);
+  }
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+// Step indicator
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px 32px 0;
+}
+
+.step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &--active {
+    background: var(--primary);
+    box-shadow: 0 0 0 3px rgba(107, 110, 249, 0.2);
+  }
+
+  &--done {
+    background: #22C55E;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  }
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  transition: background 0.3s ease;
+
+  &--active {
+    background: var(--primary);
+  }
+}
+
+.modal-body {
+  padding: 24px 32px 32px;
+}
+
+.modal-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0 0 24px 0;
+}
+
+// --- Step 1: Network Grid ---------------------------------------------
+.network-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.network-card {
+  border: none;
+  border-radius: 20px;
+  padding: 32px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    pointer-events: none;
+    border-radius: 20px;
+  }
+
+  &:hover {
+    transform: scale(1.04);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.network-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.network-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+// --- Step 2: Form -----------------------------------------------------
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  &--third {
+    grid-column: span 1;
+    @media (min-width: 580px) {
+      grid-column: span 2; // In a 2-col grid, it stays normal
+    }
+  }
+}
+
+// Adjust grid for 3 items in a row if needed, but the form-grid is 1fr 1fr.
+// Let's redefine form-grid to be 6 columns for more flexibility.
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+}
+
+.form-group {
+  grid-column: span 3; // default half width
+
+  &--full {
+    grid-column: span 6;
+  }
+
+  &--third {
+    grid-column: span 2;
+  }
+}
+
+.form-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+    opacity: 0.6;
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(107, 110, 249, 0.12);
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+
+  &--mono {
+    font-family: 'Space Grotesk', monospace;
+    letter-spacing: 0.15em;
+  }
+
+  &--prefixed {
+    padding-left: 30px;
+  }
+}
+
+.form-select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.form-input-wrap {
+  position: relative;
+
+  .form-prefix {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Space Grotesk', monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+}
+
+.modal-next-btn {
+  width: 100%;
+  margin-top: 24px;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(107, 110, 249, 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .material-symbols-outlined {
+    font-size: 20px;
+  }
+}
+
+// --- Step 3: Review ---------------------------------------------------
+.preview-card-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.review-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.5);
+  margin-bottom: 24px;
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.review-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.review-value {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+
+  &.mono {
+    font-family: 'Space Grotesk', monospace;
+    letter-spacing: 0.1em;
+  }
+}
+
+.modal-submit-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22C55E, #16a34a);
+  color: white;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+}
+
+.btn-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// --- UTILITY ----------------------------------------------------------
+.mono {
+  font-family: 'Space Grotesk', monospace !important;
+}
+
+.text-muted {
+  color: var(--text-muted);
 }

@@ -1,4 +1,4 @@
-// ─── Layout ──────────────────────────────────────────────────
+// --- Layout --------------------------------------------------
 .login-layout {
   position: relative;
   min-height: 100vh;
@@ -6,7 +6,7 @@
   z-index: 1;
 }
 
-// ─── LEFT HERO SIDE ──────────────────────────────────────────
+// --- LEFT HERO SIDE ------------------------------------------
 .hero-side {
   display: flex;
   flex-direction: column;
@@ -102,7 +102,7 @@
   max-width: 380px;
 }
 
-// ─── FLOATING CARDS SCENE ────────────────────────────────────
+// --- FLOATING CARDS SCENE ------------------------------------
 .cards-scene {
   position: absolute;
   left: 70%;
@@ -223,7 +223,7 @@
   font-variation-settings: 'FILL' 1;
 }
 
-// ─── SOCIAL PROOF ────────────────────────────────────────────
+// --- SOCIAL PROOF --------------------------------------------
 .social-proof {
   display: flex;
   align-items: center;
@@ -295,7 +295,7 @@
   }
 }
 
-// ─── RIGHT FORM SIDE ─────────────────────────────────────────
+// --- RIGHT FORM SIDE -----------------------------------------
 .form-side {
   position: fixed;
   right: 0;
@@ -379,6 +379,22 @@
 
   &:hover {
     opacity: 0.75;
+  }
+}
+
+.timer-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(107, 110, 249, 0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(107, 110, 249, 0.2);
+
+  &.expired {
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+    border-color: rgba(255, 77, 77, 0.2);
   }
 }
 

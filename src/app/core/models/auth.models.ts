@@ -1,4 +1,4 @@
-export interface RegisterRequest {
+﻿export interface RegisterRequest {
   firstName: string;
   lastName: string;
   email: string;
@@ -15,21 +15,35 @@ export interface VerifyEmailRequest {
   otpCode: string;
 }
 
-export interface AuthResponse {
-  accessToken: string;
+export interface SendOTPCommand {
+  email: string;
+  purpose: string;
+}
+
+export interface ResetPasswordCommand {
+  email: string;
+  otpCode: string;
+  newPassword: string;
+}
+
+export interface RefreshTokenRequest {
   refreshToken: string;
+}
+
+export interface AuthResponse {
+  accessToken: string | null;
+  refreshToken: string | null;
   expiresIn: number;
-  tokenType?: string;
-  userId?: string;
-  email?: string;
-  firstName?: string;
-  role?: string;
-  isEmailVerified?: boolean;
+  userId: string;
+  email: string | null;
+  firstName: string | null;
+  role: string | null;
+  isEmailVerified: boolean;
 }
 
 export interface ApiResponse<T> {
   success: boolean;
-  message: string;
+  message: string | null;
   data: T | null;
   errors: string[] | null;
 }
@@ -40,3 +54,4 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
 }
+

@@ -41,6 +41,25 @@
   --card-frost: rgba(219, 224, 255, 0.65);
 }
 
+// ─── Dark Theme ──────────────────────────────────────────────
+[data-theme="dark"] {
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a35;
+  --glass-bg: rgba(30, 30, 60, 0.55);
+  --glass-bg-strong: rgba(30, 30, 60, 0.75);
+  --glass-border: rgba(60, 60, 100, 0.4);
+  --glass-border-soft: rgba(60, 60, 100, 0.25);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+  --text-primary: #E8E8F0;
+  --text-secondary: #A0A0C0;
+  --text-muted: #6B6B8D;
+  --primary-light: rgba(107, 110, 249, 0.2);
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(to left, #1a1a35 0%, #12122a 50%, #0f0f23 100%);
+}
+
 // Reset
 *,
 *::before,

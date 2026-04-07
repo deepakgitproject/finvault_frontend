@@ -1,62 +1,12 @@
-<div class="finvault-shell">
+﻿<div class="finvault-shell">
 
-    <!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
-    <aside class="sidebar">
-        <div class="sidebar__brand">
-            <div class="sidebar__brand-logo">
-                <span class="material-symbols-outlined">account_balance_wallet</span>
-            </div>
-            <span class="sidebar__brand-name">FinVault</span>
-        </div>
-        <nav class="sidebar__nav">
-            <a class="sidebar__nav-link" routerLink="/dashboard">
-                <span class="material-symbols-outlined sidebar__nav-icon">grid_view</span>
-                <span class="sidebar__nav-label">Dashboard</span>
-            </a>
-            <a class="sidebar__nav-link" routerLink="/cards">
-                <span class="material-symbols-outlined sidebar__nav-icon">credit_card</span>
-                <span class="sidebar__nav-label">Cards</span>
-            </a>
-            <a class="sidebar__nav-link" routerLink="/bills">
-                <span class="material-symbols-outlined sidebar__nav-icon">receipt_long</span>
-                <span class="sidebar__nav-label">Bills</span>
-            </a>
-            <a class="sidebar__nav-link" routerLink="/payments">
-                <span class="material-symbols-outlined sidebar__nav-icon">payments</span>
-                <span class="sidebar__nav-label">Payments</span>
-            </a>
-            <a class="sidebar__nav-link" routerLink="/scheduled">
-                <span class="material-symbols-outlined sidebar__nav-icon">schedule</span>
-                <span class="sidebar__nav-label">Scheduled</span>
-            </a>
-            <a class="sidebar__nav-link sidebar__nav-link--active" routerLink="/notifications">
-                <span class="material-symbols-outlined sidebar__nav-icon">notifications</span>
-                <span class="sidebar__nav-label">Notifications</span>
-                @if (hasUnread()) {
-                <span class="sidebar__badge">{{ unreadCount() }}</span>
-                }
-            </a>
-            <a class="sidebar__nav-link" routerLink="/profile">
-                <span class="material-symbols-outlined sidebar__nav-icon">manage_accounts</span>
-                <span class="sidebar__nav-label">Profile</span>
-            </a>
-        </nav>
+    <!-- SIDEBAR -->
+    <app-sidebar />
 
-        <div class="sidebar__footer">
-            <div class="sidebar__avatar">
-                <span class="material-symbols-outlined">person</span>
-            </div>
-            <div class="sidebar__user-info">
-                <span class="sidebar__user-name">Alex Morgan</span>
-                <span class="sidebar__user-role">Premium Member</span>
-            </div>
-        </div>
-    </aside>
-
-    <!-- ═══════════════════════════ MAIN CONTENT ═══════════════════════ -->
+    <!-- --------------------------* MAIN CONTENT ----------------------* -->
     <main class="main-content">
 
-        <!-- ── Page Header ─────────────────────────────────────────────── -->
+        <!-- -- Page Header ----------------------------------------------- -->
         <header class="page-header">
             <div class="page-header__text">
                 <h1 class="page-header__title">Notifications</h1>
@@ -66,6 +16,7 @@
             </div>
 
             <div class="page-header__actions">
+                <app-theme-toggle />
                 <!-- Filter toggle -->
                 <button class="btn btn--ghost" [class.btn--ghost-active]="filterUnread()" (click)="toggleFilter()"
                     [disabled]="isLoading()" aria-label="Toggle unread filter">
@@ -79,7 +30,7 @@
                     aria-label="Mark all notifications as read">
                     @if (isMarkingAll()) {
                     <span class="btn__spinner"></span>
-                    Marking…
+                    Marking...
                     } @else {
                     <span class="material-symbols-outlined">done_all</span>
                     Mark All as Read
@@ -88,7 +39,7 @@
             </div>
         </header>
 
-        <!-- ── Stats Strip ──────────────────────────────────────────────── -->
+        <!-- -- Stats Strip ------------------------------------------------ -->
         <div class="stats-strip">
             <div class="stat-pill">
                 <span class="stat-pill__icon material-symbols-outlined">inbox</span>
@@ -107,7 +58,7 @@
             </div>
         </div>
 
-        <!-- ── Error Banner ─────────────────────────────────────────────── -->
+        <!-- -- Error Banner ----------------------------------------------- -->
         @if (errorMessage()) {
         <div class="error-banner" role="alert">
             <span class="material-symbols-outlined error-banner__icon">error_outline</span>
@@ -118,7 +69,7 @@
         </div>
         }
 
-        <!-- ── Loading Skeleton ─────────────────────────────────────────── -->
+        <!-- -- Loading Skeleton ------------------------------------------- -->
         @if (isLoading()) {
         <div class="notification-list" aria-label="Loading notifications" aria-busy="true">
             @for (i of [1,2,3,4,5]; track i) {
@@ -134,7 +85,7 @@
         </div>
         }
 
-        <!-- ── Notification Feed ────────────────────────────────────────── -->
+        <!-- -- Notification Feed ------------------------------------------ -->
         @if (!isLoading()) {
         @if (displayedNotifications().length === 0) {
         <div class="empty-state">
@@ -158,11 +109,16 @@
         } @else {
         <div class="notification-list" role="list">
             @for (notif of displayedNotifications(); track notif.id; let idx = $index) {
-            <article class="notification-card" [class.notification-card--unread]="!notif.isRead"
-                [class.notification-card--marking]="isBeingMarked(notif.id)" role="listitem"
-                [attr.aria-label]="notif.title" [style.animation-delay]="(idx * 0.06) + 's'">
+            <article class="notification-card"
+                [class.notification-card--unread]="!notif.isRead"
+                [class.notification-card--marking]="isBeingMarked(notif.id)"
+                [class.notification-card--actionable]="isActionable(notif.type)"
+                role="listitem"
+                [attr.aria-label]="notif.title"
+                [style.animation-delay]="(idx * 0.06) + 's'"
+                (click)="onNotificationClick(notif)">
                 <!-- Type Icon -->
-                <div class="notif-icon-wrap" [class]="getTypeIconClass(notif.type)">
+                <div [class]="getTypeIconClass(notif.type)">
                     <span class="material-symbols-outlined notif-icon">
                         {{ getTypeIcon(notif.type) }}
                     </span>
@@ -173,11 +129,17 @@
                     <div class="notif-meta">
                         <div class="notif-tags">
                             <span class="tag tag--type">{{ notif.type }}</span>
-                            <span class="tag" [class]="getPriorityClass(notif.priority)">
+                            <span [class]="getPriorityClass(notif.priority)">
                                 {{ notif.priority }}
                             </span>
                             @if (!notif.isRead) {
                             <span class="tag tag--unread">New</span>
+                            }
+                            @if (isActionable(notif.type)) {
+                            <span class="tag tag--action">
+                                <span class="material-symbols-outlined" style="font-size:12px;vertical-align:middle;">arrow_forward</span>
+                                {{ notif.type === 'PAYMENT' ? 'Go to Payments' : 'Go to Profile' }}
+                            </span>
                             }
                         </div>
                         <time class="notif-time" [attr.datetime]="notif.createdAt"
@@ -202,7 +164,7 @@
                 <!-- Actions -->
                 <div class="notif-actions">
                     @if (!notif.isRead) {
-                    <button class="icon-btn icon-btn--read" (click)="markAsRead(notif.id)"
+                    <button class="icon-btn icon-btn--read" (click)="$event.stopPropagation(); markAsRead(notif.id)"
                         [disabled]="isBeingMarked(notif.id)" aria-label="Mark as read" title="Mark as read">
                         @if (isBeingMarked(notif.id)) {
                         <span class="btn__spinner btn__spinner--sm"></span>
@@ -224,3 +186,4 @@
 
     </main>
 </div>
+
