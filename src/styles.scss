@@ -76,17 +76,30 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   zoom: 0.90;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+
 
   //   background: var(--bg-primary);
   body {
-    background: linear-gradient(to left,
-        #b4acf6 0%,
-        #c6bcf5 25%,
-        #d1caf0 45%,
-        #e4dbf8 60%,
-        #ffffff 100%);
+    background: linear-gradient(-45deg, #b4acf6, #c6bcf5, #d1caf0, #ffffff);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     min-height: 100vh;
-    // keep whatever else is already there
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+html {
+  scroll-behavior: smooth;
+}
+
+  body.vanta-active {
+    background: #23153c !important;
   }
 
   color: var(--text-primary);
@@ -234,43 +247,4 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
-}
-
-// ─── Ambient background blobs ────────────────────────────────
-.bg-blobs {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-
-    &.blob-1 {
-      width: 600px;
-      height: 600px;
-      top: -100px;
-      left: -150px;
-      background: var(--bg-blob-1);
-    }
-
-    &.blob-2 {
-      width: 500px;
-      height: 500px;
-      top: 40%;
-      right: -100px;
-      background: var(--bg-blob-2);
-    }
-
-    &.blob-3 {
-      width: 400px;
-      height: 400px;
-      bottom: -80px;
-      left: 35%;
-      background: var(--bg-blob-3);
-    }
-  }
 }

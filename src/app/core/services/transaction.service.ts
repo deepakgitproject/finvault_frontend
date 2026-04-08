@@ -102,11 +102,14 @@ export class TransactionService {
     };
 
     // Map Card Info if available
-    if (txn.cardId) {
-      const tid = txn.cardId.toLowerCase().replace(/-/g, '');
-      const card = this.cardService.cards().find(c => c.id.toLowerCase().replace(/-/g, '') === tid);
+    const rawCardId = txn.cardId || txn.CardId || txn.CardID;
+    if (rawCardId) {
+      const tid = String(rawCardId).toLowerCase().replace(/-/g, '');
+      const card = this.cardService.cards().find(c => 
+        (c.id || '').toLowerCase().replace(/-/g, '') === tid
+      );
       if (card) {
-        enriched.cardDisplay = `${card.issuerName} ...${card.maskedNumber.slice(-4)}`;
+        enriched.cardDisplay = `${card.issuerName} •••• ${card.maskedNumber.slice(-4)}`;
       }
     }
 

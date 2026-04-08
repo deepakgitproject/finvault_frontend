@@ -1,9 +1,5 @@
-﻿<!-- Ambient background -->
-<div class="bg-blobs">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
+<!-- Vanta Background -->
+<div id="vanta-bg"></div>
 
 <!-- --- HEADER --------------------------------------- -->
 <header class="site-header glass-card">
@@ -17,11 +13,11 @@
 
   <!-- Nav links -->
   <nav class="header-nav">
-    <a href="#home" class="nav-link active">Home</a>
-    <a href="#about" class="nav-link">About</a>
-    <a href="#services" class="nav-link">Services</a>
-    <a href="#plans" class="nav-link">Plans</a>
-    <a href="#contact" class="nav-link">Contact</a>
+    <a href="#home" class="nav-link" [class.active]="activeSection() === 'home'">Home</a>
+    <a href="#about" class="nav-link" [class.active]="activeSection() === 'about'">About</a>
+    <a href="#services" class="nav-link" [class.active]="activeSection() === 'services'">Services</a>
+    <a href="#plans" class="nav-link" [class.active]="activeSection() === 'plans'">Plans</a>
+    <a href="#contact" class="nav-link" [class.active]="activeSection() === 'contact'">Contact</a>
   </nav>
 
   <!-- Sign Up -->
@@ -58,10 +54,6 @@
       <button class="btn-primary" routerLink="/auth/register">
         <span class="material-symbols-outlined">rocket_launch</span>
         Get Started
-      </button>
-      <button class="btn-outlined hero-outline-btn">
-        <span class="material-symbols-outlined">play_circle</span>
-        See How it Works
       </button>
     </div>
 
@@ -135,6 +127,118 @@
   </div>
 
 </main>
+
+<!-- --- ABOUT SECTION -------------------------------- -->
+<section class="home-section" id="about">
+  <div class="section-container glass-card fade-up">
+    <div class="section-text-content">
+      <div class="section-badge"><span class="material-symbols-outlined">info</span> About Us</div>
+      <h2 class="section-heading">Redefining Financial Intelligence</h2>
+      <p class="section-desc">
+        FinVault was built on the principle that managing a multitude of credit cards and bills shouldn't require an accounting degree. We consolidate your entire financial footprint into a single, intuitive dashboard. With enterprise-grade security and smart category tracking, you always know exactly where your money goes.
+      </p>
+      <div class="about-features">
+        <div class="a-feat"><span class="material-symbols-outlined success-color">verified_user</span> Bank-level Encryption</div>
+        <div class="a-feat"><span class="material-symbols-outlined success-color">update</span> Real-time Sync</div>
+        <div class="a-feat"><span class="material-symbols-outlined success-color">insights</span> AI-driven Insights</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- --- SERVICES SECTION ----------------------------- -->
+<section class="home-section" id="services">
+  <div class="section-header fade-up">
+    <h2 class="section-heading">Our premium services</h2>
+    <p class="section-desc">Everything you need to orchestrate your wealth.</p>
+  </div>
+  
+  <div class="services-grid">
+    <div class="service-card service-card-main glass-card fade-up delay-1">
+      <div class="service-icon"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+      <h3>Unified Wallets</h3>
+      <p>View all your credit cards and balances from multiple banks unified in one place.</p>
+    </div>
+    
+    <div class="service-card glass-card fade-up delay-2">
+      <div class="service-icon"><span class="material-symbols-outlined">receipt_long</span></div>
+      <h3>Smart Bill Pay</h3>
+      <p>Pay external utilities, broadband, and mobile bills instantly with advanced tracking.</p>
+    </div>
+    
+    <div class="service-card glass-card fade-up delay-3">
+      <div class="service-icon"><span class="material-symbols-outlined">trending_up</span></div>
+      <h3>Risk Assessment</h3>
+      <p>Automatic risk evaluation on transactions ensures you are always shielded from fraud.</p>
+    </div>
+  </div>
+</section>
+
+<!-- --- PLANS SECTION -------------------------------- -->
+<section class="home-section" id="plans">
+  <div class="section-header fade-up">
+    <h2 class="section-heading">Membership Plans</h2>
+    <p class="section-desc">Choose a plan that fits your financial velocity.</p>
+  </div>
+
+  <div class="plans-container">
+    <div class="plan-card glass-card fade-up delay-1">
+      <div class="plan-header">
+        <h3>Essential</h3>
+        <div class="plan-price">Free</div>
+      </div>
+      <ul class="plan-features">
+        <li><span class="material-symbols-outlined">check</span> Up to 2 Credit Cards</li>
+        <li><span class="material-symbols-outlined">check</span> Standard Bill Sync</li>
+        <li><span class="material-symbols-outlined">close</span> Advanced AI Insights</li>
+      </ul>
+      <button class="btn-outlined">Get Started</button>
+    </div>
+
+    <div class="plan-card glass-card-strong featured-plan fade-up delay-2">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-header">
+        <h3>Pro Vault</h3>
+        <div class="plan-price">$9<span class="period">/mo</span></div>
+      </div>
+      <ul class="plan-features">
+        <li><span class="material-symbols-outlined">check</span> Unlimited Credit Cards</li>
+        <li><span class="material-symbols-outlined">check</span> Real-time Bill Sync</li>
+        <li><span class="material-symbols-outlined">check</span> Advanced AI Insights</li>
+        <li><span class="material-symbols-outlined">check</span> Priority Support</li>
+      </ul>
+      <button class="btn-primary">Upgrade to Pro</button>
+    </div>
+  </div>
+</section>
+
+<!-- --- CONTACT SECTION ------------------------------ -->
+<section class="home-section" id="contact">
+  <div class="section-container contact-container glass-card fade-up">
+    <div class="contact-left">
+      <h2 class="section-heading">Get in Touch</h2>
+      <p class="section-desc">Have a question? We're available 24/7 to assist you with any inquiries regarding the FinVault platform.</p>
+      
+      <div class="contact-methods">
+        <div class="c-method">
+          <span class="material-symbols-outlined">mail</span> support@finvault.com
+        </div>
+        <div class="c-method">
+          <span class="material-symbols-outlined">location_on</span> Silicon Valley, CA
+        </div>
+      </div>
+    </div>
+    
+    <div class="contact-right">
+      <form class="contact-form">
+        <input type="text" class="glass-input" placeholder="Your Name">
+        <input type="email" class="glass-input" placeholder="Email Address">
+        <textarea class="glass-input" rows="4" placeholder="How can we help?"></textarea>
+        <button type="button" class="btn-primary" (click)="showComingSoon()">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
 
 
 

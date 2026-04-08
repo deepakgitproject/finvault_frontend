@@ -110,17 +110,42 @@
 
         @if (step() === 'success') {
             <div class="success-screen">
-                <div class="success-circle">
-                    <span class="material-symbols-outlined">check</span>
+                <div class="success-header">
+                    <div class="success-circle">
+                        <span class="material-symbols-outlined">check</span>
+                    </div>
+                    <h2 class="modal__title">Payment Successful!</h2>
+                    <p class="modal__subtitle">Your transaction has been processed securely.</p>
                 </div>
                 
-                <h2 class="modal__title">Payment Successful!</h2>
-                <p class="modal__subtitle">
-                    Rs. {{ amount() }} paid to {{ billerName }}. Your card balance has been updated.
-                </p>
+                <div class="receipt-card">
+                    <div class="receipt-item">
+                        <span class="receipt-label">Amount Paid</span>
+                        <span class="receipt-value highlight">Rs. {{ amount() | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Biller</span>
+                        <span class="receipt-value">{{ billerName }}</span>
+                    </div>
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-item">
+                        <span class="receipt-label">Date & Time</span>
+                        <span class="receipt-value">{{ completionTime() | date:'MMM d, y, h:mm:ss a' }}</span>
+                    </div>
+                    <div class="receipt-item stack">
+                        <span class="receipt-label">Transaction ID</span>
+                        <div class="receipt-id-wrap">
+                            <span class="receipt-value mono">{{ paymentIdDisplay() }}</span>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="modal-footer">
-                    <button class="btn-ghost" (click)="closeSuccess()">Done</button>
+                <div class="modal-footer-actions">
+                    <button class="download-btn" (click)="downloadReceiptPDF()">
+                        <span class="material-symbols-outlined">download</span>
+                        Download Receipt (PDF)
+                    </button>
+                    <button class="btn-ghost-full" (click)="closeSuccess()">Done</button>
                 </div>
             </div>
         }

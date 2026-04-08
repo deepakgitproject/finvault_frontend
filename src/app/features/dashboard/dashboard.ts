@@ -60,7 +60,13 @@ export class DashboardComponent implements OnInit {
   };
 
   transactions: any[] = [];
-
+  
+  // Analytics State
+  weeklyTrend = signal<number[]>([]);
+  maxTrendValue = signal<number>(1);
+  graphPath = computed(() => this.generateSmoothPath(this.weeklyTrend(), 400, 160));
+  analyticsTotal = computed(() => this.weeklyTrend().reduce((a, b) => a + b, 0));
+  
   ngOnInit(): void {
     // Refresh cards (Force true to ensure we bypass cache when explicitly navigating)
     this.cardService.refreshCards(true);
@@ -80,7 +86,7 @@ export class DashboardComponent implements OnInit {
     if (userId) {
       this.loadBillingSummary(userId);
       this.loadUpcomingBills(userId);
-      this.loadTransactions();
+      this.loadAnalytics();
     }
   }
 
@@ -103,31 +109,74 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // --- API: Transactions -------------------------------------------
-  private loadTransactions(): void {
+  // --- API: Analytics ----------------------------------------------
+  private loadAnalytics(): void {
     this.http.get<any>('/api/transactions').subscribe({
       next: (res) => {
         const data = res?.data ?? res;
         if (Array.isArray(data)) {
-          const sorted = data.sort((a, b) => 
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-
-          this.transactions = sorted.slice(0, 5).map(t => {
-            const enriched = this.enrichTransaction(t);
-            return {
-              title: enriched.categoryLabel,
-              subtitle: new Date(t.createdAt).toLocaleDateString(),
-              amount: t.type === 'Reversal' ? `+Rs.${t.amount.toFixed(2)}` : `-Rs.${t.amount.toFixed(2)}`,
-              icon: enriched.categoryIcon,
-              bgClass: enriched.categoryColor,
-              isNegative: t.type !== 'Reversal'
-            };
+          // Process 3 weeks of daily spending
+          const now = new Date();
+          const dailySpend = new Array(21).fill(0);
+          
+          data.forEach(t => {
+            if (t.type === 'Reversal') return; // Don't count reversals as spending
+            const tDate = new Date(t.createdAt);
+            const diffDays = Math.floor((now.getTime() - tDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays >= 0 && diffDays < 21) {
+              dailySpend[20 - diffDays] += t.amount;
+            }
           });
+
+          this.weeklyTrend.set(dailySpend);
+          const maxValue = Math.max(...dailySpend);
+          this.maxTrendValue.set(maxValue > 0 ? maxValue : 1000); // Default to Rs.1000 scale if empty
         }
       },
-      error: () => { this.transactions = []; }
+      error: () => { 
+        this.weeklyTrend.set(new Array(21).fill(0)); 
+      }
     });
+  }
+
+  /**
+   * Generates a "premium" smooth SVG path for the trend data using bezier curves.
+   */
+  private generateSmoothPath(data: number[], width: number, height: number): string {
+    if (!data.length) return '';
+    
+    const max = this.maxTrendValue();
+    const padding = 10;
+    const availableHeight = height - padding * 2;
+    const stepX = width / (data.length - 1);
+
+    const points = data.map((val, i) => ({
+      x: i * stepX,
+      y: height - padding - (val / max) * availableHeight
+    }));
+
+    if (points.length < 2) return '';
+
+    // Drawing the smooth curve
+    let d = `M ${points[0].x} ${points[0].y}`;
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i === 0 ? i : i - 1];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2 === points.length ? i + 1 : i + 2];
+
+      // Catmull-Rom to Bezier conversion
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+      d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+
+    return d;
   }
 
   private enrichTransaction(txn: any): any {

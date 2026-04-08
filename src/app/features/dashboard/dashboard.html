@@ -192,33 +192,51 @@
     </section>
 
     <!-- BOTTOM CONTENT -->
-    <section class="bottom-section" style="grid-template-columns: 1fr;">
-      <!-- Activity Feed -->
-      <div class="activity-panel glass-card">
+    <section class="bottom-section">
+      <!-- Analytics Feed -->
+      <div class="analytics-panel glass-card">
         <div class="section-header">
-          <h2 class="section-title">Global Activity</h2>
-          <span class="material-symbols-outlined text-muted">more_horiz</span>
+          <div>
+            <h2 class="section-title">Spending Analytics</h2>
+            <p class="section-sub">21-Day Trend Analysis (Daily Aggregate)</p>
+          </div>
+          <div class="analytics-stat-pill">
+            <span class="stat-label">TOTAL SPENT</span>
+            <span class="stat-value">Rs.{{ analyticsTotal().toLocaleString('en-US', { minimumFractionDigits: 2 }) }}</span>
+          </div>
         </div>
-        <div class="activity-list">
-          @if (transactions.length > 0) {
-            @for (txn of transactions; track $index) {
-            <div class="activity-item">
-              <div class="icon-box" [ngClass]="txn.bgClass || 'bg-indigo'">
-                <span class="material-symbols-outlined">{{ txn.icon || 'receipt_long' }}</span>
-              </div>
-              <div class="activity-details">
-                <span class="item-title">{{ txn.title }}</span>
-                <span class="item-sub">{{ txn.subtitle }}</span>
-              </div>
-              <div class="item-amount" [class.text-error]="txn.isNegative">{{ txn.amount }}</div>
-            </div>
-            }
-          } @else {
-            <div class="empty-state">
-              <span class="material-symbols-outlined text-muted">history</span>
-              <p>No recent activity</p>
-            </div>
-          }
+
+        <div class="chart-wrapper">
+          <svg viewBox="0 0 400 160" preserveAspectRatio="none" class="trend-chart">
+            <defs>
+              <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.25" />
+                <stop offset="100%" stop-color="var(--primary)" stop-opacity="0" />
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+
+            <!-- Area Fill -->
+            <path [attr.d]="graphPath() + ' V 160 H 0 Z'" fill="url(#areaGradient)" />
+
+            <!-- Smooth Trend Line -->
+            <path [attr.d]="graphPath()" fill="none" class="trend-line" />
+            
+            <!-- Week Markers (Simplified) -->
+            <line x1="0" y1="0" x2="0" y2="160" stroke="rgba(0,0,0,0.03)" stroke-width="1" />
+            <line x1="133" y1="0" x2="133" y2="160" stroke="rgba(0,0,0,0.03)" stroke-width="1" />
+            <line x1="266" y1="0" x2="266" y2="160" stroke="rgba(0,0,0,0.03)" stroke-width="1" />
+          </svg>
+          
+          <div class="chart-timeline">
+            <span>21 DAYS AGO</span>
+            <span>14 DAYS AGO</span>
+            <span>7 DAYS AGO</span>
+            <span>TODAY</span>
+          </div>
         </div>
       </div>
     </section>

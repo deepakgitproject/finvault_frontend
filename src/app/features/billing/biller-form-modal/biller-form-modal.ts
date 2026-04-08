@@ -26,6 +26,10 @@ export class BillerFormModalComponent implements OnInit {
     isLoading = signal(false);
     errorMsg = signal<string | null>(null);
     billId = signal<string | null>(null);
+    
+    // Captured receipt details
+    paymentIdDisplay = signal<string>('');
+    completionTime = signal<string>('');
 
     // Form fields
     selectedCardId = signal<string>('');
@@ -261,12 +265,17 @@ export class BillerFormModalComponent implements OnInit {
         this.errorMsg.set(null);
 
         this.externalBillService.verifyOtp(id, this.otpCode()).subscribe({
-            next: () => {
+            next: (res) => {
                 this.isLoading.set(false);
+                
+                // Capture details from response
+                const result = res?.data || res;
+                this.paymentIdDisplay.set(result.id || id);
+                this.completionTime.set(result.createdAt || new Date().toISOString());
+
                 this.step.set('success');
                 // Delay refresh so backend has time to commit balance update
                 setTimeout(() => this.cardService.refreshCards(true), 1000);
-                // Do NOT emit paymentSuccess here — let success screen render first
             },
             error: (err) => {
                 this.isLoading.set(false);
@@ -278,6 +287,52 @@ export class BillerFormModalComponent implements OnInit {
     /** trackBy for OTP *ngFor — prevents DOM recreation on every signal update */
     trackByOtpIndex(index: number): number {
         return index;
+    }
+
+    async downloadReceiptPDF() {
+        const { jsPDF } = await import('jspdf');
+        const doc = new jsPDF();
+        
+        // Premium PDF Formatting
+        doc.setFillColor(35, 21, 60); // Dark background for header
+        doc.rect(0, 0, 210, 40, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.text('FinVault Payment Receipt', 20, 25);
+        
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        let y = 60;
+        
+        const addField = (label: string, value: string) => {
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${label}:`, 20, y);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${value}`, 80, y);
+            y += 12;
+        };
+        
+        addField('Biller Name', this.billerName);
+        addField('Category', this.billerCategory);
+        addField('Bill/Account #', this.billNumber());
+        addField('Amount Paid', `Rs. ${this.amount()?.toFixed(2)}`);
+        addField('Status', 'COMPLETED');
+        y += 5;
+        addField('Date & Time', new Date(this.completionTime()).toLocaleString());
+        addField('Transaction ID', this.paymentIdDisplay());
+        
+        y += 20;
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, y, 190, y);
+        y += 15;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text('This is a computer-generated receipt and does not require a signature.', 20, y);
+        doc.text('© 2026 FinVault Advanced Banking Solutions.', 20, y + 7);
+
+        doc.save(`FinVault_Receipt_${this.paymentIdDisplay().slice(0, 8)}.pdf`);
     }
 
     closeSuccess() {

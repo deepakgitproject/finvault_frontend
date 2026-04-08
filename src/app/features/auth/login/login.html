@@ -111,7 +111,7 @@
       <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
         <div class="field-group">
-          <label class="field-label label-uppercase">Identity</label>
+          <label class="field-label label-uppercase">Email</label>
           <div class="input-wrapper">
             <span class="material-symbols-outlined input-icon">alternate_email</span>
             <input type="email" class="glass-input" placeholder="your@email.com" formControlName="email" />
@@ -120,8 +120,8 @@
 
         <div class="field-group">
           <div class="field-label-row">
-            <label class="field-label label-uppercase">Secret</label>
-            <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Cipher?</a>
+            <label class="field-label label-uppercase">Password</label>
+            <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password?</a>
           </div>
           <div class="input-wrapper">
             <span class="material-symbols-outlined input-icon">lock</span>
