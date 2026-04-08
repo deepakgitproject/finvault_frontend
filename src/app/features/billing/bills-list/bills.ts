@@ -7,6 +7,7 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
 import { GlobalUiService } from '../../../core/services/global-ui.service';
 import { ComingSoonComponent } from '../../../shared/components/coming-soon/coming-soon.component';
 import { AuthService } from '../../../core/services/auth.service';
+import { BillerFormModalComponent } from '../biller-form-modal/biller-form-modal';
 
 export interface Bill {
     id: number;
@@ -31,10 +32,12 @@ export interface BillGroup {
 }
 
 export interface QuickPayCategory {
+    id: string;
     label: string;
     icon: string;
-    bg: string;
-    iconColor: string;
+    category?: string;
+    bg?: string;
+    iconColor?: string;
 }
 
 interface ApiBill {
@@ -52,7 +55,7 @@ interface ApiBill {
 @Component({
     selector: 'app-bills',
     standalone: true,
-    imports: [CommonModule, RouterLink, SidebarComponent, ThemeToggleComponent, ComingSoonComponent],
+    imports: [CommonModule, RouterLink, SidebarComponent, ThemeToggleComponent, ComingSoonComponent, BillerFormModalComponent],
     templateUrl: './bills.html',
     styleUrls: ['./bills.scss'],
 })
@@ -66,16 +69,20 @@ export class BillsComponent implements OnInit {
 
     filters = ['All Status', 'Pending', 'Paid'];
 
-    quickPayCategories = [
-        { id: 'electricity', label: 'Electricity', icon: 'bolt' },
-        { id: 'water', label: 'Water', icon: 'water_drop' },
-        { id: 'internet', label: 'Internet', icon: 'wifi' },
-        { id: 'recharge', label: 'Recharge', icon: 'phone_iphone' },
-        { id: 'rent', label: 'Pay Rent', icon: 'apartment' },
-        { id: 'gas', label: 'Pay Gas', icon: 'local_gas_station' },
-        { id: 'insurance', label: 'Insurance', icon: 'health_and_safety' },
-        { id: 'metro', label: 'Pay Metro', icon: 'train' },
+    quickPayCategories: QuickPayCategory[] = [
+        { id: 'electricity', label: 'Electricity', icon: 'bolt', category: 'ELECTRICITY' },
+        { id: 'water', label: 'Water', icon: 'water_drop', category: 'WATER' },
+        { id: 'internet', label: 'Internet', icon: 'wifi', category: 'INTERNET' },
+        { id: 'recharge', label: 'Recharge', icon: 'phone_iphone', category: 'RECHARGE' },
+        { id: 'rent', label: 'Pay Rent', icon: 'apartment', category: 'RENT' },
+        { id: 'gas', label: 'Pay Gas', icon: 'local_gas_station', category: 'GAS' },
+        { id: 'insurance', label: 'Insurance', icon: 'health_and_safety', category: 'INSURANCE' },
+        { id: 'metro', label: 'Pay Metro', icon: 'train', category: 'METRO' }
     ];
+
+    showBillerModal = signal(false);
+    activeBillerName = signal('');
+    activeBillerCategory = signal('');
 
     billGroups: BillGroup[] = [];
     private readonly globalUiService = inject(GlobalUiService);
@@ -93,6 +100,25 @@ export class BillsComponent implements OnInit {
 
     onWalletClick(): void {
         this.globalUiService.showComingSoon();
+    }
+
+    onQuickPayClick(label: string, category: string | undefined): void {
+        if (!category) {
+            this.onWalletClick();
+            return;
+        }
+        this.activeBillerName.set(label);
+        this.activeBillerCategory.set(category);
+        this.showBillerModal.set(true);
+    }
+
+    onModalClosed(): void {
+        this.showBillerModal.set(false);
+        // Refresh data to update outstanding total after payment
+        const userId = this.authService.getUserId();
+        if (userId) {
+            this.loadBillsFromApi(userId);
+        }
     }
 
     // Used Auth Service instead of legacy check

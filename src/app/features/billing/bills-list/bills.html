@@ -51,7 +51,7 @@
             </div>
             
             <div class="quick-pay__grid">
-                <button *ngFor="let cat of quickPayCategories" class="qp-tile qp-cat-{{ cat.id }}" (click)="onWalletClick()" [title]="cat.label">
+                <button *ngFor="let cat of quickPayCategories" class="qp-tile qp-cat-{{ cat.id }}" (click)="onQuickPayClick(cat.label, cat.category)" [title]="cat.label">
                     <span class="qp-tile__icon-circle">
                         <span class="material-symbols-outlined">{{ cat.icon }}</span>
                     </span>
@@ -171,5 +171,13 @@
     </main>
 </div>
 
-<app-coming-soon />
+@if (showBillerModal()) {
+    <app-biller-form-modal
+        [billerName]="activeBillerName()"
+        [billerCategory]="activeBillerCategory()"
+        (closed)="onModalClosed()"
+        (paymentSuccess)="onModalClosed()"
+    />
+}
 
+<app-coming-soon />

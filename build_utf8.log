@@ -1,0 +1,561 @@
+﻿[33mΓ¥»[39m Building...
+[32mΓ£ö[39m Building...
+Application bundle generation failed. [3.074 seconds] - 2026-04-08T05:20:16.776Z
+
+cmd : [1m[33m[33mΓû▓ [
+43;33m[[43;30mWARNING[43
+;33m][0m [1mNG8109: 
+NG8109: amount is a 
+function and should be 
+invoked: amount()}. Find 
+more at https://v21.angula
+r.dev/extended-diagnostics
+/NG8109[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+At line:1 char:1
++ cmd /c npx ng build 
+--configuration 
+development > build.log 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [1m[33m[33mΓ...r-co   
+ mpiler][0m:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.html:119:27:
+[37m      119 Γöé        
+             Rs. {{ 
+[32mamount[37m }} paid 
+to {{ billerName }}. Yo...
+          Γò╡             
+               
+[32m~~~~~~[0m
+
+  Warning occurs in the 
+template of component 
+BillerFormModalComponent.
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.ts:12:17:
+[37m      12 Γöé     
+templateUrl: [32m'./bille
+r-form-modal.html'[37m,
+         Γò╡              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8117: NG8117: 
+Function in text 
+interpolation should be 
+invoked: amount(). Find 
+more at https://v21.angula
+r.dev/extended-diagnostics
+/NG8117[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.html:119:27:
+[37m      119 Γöé        
+             Rs. {{ 
+[32mamount[37m }} paid 
+to {{ billerName }}. Yo...
+          Γò╡             
+               
+[32m~~~~~~[0m
+
+  Warning occurs in the 
+template of component 
+BillerFormModalComponent.
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.ts:12:17:
+[37m      12 Γöé     
+templateUrl: [32m'./bille
+r-form-modal.html'[37m,
+         Γò╡              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8113: RouterLink is 
+not used within the 
+template of 
+BillsComponent[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/billi
+ng/bills-list/bills.ts:58:
+28:
+[37m      58 Γöé     
+imports: [CommonModule, 
+[32mRouterLink[37m, 
+SidebarComponent, 
+ThemeTog...
+         Γò╡              
+               
+[32m~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8113: RouterLink is 
+not used within the 
+template of 
+CardsComponent[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/cards
+/cards.ts:33:26:
+[37m      33 Γöé   
+imports: [CommonModule, 
+[32mRouterLink[37m, 
+FormsModule, 
+SidebarComponen...
+         Γò╡              
+             
+[32m~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8109: NG8109: 
+totalBalance is a 
+function and should be 
+invoked: totalBalance()}. 
+Find more at https://v21.a
+ngular.dev/extended-diagno
+stics/NG8109[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/dashb
+oard/dashboard.html:40:34:
+[37m      40 Γöé         
+<h2 class="stat-value">{{ 
+[32mtotalBalance[37m 
+}}</h2>
+         Γò╡              
+                     
+[32m~~~~~~~~~~~~[0m
+
+  Warning occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/dashb
+oard/dashboard.ts:17:15:
+[37m      17 Γöé   
+templateUrl: [32m'./dashb
+oard.html'[37m,
+         Γò╡              
+  [32m~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8117: NG8117: 
+Function in text 
+interpolation should be 
+invoked: totalBalance(). 
+Find more at https://v21.a
+ngular.dev/extended-diagno
+stics/NG8117[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/dashb
+oard/dashboard.html:40:34:
+[37m      40 Γöé         
+<h2 class="stat-value">{{ 
+[32mtotalBalance[37m 
+}}</h2>
+         Γò╡              
+                     
+[32m~~~~~~~~~~~~[0m
+
+  Warning occurs in the 
+template of component 
+DashboardComponent.
+
+    src/app/features/dashb
+oard/dashboard.ts:17:15:
+[37m      17 Γöé   
+templateUrl: [32m'./dashb
+oard.html'[37m,
+         Γò╡              
+  [32m~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8113: RouterLink is 
+not used within the 
+template of NotificationsC
+omponent[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/notif
+ications/notifications.ts:
+61:28:
+[37m      61 Γöé     
+imports: [CommonModule, 
+[32mRouterLink[37m, 
+SidebarComponent, 
+ThemeTog...
+         Γò╡              
+               
+[32m~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8113: RouterLink is 
+not used within the 
+template of 
+PayBillComponent[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/payme
+nts/pay-bill/pay-bill.ts:7
+1:28:
+[37m      71 Γöé     
+imports: [CommonModule, 
+[32mRouterLink[37m, 
+FormsModule, 
+SidebarCompon...
+         Γò╡              
+               
+[32m~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mNG8113: RouterLink is 
+not used within the 
+template of 
+ProfileComponent[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/profi
+le/profile.ts:22:26:
+[37m      22 Γöé   
+imports: [CommonModule, 
+[32mRouterLink[37m, 
+FormsModule, 
+SidebarComponent],
+         Γò╡              
+             
+[32m~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/billi
+ng/bills-list/bills.scss:4
+0:8:
+[37m      40 Γöé @import 
+[32m[37m'../../../shared
+/styles/sidebar';
+         Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/cards
+/cards.scss:39:8:
+[37m      39 Γöé @import 
+[32m[37m'../../shared/st
+yles/sidebar';
+         Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/notif
+ications/notifications.scs
+s:68:8:
+[37m      68 Γöé @import 
+[32m[37m'../../shared/st
+yles/sidebar';
+         Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/payme
+nts/pay-bill/pay-bill.scss
+:32:8:
+[37m      32 Γöé @import 
+[32m[37m'../../../shared
+/styles/sidebar';
+         Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/profi
+le/profile.scss:20:8:
+[37m      20 Γöé @import 
+[32m[37m'../../shared/st
+yles/sidebar';
+         Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/profi
+le/profile.scss:930:16:
+[37m      930 Γöé     
+background: 
+[32m[37mdarken($red, 
+5%);
+          Γò╡             
+    [32m^[0m
+
+
+  Global built-in 
+functions are deprecated 
+and will be removed in 
+Dart Sass 3.0.0.
+  Use color.adjust 
+instead.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/profi
+le/profile.scss:930:16:
+[37m      930 Γöé     
+background: 
+[32m[37mdarken($red, 
+5%);
+          Γò╡             
+    [32m^[0m
+
+
+  darken() is deprecated. 
+Suggestions:
+  
+  color.scale($color, 
+$lightness: 
+-8.3061889251%)
+  color.adjust($color, 
+$lightness: -5%)
+  
+  More info: [4mhttps://s
+ass-lang.com/d/color-funct
+ions[0m
+
+
+[33mΓû▓ [43;33m[[43;30m
+WARNING[43;33m][0m 
+[1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/shared/compone
+nts/sidebar/sidebar.compon
+ent.scss:2:8:
+[37m      2 Γöé @import 
+[32m[37m'../../styles/sid
+ebar';
+        Γò╡         
+[32m^[0m
+
+
+  Sass @import rules are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  
+  More info and automated 
+migrator: [4mhttps://sass
+-lang.com/d/import[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[
+[41;97mERROR[41;31m][0m 
+[1mTS2339: Property 
+'cardNumber' does not 
+exist on type 
+'DisplayCard'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.html:27:90:
+[37m      27 Γöé 
+...rd.network }} 
+ΓÇóΓÇóΓÇóΓÇó [32m{{ card.
+ca[37mrdNumber.slice(-4) 
+}} (Lim...
+         Γò╡              
+         
+[32m~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+BillerFormModalComponent.
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.ts:12:17:
+[37m      12 Γöé     
+templateUrl: [32m'./bille
+r-form-modal.html'[37m,
+         Γò╡              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mER
+ROR[41;31m][0m 
+[1mTS2339: Property 
+'availableLimit' does not 
+exist on type 
+'DisplayCard'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.html:27:133:
+[37m      27 Γöé 
+...Number.slice(-4) }} 
+(Limit: Rs.[32m{{ 
+card.availa[37mbleLimit 
+}})</option>
+         Γò╡              
+                     
+[32m~~~~~~~~~~~~~~[0m
+
+  Error occurs in the 
+template of component 
+BillerFormModalComponent.
+
+    src/app/features/billi
+ng/biller-form-modal/bille
+r-form-modal.ts:12:17:
+[37m      12 Γöé     
+templateUrl: [32m'./bille
+r-form-modal.html'[37m,
+         Γò╡              
+    [32m~~~~~~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+[39m[22m

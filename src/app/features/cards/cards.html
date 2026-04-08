@@ -37,8 +37,8 @@
       <div class="cards-grid">
 
         @for (card of cards(); track card.id; let i = $index) {
-        <div class="card-column">
-          <div class="card-3d-wrapper">
+        <div class="card-column" (click)="selectCard(card.id)">
+          <div class="card-3d-wrapper" [class.active-card]="selectedCardId() === card.id">
             <div class="credit-card" [style.background]="getGradient(card)">
 
               <!-- EMV Chip -->
@@ -152,12 +152,17 @@
 
     <!-- RECENT TRANSACTIONS + TIER STATUS -->
     <section class="bottom-section">
-      <h2 class="section-title">Recent Card Transactions</h2>
+      <h2 class="section-title">
+        Recent Card Transactions
+        @if (selectedCardId()) {
+          <span class="text-sm text-muted font-normal"> — Showing history for selected card</span>
+        }
+      </h2>
 
       <div class="bottom-content">
         <div class="transactions-panel">
-          @if (transactions.length > 0) {
-          @for (txn of transactions; track txn.title) {
+          @if (transactions().length > 0) {
+          @for (txn of transactions(); track txn.title) {
           <div class="transaction-row">
             <div class="txn-left">
               <div class="txn-icon-circle {{ txn.bgClass || 'bg-indigo' }}">

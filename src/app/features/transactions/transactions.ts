@@ -1,32 +1,10 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
-import { forkJoin, Observable, of } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-
-export interface Transaction {
-  id: string;
-  paymentId: string;
-  userId: string;
-  amount: number;
-  type: string;
-  description: string;
-  createdAt: string;
-  // UI extended properties
-  riskBadge?: { score: number; label: string; colorClass: string };
-  isLoadingRisk?: boolean;
-}
-
-export interface RiskScore {
-  id: string;
-  userId: string;
-  paymentId: string;
-  score: number;
-  decision: string;
-  createdAt: string;
-}
+import { CardService } from '../../core/services/card.service';
+import { TransactionService, Transaction } from '../../core/services/transaction.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-transactions',
@@ -36,58 +14,100 @@ export interface RiskScore {
   styleUrl: './transactions.scss'
 })
 export class TransactionsComponent implements OnInit {
-  private readonly http = inject(HttpClient);
+  private readonly transactionService = inject(TransactionService);
+  public readonly cardService = inject(CardService);
+  public readonly authService = inject(AuthService);
   
-  transactions = signal<Transaction[]>([]);
+  public rawTransactions = signal<Transaction[]>([]);
   isLoading = signal<boolean>(true);
+  isSyncing = this.transactionService.isSyncing;
+  selectedCategory = signal<string>('all');
+
+  // Derived filtered transactions
+  transactions = computed(() => {
+    const list = this.rawTransactions();
+    const cat = this.selectedCategory();
+    
+    if (cat === 'all') return list;
+    
+    if (cat === 'bills') {
+      return list.filter(t => 
+        (t.categoryLabel || '').toLowerCase().includes('bill') || 
+        (t.description || '').toLowerCase().includes('bill')
+      );
+    }
+    
+    if (cat === 'payments') {
+      return list.filter(t => 
+        !(t.categoryLabel || '').toLowerCase().includes('bill') && 
+        !(t.description || '').toLowerCase().includes('bill')
+      );
+    }
+
+    return list;
+  });
 
   ngOnInit(): void {
-    this.loadTransactions();
+    this.cardService.refreshCards();
+    this.refreshTransactions();
   }
 
-  private loadTransactions(): void {
+  setCategory(cat: string): void {
+    this.selectedCategory.set(cat);
+  }
+
+  refreshTransactions(): void {
     this.isLoading.set(true);
-    this.http.get<{ success: boolean; data: Transaction[] }>('/api/transactions').pipe(
-      map(res => res?.data || []),
-      mergeMap(txns => {
-        if (!txns.length) return of([]);
-
-        // Initiate parallel requests to fetch risk score for each transaction if it's a payment
-        const txnsWithRisk$: Observable<Transaction>[] = txns.map(txn => {
-          if (txn.type === 'Payment' && txn.paymentId) {
-            txn.isLoadingRisk = true;
-            return this.http.get<{ success: boolean; data: RiskScore }>(`/api/transactions/risk/${txn.paymentId}`).pipe(
-              map(riskRes => {
-                const risk = riskRes?.data;
-                if (risk) {
-                  txn.riskBadge = this.calculateRiskBadge(risk.score);
-                }
-                txn.isLoadingRisk = false;
-                return txn;
-              }),
-              catchError(() => {
-                txn.isLoadingRisk = false;
-                return of(txn); // Ignore error, show without risk
-              })
-            );
-          }
-          return of(txn);
-        });
-
-        return forkJoin(txnsWithRisk$);
-      }),
-      catchError(() => {
-        return of([]);
-      })
-    ).subscribe({
+    this.transactionService.getTransactions().subscribe({
       next: (data) => {
-        this.transactions.set(data);
+        this.rawTransactions.set(data);
         this.isLoading.set(false);
+
+        // Hybrid Sync Strategy: Auto-sync only if transaction list is empty
+        if (data.length === 0) {
+          this.triggerSync();
+        } else {
+          // Fetch risk scores for each payment transaction in the background
+          this.loadRiskScores(data);
+        }
       },
       error: () => {
-        this.transactions.set([]);
+        this.rawTransactions.set([]);
         this.isLoading.set(false);
       }
+    });
+  }
+
+  triggerSync(): void {
+    this.transactionService.syncTransactions().subscribe({
+      next: () => {
+        // Reload transactions after success
+        this.refreshTransactions();
+      }
+    });
+  }
+
+  private loadRiskScores(txns: Transaction[]): void {
+    const paymentTxns = txns.filter(t => t.type === 'Payment' && t.paymentId && !t.riskBadge);
+    
+    if (paymentTxns.length === 0) return;
+
+    // Fetch risk scores in chunks or all at once (since it's background logic)
+    paymentTxns.forEach(txn => {
+      txn.isLoadingRisk = true;
+      this.transactionService.getRiskScore(txn.paymentId).subscribe({
+        next: (risk) => {
+          if (risk && risk.score !== undefined) {
+            txn.riskBadge = this.calculateRiskBadge(risk.score);
+          }
+          txn.isLoadingRisk = false;
+          // Update the signal to trigger UI refresh
+          this.rawTransactions.set([...this.rawTransactions()]);
+        },
+        error: () => {
+          txn.isLoadingRisk = false;
+        }
+      });
     });
   }
 

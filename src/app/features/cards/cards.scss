@@ -166,6 +166,27 @@ $sidebar-width: 300px;
       opacity: 1;
     }
   }
+
+  &.active-card {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 0 0 3px var(--primary), 0 20px 40px rgba(107, 110, 249, 0.3);
+    z-index: 3;
+
+    &::after {
+      content: 'ACTIVE';
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.1em;
+      box-shadow: 0 4px 12px rgba(107, 110, 249, 0.4);
+    }
+  }
 }
 
 // --- CREDIT CARD ------------------------------------------------------

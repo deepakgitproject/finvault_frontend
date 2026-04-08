@@ -1,0 +1,128 @@
+<div class="modal-overlay" (click)="onBackdropClick()">
+    <div class="modal glass-card-strong" (click)="$event.stopPropagation()">
+        
+        @if (step() === 'form') {
+            <!-- Handlebar -->
+            <div class="modal__handlebar"></div>
+            
+            <div class="modal-header">
+                <div class="modal-header__left">
+                    <div class="modal-header__icon" [ngStyle]="{'background-color': getCategoryColor(billerCategory)}">
+                        <span class="material-symbols-outlined">{{ getCategoryIcon(billerCategory) }}</span>
+                    </div>
+                    <h2 class="modal-header__title">Pay {{ billerName || 'Bill' }}</h2>
+                </div>
+                <button class="modal-header__close" (click)="closed.emit()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="form-label">Pay From Card</label>
+                    <div class="form-input-wrap">
+                        <select class="form-input form-select" [ngModel]="selectedCardId()" (ngModelChange)="selectedCardId.set($event)">
+                            <option value="" disabled selected>Select a linked card</option>
+                            @for (card of cards(); track card.id) {
+                                <option [value]="card.id">{{ card.network }} {{ card.maskedNumber }} (Limit: Rs.{{ card.creditLimit - card.currentBalance }})</option>
+                            }
+                        </select>
+                        <span class="material-symbols-outlined form-select-icon">expand_more</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ getBillNumberLabel(billerCategory) }}</label>
+                    <div class="form-input-wrap">
+                        <input type="text" class="form-input" [ngModel]="billNumber()" (ngModelChange)="billNumber.set($event)" placeholder="Enter {{ getBillNumberLabel(billerCategory).toLowerCase() }}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <div class="form-input-wrap form-input-wrap--amount">
+                        <span class="form-input-prefix">Rs.</span>
+                        <input type="number" class="form-input form-input--amount" [ngModel]="amount()" (ngModelChange)="amount.set($event !== null && $event !== '' ? +$event : null)" min="1" step="0.01" placeholder="0.00" />
+                    </div>
+                </div>
+
+                @if (errorMsg()) {
+                    <div class="form-error">
+                        <span class="material-symbols-outlined">error</span>
+                        {{ errorMsg() }}
+                    </div>
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button class="submit-btn" [disabled]="!isFormValid() || isLoading()" (click)="submitForm()">
+                    @if (isLoading()) {
+                        <span class="submit-btn__spinner"></span>
+                        Processing...
+                    } @else {
+                        <span>Proceed to Pay</span>
+                    }
+                </button>
+            </div>
+        }
+
+        @if (step() === 'otp') {
+            <!-- Handlebar -->
+            <div class="modal__handlebar"></div>
+
+            <!-- Lock icon -->
+            <div class="modal__icon-ring">
+                <span class="material-symbols-outlined">mail</span>
+            </div>
+
+            <!-- Title -->
+            <h2 class="modal__title">Enter Verification Code</h2>
+
+            <!-- Subtitle -->
+            <p class="modal__subtitle">
+                We've sent a 6-digit OTP to your registered email address.
+            </p>
+
+            <!-- OTP inputs -->
+            <div class="otp-row" (paste)="onOtpPaste($event)">
+                <input *ngFor="let digit of otpDigits(); let i = index; trackBy: trackByOtpIndex" #otpInput class="otp-input"
+                    [class.otp-input--filled]="digit !== ''" type="text" inputmode="numeric" maxlength="1"
+                    [value]="digit" (input)="onOtpInput($event, i)" (keydown)="onOtpKeydown($event, i)" />
+            </div>
+
+            <!-- OTP error -->
+            <div class="modal__error" *ngIf="errorMsg()">
+                <span class="material-symbols-outlined">error</span>
+                {{ errorMsg() }}
+            </div>
+
+            <!-- Confirm button -->
+            <button class="modal__confirm-btn" [class.modal__confirm-btn--loading]="isLoading()"
+                [disabled]="!isOtpComplete() || isLoading()" (click)="verifyOtp()">
+                <span class="modal__confirm-btn__spinner" *ngIf="isLoading()"></span>
+                <span class="material-symbols-outlined" *ngIf="!isLoading()">check_circle</span>
+                {{ isLoading() ? 'Verifying...' : 'Verify & Pay' }}
+            </button>
+
+            <!-- Back link -->
+            <a class="back-link" (click)="resetToForm()">← Back to Details</a>
+        }
+
+        @if (step() === 'success') {
+            <div class="success-screen">
+                <div class="success-circle">
+                    <span class="material-symbols-outlined">check</span>
+                </div>
+                
+                <h2 class="modal__title">Payment Successful!</h2>
+                <p class="modal__subtitle">
+                    Rs. {{ amount() }} paid to {{ billerName }}. Your card balance has been updated.
+                </p>
+
+                <div class="modal-footer">
+                    <button class="btn-ghost" (click)="closeSuccess()">Done</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

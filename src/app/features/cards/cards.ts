@@ -10,7 +10,7 @@ import { GlobalUiService } from '../../core/services/global-ui.service';
 import { ComingSoonComponent } from '../../shared/components/coming-soon/coming-soon.component';
 import { ToastComponent } from '../../shared/components/toast/toast.component';
 import { AddCardCommand } from '../../core/models/card.models';
-import { HttpClient } from '@angular/common/http';
+import { TransactionService, Transaction } from '../../core/services/transaction.service';
 
 // --- Types -----------------------------------------------------------
 type CardNetwork = 'visa' | 'mastercard' | 'rupay' | 'amex';
@@ -39,7 +39,7 @@ export class CardsComponent implements OnInit {
   public readonly cardService = inject(CardService);
   private readonly authService = inject(AuthService);
   private readonly globalUiService = inject(GlobalUiService);
-  private readonly http = inject(HttpClient);
+  private readonly transactionService = inject(TransactionService);
 
   // --- Bind to CardService signal - NO local card state -----------
   public readonly cards = this.cardService.cards;
@@ -69,7 +69,23 @@ export class CardsComponent implements OnInit {
   years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i);
   billingDays = Array.from({ length: 28 }, (_, i) => i + 1);
 
-  transactions: any[] = [];
+  selectedCardId = signal<string | null>(null);
+  rawTransactions = signal<Transaction[]>([]);
+  
+  transactions = computed(() => {
+    return this.rawTransactions()
+      .slice(0, 5)
+      .map(t => {
+        return {
+          title: t.categoryLabel,
+          subtitle: new Date(t.createdAt).toLocaleDateString(),
+          amount: t.type === 'Reversal' ? `+Rs.${t.amount.toFixed(2)}` : `-Rs.${t.amount.toFixed(2)}`,
+          icon: t.categoryIcon,
+          bgClass: t.categoryColor,
+          isNegative: t.type !== 'Reversal'
+        };
+      });
+  });
 
   // --- Network config --------------------------------------------
   networkConfig: Record<CardNetwork, { gradient: string; label: string }> = {
@@ -84,28 +100,32 @@ export class CardsComponent implements OnInit {
 
   // --- Lifecycle -------------------------------------------------
   ngOnInit(): void {
-    this.cardService.refreshCards();
-    this.loadTransactions();
+    this.cardService.refreshCards(true);
+    
+    // Auto-select first card when loaded
+    setTimeout(() => {
+      if (this.cards().length > 0 && !this.selectedCardId()) {
+        this.selectCard(this.cards()[0].id);
+      }
+    }, 1000);
   }
 
   // --- API: Transactions -------------------------------------------
-  private loadTransactions(): void {
-    this.http.get<any>('/api/transactions').subscribe({
-      next: (res) => {
-        const data = res?.data ?? res;
-        if (Array.isArray(data)) {
-          this.transactions = data.slice(0, 5).map(t => ({
-            title: t.description,
-            subtitle: new Date(t.createdAt).toLocaleDateString(),
-            amount: t.type === 'Reversal' ? `+Rs.${t.amount.toFixed(2)}` : `-Rs.${t.amount.toFixed(2)}`,
-            icon: t.type === 'Reversal' ? 'undo' : 'payment',
-            bgClass: t.type === 'Reversal' ? 'bg-green' : 'bg-indigo',
-            isNegative: t.type !== 'Reversal'
-          }));
-        }
+  loadTransactionsForCard(cardId: string): void {
+    this.transactionService.getTransactions(cardId).subscribe({
+      next: (txns) => {
+        this.rawTransactions.set(txns);
       },
-      error: () => { this.transactions = []; }
+      error: () => { 
+        this.rawTransactions.set([]); 
+      }
     });
+  }
+
+  // Update effect to reload when card changes
+  selectCard(cardId: string): void {
+    this.selectedCardId.set(cardId);
+    this.loadTransactionsForCard(cardId);
   }
 
   onWalletClick(): void {
@@ -336,4 +356,3 @@ export class CardsComponent implements OnInit {
     };
   }
 }
-

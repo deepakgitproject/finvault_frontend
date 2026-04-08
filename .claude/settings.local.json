@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(ts|html|scss|css\\)$\")",
+      "Bash(grep -E \"\\\\.\\(ts|html|scss\\)$\")"
+    ]
+  }
+}

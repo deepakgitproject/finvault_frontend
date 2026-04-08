@@ -62,8 +62,8 @@ export class DashboardComponent implements OnInit {
   transactions: any[] = [];
 
   ngOnInit(): void {
-    // Refresh cards (CardService handles caching internally)
-    this.cardService.refreshCards();
+    // Refresh cards (Force true to ensure we bypass cache when explicitly navigating)
+    this.cardService.refreshCards(true);
 
     // Today's date formatted
     const now = new Date();
@@ -109,18 +109,51 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         const data = res?.data ?? res;
         if (Array.isArray(data)) {
-          this.transactions = data.slice(0, 5).map(t => ({
-            title: t.description,
-            subtitle: new Date(t.createdAt).toLocaleDateString(),
-            amount: t.type === 'Reversal' ? `+Rs.${t.amount.toFixed(2)}` : `-Rs.${t.amount.toFixed(2)}`,
-            icon: t.type === 'Reversal' ? 'undo' : 'payment',
-            bgClass: t.type === 'Reversal' ? 'bg-green' : 'bg-indigo',
-            isNegative: t.type !== 'Reversal'
-          }));
+          const sorted = data.sort((a, b) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+
+          this.transactions = sorted.slice(0, 5).map(t => {
+            const enriched = this.enrichTransaction(t);
+            return {
+              title: enriched.categoryLabel,
+              subtitle: new Date(t.createdAt).toLocaleDateString(),
+              amount: t.type === 'Reversal' ? `+Rs.${t.amount.toFixed(2)}` : `-Rs.${t.amount.toFixed(2)}`,
+              icon: enriched.categoryIcon,
+              bgClass: enriched.categoryColor,
+              isNegative: t.type !== 'Reversal'
+            };
+          });
         }
       },
       error: () => { this.transactions = []; }
     });
+  }
+
+  private enrichTransaction(txn: any): any {
+    const category = (txn.category || '').toLowerCase();
+    const result = {
+      categoryLabel: txn.category || txn.type || 'Payment',
+      categoryIcon: 'payments',
+      categoryColor: 'bg-indigo'
+    };
+
+    if (txn.type === 'Reversal') {
+      result.categoryLabel = 'Refund';
+      result.categoryIcon = 'undo';
+      result.categoryColor = 'bg-green';
+      return result;
+    }
+
+    if (category.includes('elect')) { result.categoryIcon = 'bolt'; result.categoryColor = 'bg-orange'; }
+    else if (category.includes('water')) { result.categoryIcon = 'water_drop'; result.categoryColor = 'bg-blue'; }
+    else if (category.includes('gas')) { result.categoryIcon = 'local_gas_station'; result.categoryColor = 'bg-red'; }
+    else if (category.includes('internet')) { result.categoryIcon = 'wifi'; result.categoryColor = 'bg-cyan'; }
+    else if (category.includes('mobile')) { result.categoryIcon = 'phone_iphone'; result.categoryColor = 'bg-purple'; }
+    else if (category.includes('dth')) { result.categoryIcon = 'settings_input_antenna'; result.categoryColor = 'bg-pink'; }
+    else if (category.includes('card bill')) { result.categoryIcon = 'credit_card'; result.categoryColor = 'bg-indigo'; }
+
+    return result;
   }
 
   // --- API: Upcoming Bills -----------------------------------------

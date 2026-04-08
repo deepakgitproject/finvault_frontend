@@ -1,0 +1,311 @@
+FinVault Backend API Flow & Documentation
+============================================
+
+This document contains the complete flow of the FinVault backend, routed through the Ocelot API Gateway. All frontend requests should be directed to the Gateway Base URL, typically with the `/api` prefix.
+
+## General Requirements
+1. Authentication: All endpoints (except Auth/Login/Register explicitly marked) require a Bearer token in the header:
+   `Authorization: Bearer <JWT_TOKEN>`
+2. Responses: Most endpoints follow a standard wrapper:
+   `ApiResponse<T> { Success: boolean, Message: string, Data: T, Errors: ... }`
+3. Content-Type: `application/json`
+
+---
+
+## 1. Identity Service (/api/identity)
+Responsible for user authentication, registration, token generation, and profile management.
+
+### Authentication Endpoints
+
+POST /api/identity/auth/register (Anonymous)
+- Action: Register a new user account.
+- Input (Body):
+  {
+    "Email": "user@example.com",
+    "Password": "SecurePassword123!",
+    "FirstName": "John",
+    "LastName": "Doe"
+  }
+- Output: ApiResponse<AuthResponse> (Contains JWT Token, Refresh Token, User context)
+
+POST /api/identity/auth/login (Anonymous)
+- Action: Login with email and password.
+- Input (Body):
+  {
+    "Email": "user@example.com",
+    "Password": "SecurePassword123!"
+  }
+- Output: ApiResponse<AuthResponse>
+
+POST /api/identity/auth/verify-email (Anonymous)
+- Action: Verify email address with 6-digit OTP code.
+- Input (Body):
+  {
+    "Email": "user@example.com",
+    "Otp": "123456"
+  }
+- Output: ApiResponse<bool>
+
+POST /api/identity/auth/refresh (Anonymous)
+- Action: Exchange refresh token for a new JWT pair.
+- Input (Body):
+  {
+    "Token": "<Expired_JWT>",
+    "RefreshToken": "<Refresh_Token>"
+  }
+- Output: ApiResponse<AuthResponse>
+
+POST /api/identity/auth/forgot-password (Anonymous)
+- Action: Request OTP for password reset.
+- Input (Body):
+  {
+    "Email": "user@example.com"
+  }
+- Output: ApiResponse<bool> (Always returns Success to prevent email enumeration)
+
+POST /api/identity/auth/reset-password (Anonymous)
+- Action: Reset password using OTP.
+- Input (Body):
+  {
+    "Email": "user@example.com",
+    "Otp": "123456",
+    "NewPassword": "NewSecurePassword123!"
+  }
+- Output: ApiResponse<bool>
+
+### User Endpoints
+
+GET /api/identity/users/me
+- Action: Get current user profile.
+- Input: Header Authorization Bearer Token.
+- Output: ApiResponse<UserProfileResponse>
+
+---
+
+## 2. Card Service (/api/cards)
+Manages user credit cards, limits, and verifications.
+
+POST /api/cards
+- Action: Add a new credit card.
+- Input (Body): 
+  {
+    "NameOnCard": "John Doe",
+    "CardNetwork": "Visa",
+    "Last4": "1234"
+    ... (Card Details)
+  }
+- Output: ApiResponse<Guid> (Returns the generated CardId)
+
+DELETE /api/cards/{id}
+- Action: Soft-delete a card.
+- Input: URL Parameter `id` (Card ID).
+- Output: ApiResponse<bool>
+
+PUT /api/cards/{id}/default
+- Action: Set a card as the default card for payments.
+- Input: URL Parameter `id`.
+- Output: ApiResponse<bool>
+
+PUT /api/cards/{id}/verify
+- Action: Verify a card via Rs.1 micro-authorization.
+- Input: URL Parameter `id`.
+- Output: ApiResponse<bool>
+
+PUT /api/cards/{id}/limit
+- Action: Update credit card limit.
+- Input (URL): `id`
+- Input (Body):
+  {
+    "NewLimit": 50000.00
+  }
+- Output: ApiResponse<bool>
+
+GET /api/cards
+- Action: Get all cards for the current user.
+- Output: ApiResponse<List<CardResponse>>
+
+GET /api/cards/{id}
+- Action: Get a specific card by ID.
+- Output: ApiResponse<CardResponse>
+
+GET /api/cards/utilization
+- Action: Get card utilization (usage vs limits) for the current user.
+- Output: ApiResponse<CardUtilizationResponse>
+
+GET /api/cards/{id}/reveal
+- Action: Reveal full card details (decrypted). Requires extra authentication logic if present.
+- Output: ApiResponse<DecryptedCardResponse>
+
+---
+
+## 3. Payment Service (/api/payments, /api/external-bills, /api/transactions)
+Handles core payments, third-party bill payments, and transaction history.
+
+### Core Payments
+
+POST /api/payments
+- Action: Initiate a new standard payment.
+- Input (Body):
+  {
+    "CardId": "uuid",
+    "Amount": 1500.00,
+    "MerchantName": "Amazon"
+  }
+- Output: ApiResponse<PaymentResponse>
+
+PUT /api/payments/{id}/complete
+- Action: Complete a pending payment.
+- Input: URL Parameter `id` (Payment ID).
+- Output: ApiResponse<PaymentResponse>
+
+PUT /api/payments/{id}/reverse
+- Action: Reverse a completed payment.
+- Input: URL Parameter `id`.
+- Output: ApiResponse<PaymentResponse>
+
+GET /api/payments
+- Action: Get all payments for the current user.
+- Output: ApiResponse<List<PaymentResponse>>
+
+GET /api/payments/{id}
+- Action: Get payment by ID.
+- Output: ApiResponse<PaymentResponse>
+
+### External Bills (Fast Payments)
+
+POST /api/external-bills/pay
+- Action: Initiate a new external utility bill payment.
+- Input (Body):
+  {
+    "CardId": "uuid",
+    "Email": "user@example.com",
+    "BillerName": "Jio",
+    "BillerCategory": "Mobile Postpaid",
+    "BillNumber": "9876543210",
+    "Amount": 499.00
+  }
+- Output: ApiResponse<ExternalBillPaymentResponse>
+
+PUT /api/external-bills/{id}/verify
+- Action: Verify and complete an external bill payment with OTP.
+- Input (URL): `id`
+- Input (Body):
+  {
+    "OtpCode": "123456"
+  }
+- Output: ApiResponse<PaymentResponse>
+
+GET /api/external-bills
+- Action: Get all external bill payments for the current user.
+- Output: ApiResponse<List<ExternalBillPaymentResponse>>
+
+### Transactions & Risk
+
+GET /api/transactions?cardId={cardId}
+- Action: Get all transactions for the current user. Optional cardId query parameter filters history for a specific card.
+- Input (Query): `cardId` (optional)
+- Output: ApiResponse<List<TransactionResponse>>
+  (Response explicitly includes camelCase fields: id, paymentId, cardId, amount, type, category, description, createdAt)
+
+POST /api/transactions/sync
+- Action: Sync and migrate any legacy external utility payments (fast payments) or old internal payments into the unified transactions tables.
+- Input: Header Authorization Bearer Token only (no body required)
+- Output: ApiResponse<int> (Returns the count of successfully synced transactions)
+
+GET /api/transactions/risk/{paymentId}
+- Action: Get risk score for a specific payment.
+- Output: ApiResponse<RiskScoreResponse>
+
+---
+
+## 4. Billing Service (/api/billing)
+Handles internal statements, user bills, and scheduled payments.
+
+### Bills
+
+POST /api/billing/bills
+- Action: Generate a new bill for a user's card (System/Admin mostly).
+- Input (Body):
+  {
+    "UserId": "uuid",
+    "CardId": "uuid",
+    "TotalAmount": 15000.00,
+    "MinimumDue": 750.00,
+    "DueDate": "2026-05-01T00:00:00Z",
+    "BillingMonth": "2026-04" 
+  }
+- Output: ApiResponse<BillResponse>
+
+PUT /api/billing/bills/{billId}/status
+- Action: Update bill status (e.g. Overdue, Paid).
+- Input (URL): `billId`
+- Input (Body):
+  {
+    "Status": "Paid"
+  }
+- Output: ApiResponse<bool>
+
+GET /api/billing/bills/user/{userId}?status={status}&billingMonth={billingMonth}
+- Action: Get all bills for a user with optional filters.
+- Output: ApiResponse<List<BillResponse>>
+
+GET /api/billing/bills/{billId}
+- Action: Get a single bill by ID.
+- Output: ApiResponse<BillResponse>
+
+GET /api/billing/bills/user/{userId}/upcoming?days={days}
+- Action: Get upcoming bills due in the specified next N days.
+- Output: ApiResponse<List<BillResponse>>
+
+GET /api/billing/bills/user/{userId}/summary
+- Action: Get spending summary across all cards for a user.
+- Output: ApiResponse<SpendingSummaryResponse>
+
+### Schedules
+
+POST /api/billing/schedules
+- Action: Schedule a future payment for a bill.
+- Input (Body):
+  {
+    "BillId": "uuid",
+    "CardId": "uuid",
+    "ScheduledDate": "2026-04-28T00:00:00Z",
+    "Amount": 15000.00
+  }
+- Output: ApiResponse<SchedulePaymentResponse>
+
+PUT /api/billing/schedules/{scheduleId}/cancel
+- Action: Cancel a pending payment schedule.
+- Output: ApiResponse<bool>
+
+---
+
+## 5. Notification Service (/api/notifications)
+Handles reading and counting notifications.
+
+GET /api/notifications/user/{userId}?isRead=false&page=1&pageSize=20
+- Action: Get paginated notifications for a user. (isRead is optional).
+- Output: ApiResponse<List<NotificationResponse>>
+
+GET /api/notifications/user/{userId}/unread-count
+- Action: Get unread notification count for a user.
+- Output: ApiResponse<int>
+
+PUT /api/notifications/{notificationId}/read
+- Action: Mark a single notification as read.
+- Output: ApiResponse<bool>
+
+PUT /api/notifications/user/{userId}/read-all
+- Action: Mark all notifications as read for a user.
+- Output: ApiResponse<bool>
+
+---
+
+## Health Checks
+Each microservice exposes a basic health check endpoint routed through Gateway:
+- GET /api/identity/auth/health
+- GET /api/cards/health
+- GET /api/billing/health
+- GET /api/payments/health
+- GET /api/transactions/health
+- GET /api/notifications/health

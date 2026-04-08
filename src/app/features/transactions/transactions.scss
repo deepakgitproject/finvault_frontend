@@ -29,6 +29,91 @@
     margin: 0.5rem 0 0 0;
     color: var(--text-muted);
   }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .btn-sync {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      background: var(--surface-light);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      cursor: pointer;
+
+      &:hover:not(:disabled) {
+        background: var(--surface-hover);
+        border-color: var(--primary-color);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      span {
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  .filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border-color);
+    background: var(--surface-light);
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    span {
+      font-size: 1.1rem;
+    }
+
+    &:hover {
+      border-color: var(--primary-color);
+      color: var(--text-main);
+      background: var(--surface-hover);
+    }
+
+    &.active {
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+
+      span { color: white; }
+    }
+  }
 }
 
 .glass-card {
@@ -189,4 +274,14 @@
 
 .mono {
   font-family: monospace;
+}
+
+.spinning {
+  animation: spin 1s infinite linear;
+}
+
+.row-syncing {
+  opacity: 0.7;
+  filter: grayscale(0.5);
+  pointer-events: none;
 }

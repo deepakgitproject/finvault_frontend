@@ -81,7 +81,7 @@ export class CardService {
   // --- Security-aware cache --------------------------------------
   private cacheTimestamp = 0;
   private cacheUserId = '';
-  private static readonly CACHE_DURATION_MS = 30_000; // 30 seconds
+  private static readonly CACHE_DURATION_MS = 5_000; // 5 seconds
 
   // --- Deferred refresh flag -------------------------------------
   private deferredRefreshNeeded = false;
@@ -344,7 +344,7 @@ export class CardService {
     const last4 = masked.replace(/[^0-9]/g, '').slice(-4);
     const network = this.guessNetwork(c);
     const limit = c.creditLimit || 100000;
-    const balance = c.currentBalance || 0;
+    const balance = c.currentBalance ?? c.outstandingBalance ?? c.OutstandingBalance ?? 0;
 
     return {
       id: c.id || '',
