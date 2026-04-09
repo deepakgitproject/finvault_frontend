@@ -144,7 +144,7 @@ export class DashboardComponent implements OnInit {
    * Generates a "premium" smooth SVG path for the trend data using bezier curves.
    */
   private generateSmoothPath(data: number[], width: number, height: number): string {
-    if (!data.length) return '';
+    if (!data.length || data.every(v => v === 0)) return `M 0 ${height} L ${width} ${height}`;
     
     const max = this.maxTrendValue();
     const padding = 10;
@@ -156,7 +156,7 @@ export class DashboardComponent implements OnInit {
       y: height - padding - (val / max) * availableHeight
     }));
 
-    if (points.length < 2) return '';
+    if (points.length < 2) return `M 0 ${height} L ${width} ${height}`;
 
     // Drawing the smooth curve
     let d = `M ${points[0].x} ${points[0].y}`;

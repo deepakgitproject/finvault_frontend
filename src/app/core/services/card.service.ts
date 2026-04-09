@@ -28,6 +28,26 @@ export interface DisplayCard {
   showDetails: boolean;
 }
 
+export interface CardResponse {
+  id: string;
+  userId: string;
+  maskedNumber: string;
+  cardholderName: string;
+  expiryMonth: number;
+  expiryYear: number;
+  issuerName: string;
+  cardNumberLastFour: string;
+  creditLimit: number;
+  outstandingBalance: number;
+  currentBalance: number;
+  availableCredit: number;
+  utilization: number;
+  billingCycleStartDay: number;
+  isDefault: boolean;
+  isVerified: boolean;
+  createdAt: string;
+}
+
 /**
  * CardService - Single source of truth for card state.
  *

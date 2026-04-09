@@ -1,0 +1,36 @@
+<div class="success-overlay">
+  <div class="success-card">
+    <div class="checkmark-container">
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" />
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+      </svg>
+    </div>
+
+    <h2>Payment Successful!</h2>
+    <div class="card-info">{{ issuerName }} card ending {{ cardLastFour }}</div>
+    <div class="amount-text">₹{{ amount | number:'1.2-2' }} paid successfully</div>
+
+    <div class="tx-pill">
+      ID: {{ transactionId }}
+      <span class="copy-btn" (click)="copyTxId()" title="Copy ID">📋</span>
+    </div>
+    
+    <span class="timestamp">{{ transactionTime }}</span>
+
+    <div class="divider"></div>
+
+    <div class="balance-box">
+      <div class="balance-row">
+        <span>New Outstanding</span>
+        <span>₹{{ newOutstanding | number:'1.2-2' }}</span>
+      </div>
+      <div class="balance-row">
+        <span>New Available</span>
+        <span>₹{{ newAvailableCredit | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <button class="done-btn" (click)="done.emit()">Done</button>
+  </div>
+</div>

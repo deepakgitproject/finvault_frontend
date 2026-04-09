@@ -1,0 +1,65 @@
+<div class="razorpay-overlay">
+  <div class="razorpay-card">
+    <header class="razorpay-header">
+      <div class="brand">
+        <span class="icon">🔒</span>
+        <span>Secure Payment</span>
+      </div>
+      <div class="amount">₹{{ amount | number:'1.2-2' }}</div>
+      <button class="close-btn" (click)="onCancel()">✕</button>
+    </header>
+
+    <div class="razorpay-body">
+      <div *ngIf="errorMessage" class="error-msg">
+        {{ errorMessage }}
+      </div>
+
+      <h3>Choose payment method</h3>
+      
+      <div class="method-grid">
+        <div class="method-tile" [class.active]="selectedMethod === 'phonepe'" (click)="selectedMethod = 'phonepe'">
+          <span class="icon">💜</span>
+          <span>PhonePe</span>
+        </div>
+        <div class="method-tile" [class.active]="selectedMethod === 'gpay'" (click)="selectedMethod = 'gpay'">
+          <span class="icon">🎨</span>
+          <span>Google Pay</span>
+        </div>
+        <div class="method-tile" [class.active]="selectedMethod === 'paytm'" (click)="selectedMethod = 'paytm'">
+          <span class="icon">💙</span>
+          <span>Paytm</span>
+        </div>
+        <div class="method-tile" [class.active]="selectedMethod === 'upi'" (click)="selectedMethod = 'upi'">
+          <span class="icon">🧡</span>
+          <span>BHIM UPI</span>
+        </div>
+      </div>
+
+      <div class="upi-input-container">
+        <label>Enter UPI ID (e.g. name@upi)</label>
+        <input type="text" [(ngModel)]="upiId" placeholder="username@bank">
+      </div>
+
+      <button 
+        class="pay-btn" 
+        [disabled]="(!selectedMethod && !upiId) || isProcessing"
+        (click)="onPay()">
+        Pay ₹{{ amount | number:'1.2-2' }}
+      </button>
+
+      <div class="security-footer">
+        <span class="icon">🔒</span>
+        <span>256-bit SSL Encrypted</span>
+      </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div class="processing-overlay" *ngIf="isProcessing">
+      <div class="spinner"></div>
+      <h4>Processing your payment...</h4>
+      <p>Please do not close this window</p>
+      <button class="emergency-cancel" (click)="isProcessing = false">Cancel & Try Again</button>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,182 @@
+.razorpay-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.razorpay-card {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+.razorpay-header {
+  background: #3395ff;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}
+
+.razorpay-body {
+  padding: 24px;
+
+  h3 {
+    margin: 0 0 20px;
+    color: #4a5568;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+}
+
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .method-tile {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { border-color: #3395ff; background: #f0f7ff; }
+    &.active { border-color: #3395ff; background: #f0f7ff; box-shadow: 0 0 0 2px rgba(51, 149, 255, 0.1); }
+
+    .icon { font-size: 1.5rem; }
+    span { font-size: 0.85rem; font-weight: 500; color: #4a5568; }
+  }
+}
+
+.upi-input-container {
+  margin-bottom: 24px;
+  label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: #718096; }
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    &:focus { outline: none; border-color: #3395ff; }
+  }
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 14px;
+  background: #3395ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover:not(:disabled) { background: #2579d1; }
+  &:disabled { background: #cbd5e0; cursor: not-allowed; }
+}
+
+.security-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  color: #a0aec0;
+  font-size: 0.75rem;
+}
+
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  text-align: center;
+  padding: 24px;
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3395ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  h4 { margin: 0 0 8px; color: #2d3748; }
+  p { margin: 0; color: #718096; font-size: 0.9rem; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-msg {
+  background: #fff5f5;
+  color: #c53030;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  border: 1px solid #feb2b2;
+}

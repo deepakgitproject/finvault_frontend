@@ -1,0 +1,173 @@
+<div class="payment-page-layout">
+  <!-- SIDEBAR -->
+  <app-sidebar />
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    
+    <!-- HEADER -->
+    <header class="page-header">
+      <div class="page-header__user">
+        <div class="page-header__avatar">{{ userInitials() }}</div>
+        <div class="page-header__user-info">
+          <span class="page-header__name">{{ userEmail() }}</span>
+          <span class="page-header__tier">PREMIUM MEMBER</span>
+        </div>
+      </div>
+      <div class="page-header__actions">
+        <app-theme-toggle />
+        <button class="page-header__icon-btn">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="payment-content-inner">
+      <!-- Step 1: Card Selection -->
+      <div *ngIf="currentStep === 1" class="step-1-content">
+        <header class="step-header">
+          <h1>Payment</h1>
+          <p>Select a card to make a payment</p>
+        </header>
+
+        <!-- Skeleton Loading State -->
+        <div *ngIf="cardService.isLoading()" class="cards-grid">
+          <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+        </div>
+
+        <!-- Cards List -->
+        <div *ngIf="!cardService.isLoading()" class="cards-grid">
+          <div 
+            *ngFor="let card of mappedCards()" 
+            class="card-tile"
+            [class.card-selected]="selectedCard?.id === card.id"
+            (click)="selectedCard = card">
+            <div class="issuer">{{ card.issuerName }}</div>
+            <div class="number">{{ card.maskedNumber }}</div>
+            <div class="holder">{{ card.cardholderName }}</div>
+            
+            <div class="balance-info">
+              <div>
+                <span class="label">Outstanding</span>
+                <span class="value" [class.balance-danger]="card.outstandingBalance > 0" [class.balance-safe]="card.outstandingBalance === 0">
+                  {{ card.outstandingBalance === 0 ? 'All Clear ✓' : (card.outstandingBalance | currency:'INR') }}
+                </span>
+              </div>
+              <div>
+                <span class="label">Available Credit</span>
+                <span class="value">{{ card.availableCredit | currency:'INR' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Initial Load Empty State -->
+        <div *ngIf="!cardService.isLoading() && mappedCards().length === 0" class="empty-cards-state">
+           <span class="material-symbols-outlined">credit_card_off</span>
+           <p>No cards found in your vault.</p>
+        </div>
+
+        <div class="action-bar">
+          <button 
+            class="primary-btn" 
+            [disabled]="!selectedCard || selectedCard.outstandingBalance === 0"
+            [title]="selectedCard?.outstandingBalance === 0 ? 'No outstanding balance' : ''"
+            (click)="currentStep = 2">
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Amount Entry -->
+      <div *ngIf="currentStep === 2 && selectedCard" class="step-2-content">
+        <header class="step-header">
+          <h1>Make Payment</h1>
+          <p>Enter the amount you'd like to pay</p>
+        </header>
+
+        <div class="selected-card-chip">
+          <div class="chip-info">
+            <span>{{ selectedCard.issuerName }} •••• {{ selectedCard.cardNumberLastFour }}</span>
+            <span>Outstanding: {{ selectedCard.outstandingBalance | currency:'INR' }}</span>
+          </div>
+          <button class="change-btn" (click)="currentStep = 1">Change Card</button>
+        </div>
+
+        <div class="payment-section">
+          <div class="quick-select">
+            <button (click)="paymentAmount = selectedCard.outstandingBalance">
+              Pay Full {{ selectedCard.outstandingBalance | currency:'INR' }}
+            </button>
+            <button (click)="paymentAmount = getMinDue(selectedCard.outstandingBalance)">
+              Pay Minimum {{ getMinDue(selectedCard.outstandingBalance) | currency:'INR' }}
+            </button>
+          </div>
+
+          <div class="amount-input-box">
+            <label>Payment Amount</label>
+            <div class="input-wrapper">
+              <span class="prefix">₹</span>
+              <input type="number" [(ngModel)]="paymentAmount" [min]="1" [max]="selectedCard.outstandingBalance">
+            </div>
+            <span class="error-text" *ngIf="paymentAmount > selectedCard.outstandingBalance">
+              Amount cannot exceed outstanding balance of {{ selectedCard.outstandingBalance | currency:'INR' }}
+            </span>
+            <span class="error-text" *ngIf="paymentAmount < 1 && paymentAmount !== 0">
+              Minimum payment is ₹1
+            </span>
+          </div>
+
+          <div class="summary-box">
+            <div class="row">
+              <span>Outstanding Balance</span>
+              <span>{{ selectedCard.outstandingBalance | currency:'INR' }}</span>
+            </div>
+            <div class="row">
+              <span>You are paying</span>
+              <span class="highlight">- {{ paymentAmount | currency:'INR' }}</span>
+            </div>
+            <div class="row total">
+              <span>Remaining Balance</span>
+              <span>{{ (selectedCard.outstandingBalance - paymentAmount) | currency:'INR' }}</span>
+            </div>
+            <div class="row">
+              <span>Available credit after</span>
+              <span>{{ (selectedCard.availableCredit + paymentAmount) | currency:'INR' }}</span>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button 
+              class="primary-btn" 
+              [disabled]="paymentAmount < 1 || paymentAmount > selectedCard.outstandingBalance"
+              (click)="showRazorpayModal = true">
+              Proceed to Pay →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <app-fake-razorpay
+    *ngIf="showRazorpayModal"
+    [cardId]="selectedCard!.id"
+    [amount]="paymentAmount"
+    [cardLastFour]="selectedCard!.cardNumberLastFour"
+    [paymentType]="paymentType()"
+    (paymentSuccess)="onPaymentSuccess($event)"
+    (paymentCancelled)="showRazorpayModal = false">
+  </app-fake-razorpay>
+
+  <app-payment-success
+    *ngIf="showSuccessModal && selectedCard"
+    [amount]="paymentAmount"
+    [cardLastFour]="selectedCard.cardNumberLastFour"
+    [issuerName]="selectedCard.issuerName"
+    [paymentResponse]="lastPaymentResponse"
+    [oldOutstanding]="selectedCard.outstandingBalance"
+    [oldAvailableCredit]="selectedCard.availableCredit"
+    (done)="onPaymentDone()">
+  </app-payment-success>
+</div>

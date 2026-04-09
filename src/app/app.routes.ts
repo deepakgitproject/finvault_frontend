@@ -51,7 +51,7 @@ export const routes: Routes = [
     path: 'payments',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/payments/pay-bill/pay-bill').then(m => m.PayBillComponent)
+      import('./features/payments/payment-page/payment-page.component').then(m => m.PaymentPageComponent)
   },
   {
     path: 'notifications',

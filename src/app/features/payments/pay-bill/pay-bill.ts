@@ -1,4 +1,4 @@
-﻿import {
+import {
     Component,
     OnInit,
     signal,
@@ -22,11 +22,14 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
 
 export interface InitiatePaymentCommand {
     userId?: string;
-    cardId: string;
-    billId: string;
-    amount: number;
-    paymentType: string;
-    email: string;
+    cardId?: string;
+    CardId?: string;
+    amount?: number;
+    Amount?: number;
+    MerchantName?: string;
+    billId?: string;
+    paymentType?: string;
+    email?: string;
 }
 
 export interface CompletePaymentCommand {
@@ -42,6 +45,7 @@ export interface PaymentResponse {
     paymentType: string;
     email: string;
     status: 'PENDING' | 'COMPLETED' | 'FAILED';
+    merchantName?: string;
     createdAt: string;
 }
 
