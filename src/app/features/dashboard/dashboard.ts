@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit {
 
   rewardPoints = "0";
   rewardValue = "Rs.0.00";
+  rewardNotifications: any[] = [];
 
   // --- Computed Dashboard Cards -------------------------------------
   // Limit to 3 cards for dashboard view
@@ -87,6 +88,7 @@ export class DashboardComponent implements OnInit {
       this.loadBillingSummary(userId);
       this.loadUpcomingBills(userId);
       this.loadAnalytics();
+      this.loadRewards(userId);
     }
   }
 
@@ -223,6 +225,43 @@ export class DashboardComponent implements OnInit {
               : diffDays === 0 ? 'Due today' : `Overdue by ${Math.abs(diffDays)} day(s)`;
           }
         }
+      },
+      error: () => { /* keep defaults */ }
+    });
+  }
+
+  // --- API: Rewards from Notifications --------------------------------
+  private loadRewards(userId: string): void {
+    this.http.get<any>(`/api/notifications/user/${userId}`).subscribe({
+      next: (res) => {
+        const data = res?.data ?? (Array.isArray(res) ? res : []);
+        if (!Array.isArray(data)) return;
+
+        // Filter notifications that mention rewards
+        const rewardNotifs = data.filter((n: any) => {
+          const msg = (n.message || '').toLowerCase();
+          const title = (n.title || '').toLowerCase();
+          return msg.includes('reward') || msg.includes('point') || 
+                 title.includes('reward') || title.includes('point');
+        });
+
+        this.rewardNotifications = rewardNotifs;
+
+        // Extract total reward points from messages
+        // Typical message: "You earned 150 reward points" or "150 points credited"
+        let totalPoints = 0;
+        rewardNotifs.forEach((n: any) => {
+          const msg = n.message || '';
+          const matches = msg.match(/(\d+)\s*(?:reward)?\s*point/i);
+          if (matches && matches[1]) {
+            totalPoints += parseInt(matches[1], 10);
+          }
+        });
+
+        this.rewardPoints = totalPoints.toLocaleString();
+        // Approximate Rs.0.25 per point
+        const valueInRs = totalPoints * 0.25;
+        this.rewardValue = 'Rs.' + valueInRs.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       },
       error: () => { /* keep defaults */ }
     });
