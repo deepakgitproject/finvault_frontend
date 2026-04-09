@@ -1,127 +1,169 @@
+<!-- Ambient Orbs -->
+<div class="ambient-orb orb-1"></div>
+<div class="ambient-orb orb-2"></div>
+
 <div class="layout-container">
   <app-sidebar />
 
   <main class="main-content">
 
     <!-- Toast -->
-    @if (showSaveSuccess()) {
+    @if (showPasswordSuccess()) {
     <div class="toast">
       <span class="material-symbols-outlined">check_circle</span>
-      Profile updated successfully
+      Password updated successfully
     </div>
     }
 
-    <!-- --* PROFILE HEADER --* -->
-    <div class="profile-header">
-      <div class="ph-bg"></div>
-      <div class="ph-content">
-        <div class="ph-user">
-          <div class="ph-avatar">
+    <!-- ──────────── PROFILE HERO ──────────── -->
+    <div class="profile-hero" style="animation-delay: 0s">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-user">
+          <div class="hero-avatar">
             <span>{{ userProfile().initials }}</span>
-            <div class="ph-verified"><span class="material-symbols-outlined">check</span></div>
+            <div class="hero-verified"><span class="material-symbols-outlined">check</span></div>
           </div>
-          <div class="ph-details">
-            <h1>{{ userProfile().fullName }}</h1>
-            <div class="ph-meta" [style.display]="userProfile().email ? 'flex' : 'none'">
-              <span class="ph-email">{{ userProfile().email }}</span>
+          <div class="hero-details">
+            <h1>{{ userProfile().fullName || 'FinVault User' }}</h1>
+            <span class="hero-email">{{ userProfile().email }}</span>
+            <div class="hero-badges">
+              <span class="badge badge--gold">
+                <span class="material-symbols-outlined">workspace_premium</span>
+                Premium Member
+              </span>
+              <span class="badge badge--glass">
+                <span class="material-symbols-outlined">calendar_month</span>
+                {{ userProfile().memberSince }}
+              </span>
             </div>
           </div>
         </div>
-        <div class="ph-stats">
-          <div class="ph-stat">
-            <div class="ph-stat-icon"><span class="material-symbols-outlined">credit_card</span></div>
-            <div class="ph-stat-text">
-              <span class="ph-stat-val">{{ cardService.cards().length }}</span>
-              <span class="ph-stat-lbl">Active Cards</span>
+
+        <!-- Quick Stats -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat__icon bg-indigo">
+              <span class="material-symbols-outlined">credit_card</span>
+            </div>
+            <div class="hero-stat__text">
+              <span class="hero-stat__val">{{ cardService.cards().length }}</span>
+              <span class="hero-stat__lbl">Active Cards</span>
             </div>
           </div>
-          <div class="ph-stat">
-            <div class="ph-stat-icon"><span class="material-symbols-outlined">account_balance</span></div>
-            <div class="ph-stat-text">
-              <span class="ph-stat-val">Rs.{{ totalManaged() }}</span>
-              <span class="ph-stat-lbl">Total Managed</span>
+          <div class="hero-stat">
+            <div class="hero-stat__icon bg-green">
+              <span class="material-symbols-outlined">account_balance</span>
+            </div>
+            <div class="hero-stat__text">
+              <span class="hero-stat__val">Rs.{{ totalManaged() }}</span>
+              <span class="hero-stat__lbl">Available Credit</span>
+            </div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat__icon bg-amber">
+              <span class="material-symbols-outlined">receipt_long</span>
+            </div>
+            <div class="hero-stat__text">
+              <span class="hero-stat__val">{{ totalTransactions() }}</span>
+              <span class="hero-stat__lbl">Transactions</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- --* PERSONAL INFORMATION - FULL WIDTH --* -->
-    <section class="section-card">
-      <div class="sc-header">
-        <div class="sc-title">
-          <span class="material-symbols-outlined sc-icon sc-icon--blue">person</span>
-          Personal Information
-        </div>
-        <button class="sc-edit-btn" (click)="toggleEditMode()">
-          <span class="material-symbols-outlined">{{ editMode() ? 'close' : 'edit' }}</span>
-          {{ editMode() ? 'Cancel' : 'Edit Profile' }}
-        </button>
-      </div>
-      <div class="sc-body">
-        <div class="info-grid">
-          <div class="info-item">
-            <label>FULL NAME</label>
-            @if (editMode()) {
-            <input class="info-input" type="text" [(ngModel)]="profileForm.fullName">
-            } @else {
-            <span class="info-val">{{ userProfile().fullName }}</span>
-            }
-          </div>
-          <div class="info-item">
-            <label>EMAIL ADDRESS</label>
-            @if (editMode()) {
-            <input class="info-input" type="email" [(ngModel)]="profileForm.email">
-            } @else {
-            <span class="info-val">{{ userProfile().email }}</span>
-            }
-          </div>
-          <div class="info-item">
-            <label>PHONE NUMBER</label>
-            @if (editMode()) {
-            <input class="info-input" type="text" [(ngModel)]="profileForm.phone">
-            } @else {
-            <span class="info-val mono">{{ userProfile().phone }}</span>
-            }
-          </div>
-          <div class="info-item">
-            <label>DATE OF BIRTH</label>
-            @if (editMode()) {
-            <input class="info-input" type="text" [(ngModel)]="profileForm.dateOfBirth">
-            } @else {
-            <span class="info-val mono">{{ userProfile().dateOfBirth }}</span>
-            }
-          </div>
-          <div class="info-item">
-            <label>ADDRESS</label>
-            @if (editMode()) {
-            <input class="info-input" type="text" [(ngModel)]="profileForm.address">
-            } @else {
-            <span class="info-val">{{ userProfile().address }}</span>
-            }
-          </div>
-          <!-- Removing static MEMBER SINCE -->
-        </div>
-      </div>
-      @if (editMode()) {
-      <div class="sc-footer">
-        <button class="btn-ghost" (click)="toggleEditMode()">Discard</button>
-        <button class="btn-primary" (click)="saveProfile()">
-          <span class="material-symbols-outlined">save</span>
-          Save Changes
-        </button>
-      </div>
-      }
-    </section>
+    <!-- ──────────── TOP ROW: Info + Security Score ──────────── -->
+    <div class="twin-grid" style="animation-delay: 0.1s">
 
-    <!-- --* SECURITY + PREFERENCES - SIDE BY SIDE --* -->
-    <div class="twin-grid">
-
-      <!-- Security -->
-      <section class="section-card">
+      <!-- Personal Information -->
+      <section class="section-card card-animate">
         <div class="sc-header">
           <div class="sc-title">
-            <span class="material-symbols-outlined sc-icon sc-icon--green">security</span>
+            <span class="material-symbols-outlined sc-icon sc-icon--blue">person</span>
+            Personal Information
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="info-grid">
+            <div class="info-item">
+              <label>FULL NAME</label>
+              <span class="info-val">{{ userProfile().fullName || 'Not set' }}</span>
+            </div>
+            <div class="info-item">
+              <label>EMAIL ADDRESS</label>
+              <span class="info-val">{{ userProfile().email || 'Not set' }}</span>
+            </div>
+            <div class="info-item">
+              <label>PHONE NUMBER</label>
+              <span class="info-val mono">{{ userProfile().phone }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Account Health / Security Score -->
+      <section class="section-card card-animate score-card">
+        <div class="sc-header">
+          <div class="sc-title">
+            <span class="material-symbols-outlined sc-icon sc-icon--green">shield</span>
+            Account Health
+          </div>
+          <span class="score-badge" [style.background]="securityColor() + '18'" [style.color]="securityColor()">
+            {{ securityLabel() }}
+          </span>
+        </div>
+        <div class="sc-body">
+          <div class="score-ring-container">
+            <div class="score-ring">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" stroke="rgba(0,0,0,0.05)" stroke-width="8" fill="none"/>
+                <circle cx="60" cy="60" r="52" 
+                  [attr.stroke]="securityColor()" 
+                  stroke-width="8" 
+                  fill="none"
+                  stroke-linecap="round"
+                  [attr.stroke-dasharray]="2 * 3.14159 * 52"
+                  [attr.stroke-dashoffset]="2 * 3.14159 * 52 * (1 - securityScore() / 100)"
+                  transform="rotate(-90 60 60)"
+                  class="score-progress"/>
+              </svg>
+              <div class="score-value">
+                <span class="score-number" [style.color]="securityColor()">{{ securityScore() }}</span>
+                <span class="score-unit">/ 100</span>
+              </div>
+            </div>
+            <div class="score-checklist">
+              <div class="check-item" [class.checked]="true">
+                <span class="material-symbols-outlined">check_circle</span>
+                Account verified
+              </div>
+              <div class="check-item" [class.checked]="emailNotifications()">
+                <span class="material-symbols-outlined">{{ emailNotifications() ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                Email notifications
+              </div>
+              <div class="check-item" [class.checked]="billReminders()">
+                <span class="material-symbols-outlined">{{ billReminders() ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                Bill reminders active
+              </div>
+              <div class="check-item" [class.checked]="cardService.cards().length >= 2">
+                <span class="material-symbols-outlined">{{ cardService.cards().length >= 2 ? 'check_circle' : 'radio_button_unchecked' }}</span>
+                Multiple cards linked
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ──────────── BOTTOM ROW: Security + Preferences ──────────── -->
+    <div class="twin-grid" style="animation-delay: 0.2s">
+
+      <!-- Security -->
+      <section class="section-card card-animate">
+        <div class="sc-header">
+          <div class="sc-title">
+            <span class="material-symbols-outlined sc-icon sc-icon--purple">security</span>
             Security
           </div>
         </div>
@@ -138,52 +180,38 @@
           </div>
           @if (showCurrentPassword()) {
           <div class="pw-panel">
-            <input class="info-input" type="password" placeholder="Current password">
-            <input class="info-input" type="password" placeholder="New password">
-            <input class="info-input" type="password" placeholder="Confirm new password">
-            <button class="btn-primary sm">Update Password</button>
+            <input #currentPw class="info-input" type="password" placeholder="Current password / OTP code">
+            <input #newPw class="info-input" type="password" placeholder="New password">
+            <input #confirmPw class="info-input" type="password" placeholder="Confirm new password">
+            @if (passwordChangeError()) {
+            <span class="pw-error">{{ passwordChangeError() }}</span>
+            }
+            @if (passwordChangeMessage()) {
+            <span class="pw-success">{{ passwordChangeMessage() }}</span>
+            }
+            <button class="btn-primary sm" (click)="changePassword(currentPw.value, newPw.value, confirmPw.value)">Update Password</button>
           </div>
           }
+
+          <!-- Current Session Info -->
           <div class="sec-row">
             <div class="sec-left">
               <div class="sec-dot sec-dot--green"></div>
               <div class="sec-text">
-                <span class="sec-name">Two-Factor Authentication</span>
-                <span class="sec-sub text-green">Not configured</span>
+                <span class="sec-name">Current Session</span>
+                <span class="sec-sub">{{ currentBrowser }} on {{ currentOS }}</span>
               </div>
             </div>
-            <div class="toggle" [class.on]="twoFactorAuth()" (click)="toggleTwoFactor()">
-              <div class="toggle-knob"></div>
-            </div>
-          </div>
-          <div class="sec-row">
-            <div class="sec-left">
-              <div class="sec-dot sec-dot--purple"></div>
-              <div class="sec-text">
-                <span class="sec-name">Active Sessions</span>
-                <span class="sec-sub">Manage connected devices</span>
-              </div>
-            </div>
-            <div class="sec-right-group">
-              <span class="chip-sm">This device</span>
-              <span class="material-symbols-outlined sec-arrow">chevron_right</span>
-            </div>
-          </div>
-          <div class="sec-row">
-            <div class="sec-left">
-              <div class="sec-dot sec-dot--amber"></div>
-              <div class="sec-text">
-                <span class="sec-name">Login History</span>
-                <span class="sec-sub">Review recent sign-ins</span>
-              </div>
-            </div>
-            <span class="material-symbols-outlined sec-arrow">chevron_right</span>
+            <span class="chip-sm chip-sm--live">
+              <span class="live-dot"></span>
+              Active
+            </span>
           </div>
         </div>
       </section>
 
       <!-- Preferences -->
-      <section class="section-card">
+      <section class="section-card card-animate">
         <div class="sc-header">
           <div class="sc-title">
             <span class="material-symbols-outlined sc-icon sc-icon--purple">tune</span>
@@ -192,93 +220,90 @@
         </div>
         <div class="sc-body flush">
           <div class="pref-row">
-            <span>Dark Mode</span>
+            <div class="pref-left">
+              <span class="material-symbols-outlined pref-icon">dark_mode</span>
+              <span>Dark Mode</span>
+            </div>
             <div class="toggle" [class.on]="darkMode()" (click)="toggleDarkMode()">
               <div class="toggle-knob"></div>
             </div>
           </div>
           <div class="pref-row">
-            <span>Email Notifications</span>
+            <div class="pref-left">
+              <span class="material-symbols-outlined pref-icon">email</span>
+              <span>Email Notifications</span>
+            </div>
             <div class="toggle" [class.on]="emailNotifications()" (click)="toggleEmailNotifications()">
               <div class="toggle-knob"></div>
             </div>
           </div>
           <div class="pref-row">
-            <span>Auto-Pay Bills</span>
+            <div class="pref-left">
+              <span class="material-symbols-outlined pref-icon">auto_pay</span>
+              <span>Auto-Pay Bills</span>
+            </div>
             <div class="toggle" [class.on]="autoPay()" (click)="toggleAutoPay()">
               <div class="toggle-knob"></div>
             </div>
           </div>
           <div class="pref-row">
-            <span>Bill Reminders</span>
+            <div class="pref-left">
+              <span class="material-symbols-outlined pref-icon">notifications_active</span>
+              <span>Bill Reminders</span>
+            </div>
             <div class="toggle" [class.on]="billReminders()" (click)="toggleBillReminders()">
               <div class="toggle-knob"></div>
             </div>
           </div>
           <div class="pref-sep"></div>
           <div class="pref-row nav">
-            <span>Currency</span>
+            <div class="pref-left">
+              <span class="material-symbols-outlined pref-icon">currency_rupee</span>
+              <span>Currency</span>
+            </div>
             <span class="pref-val">INR (Rs.) <span class="material-symbols-outlined">chevron_right</span></span>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- --* DANGER ZONE --* -->
-    <!-- --*  SIGN OUT BUTTON --*  -->
-    <button class="btn-sign-out" (click)="onSignOut()">
+    <!-- ──────────── QUICK LINKS ──────────── -->
+    <section class="quick-links card-animate" style="animation-delay: 0.3s">
+      <a routerLink="/cards" class="quick-link">
+        <div class="quick-link__icon bg-indigo">
+          <span class="material-symbols-outlined">credit_card</span>
+        </div>
+        <span class="quick-link__label">My Cards</span>
+        <span class="material-symbols-outlined quick-link__arrow">arrow_forward</span>
+      </a>
+      <a routerLink="/transactions" class="quick-link">
+        <div class="quick-link__icon bg-cyan">
+          <span class="material-symbols-outlined">swap_horiz</span>
+        </div>
+        <span class="quick-link__label">Transactions</span>
+        <span class="material-symbols-outlined quick-link__arrow">arrow_forward</span>
+      </a>
+      <a routerLink="/bills" class="quick-link">
+        <div class="quick-link__icon bg-amber">
+          <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+        <span class="quick-link__label">Bills</span>
+        <span class="material-symbols-outlined quick-link__arrow">arrow_forward</span>
+      </a>
+      <a routerLink="/notifications" class="quick-link">
+        <div class="quick-link__icon bg-pink">
+          <span class="material-symbols-outlined">notifications</span>
+        </div>
+        <span class="quick-link__label">Notifications</span>
+        <span class="material-symbols-outlined quick-link__arrow">arrow_forward</span>
+      </a>
+    </section>
+
+    <!-- ──────────── SIGN OUT ──────────── -->
+    <button class="btn-sign-out card-animate" style="animation-delay: 0.35s" (click)="onSignOut()">
       <span class="material-symbols-outlined">logout</span>
       Sign Out
     </button>
 
-    <section class="section-card danger">
-      <div class="sc-header danger-head">
-        <div class="sc-title">
-          <span class="material-symbols-outlined sc-icon sc-icon--red">warning</span>
-          Danger Zone
-        </div>
-      </div>
-      <div class="sc-body flush">
-        <div class="dz-row">
-          <div class="dz-text">
-            <span class="dz-name">Deactivate Account</span>
-            <span class="dz-desc">Temporarily disable your account and pause all scheduled payments.</span>
-          </div>
-          <button class="btn-outline-red">Deactivate</button>
-        </div>
-        <div class="dz-row">
-          <div class="dz-text">
-            <span class="dz-name">Delete Account</span>
-            <span class="dz-desc">Permanently remove all data. This cannot be undone.</span>
-          </div>
-          <button class="btn-red" (click)="openDeleteModal()">Delete Account</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- --* DELETE MODAL --* -->
-    @if (deleteConfirmModal()) {
-    <div class="modal-overlay" (click)="closeDeleteModal()">
-      <div class="modal-card" (click)="$event.stopPropagation()">
-        <div class="modal-icon">
-          <span class="material-symbols-outlined">delete_forever</span>
-        </div>
-        <h3>Delete your account?</h3>
-        <p>All your cards, payment history, and personal data will be permanently erased. This action cannot be
-          reversed.</p>
-        <div class="modal-confirm">
-          <label>Type <strong>DELETE</strong> to confirm</label>
-          <input class="info-input centered" type="text" [(ngModel)]="deleteConfirmInput" placeholder="Type DELETE">
-        </div>
-        <div class="modal-btns">
-          <button class="btn-ghost" (click)="closeDeleteModal()">Cancel</button>
-          <button class="btn-red" [disabled]="deleteConfirmInput() !== 'DELETE'" (click)="confirmDelete()">Permanently
-            Delete</button>
-        </div>
-      </div>
-    </div>
-    }
-
   </main>
 </div>
-

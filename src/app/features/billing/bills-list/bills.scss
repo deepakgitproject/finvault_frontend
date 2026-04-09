@@ -441,22 +441,33 @@ $sidebar-width: 300px;
     }
 }
 
-[data-theme='dark'] {
+:host-context([data-theme='dark']) {
+   // Quick Pay heading
+   .quick-pay__heading { color: #E8E8F0 !important; }
+   .quick-pay__sub { color: #6B6B8D !important; }
+
    .qp-tile {
-       &.qp-cat-electricity { background: linear-gradient(135deg, #4E342E, #3E2723); }
-       &.qp-cat-water { background: linear-gradient(135deg, #006064, #004D40); }
-       &.qp-cat-internet { background: linear-gradient(135deg, #4A148C, #311B92); }
-       &.qp-cat-recharge { background: linear-gradient(135deg, #1B5E20, #004D40); }
-       &.qp-cat-rent { background: linear-gradient(135deg, #FF8F00, #FF6F00); }
-       &.qp-cat-gas { background: linear-gradient(135deg, #BF360C, #3E2723); }
-       &.qp-cat-insurance { background: linear-gradient(135deg, #1A237E, #0D47A1); }
-       &.qp-cat-metro { background: linear-gradient(135deg, #004D40, #00251A); }
+       border-color: rgba(255, 255, 255, 0.08) !important;
+       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+
+       &.qp-cat-electricity { background: linear-gradient(135deg, #4E342E, #3E2723) !important; }
+       &.qp-cat-water { background: linear-gradient(135deg, #006064, #004D40) !important; }
+       &.qp-cat-internet { background: linear-gradient(135deg, #4A148C, #311B92) !important; }
+       &.qp-cat-recharge { background: linear-gradient(135deg, #1B5E20, #004D40) !important; }
+       &.qp-cat-rent { background: linear-gradient(135deg, #FF8F00, #FF6F00) !important; }
+       &.qp-cat-gas { background: linear-gradient(135deg, #BF360C, #3E2723) !important; }
+       &.qp-cat-insurance { background: linear-gradient(135deg, #1A237E, #0D47A1) !important; }
+       &.qp-cat-metro { background: linear-gradient(135deg, #004D40, #00251A) !important; }
 
        .qp-tile__icon-circle {
-           background: rgba(255, 255, 255, 0.15);
+           background: rgba(255, 255, 255, 0.15) !important;
        }
        .qp-tile__label {
-           color: #E2E8F0;
+           color: #E2E8F0 !important;
+       }
+
+       &:hover {
+           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
        }
    }
 }

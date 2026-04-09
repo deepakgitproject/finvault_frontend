@@ -674,3 +674,205 @@ $sidebar-width: 300px;
     color: var(--text-secondary, #4a5568);
   }
 }
+
+// -------------------------------------------------------------------
+//  DARK MODE OVERRIDES
+// -------------------------------------------------------------------
+:host-context([data-theme="dark"]) {
+
+  // Main background
+  .main-content {
+    background: var(--bg-primary, #0f0f23) !important;
+  }
+
+  // Page header
+  .page-header {
+    &__avatar {
+      border-color: rgba(255,255,255,0.1);
+    }
+    &__name { color: #E8E8F0 !important; }
+    &__tier { color: #A0A0C0 !important; }
+    &__icon-btn {
+      background: rgba(255,255,255,0.06) !important;
+      color: #A0A0C0 !important;
+      border-color: rgba(255,255,255,0.08) !important;
+      &:hover { background: rgba(107, 110, 249, 0.15) !important; color: #c5c6ff !important; }
+    }
+  }
+
+  // Step header
+  .step-header {
+    h1 { color: #E8E8F0 !important; }
+    p { color: #6B6B8D !important; }
+  }
+
+  // Card tiles
+  .card-tile {
+    background: rgba(30, 30, 60, 0.65) !important;
+    border-color: rgba(107, 110, 249, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+
+    .issuer { color: #6B6B8D !important; }
+    .number { color: #E8E8F0 !important; }
+    .holder { color: #A0A0C0 !important; }
+
+    .balance-info {
+      border-top-color: rgba(107, 110, 249, 0.15) !important;
+      .label { color: #6B6B8D !important; }
+      .value { color: #E8E8F0 !important; }
+    }
+
+    &.card-focused {
+      background: rgba(40, 40, 75, 0.85) !important;
+      border-color: var(--primary, #6b6ef9) !important;
+      box-shadow: 0 16px 40px rgba(107, 110, 249, 0.25) !important;
+    }
+
+    &.card-selected {
+      background: linear-gradient(135deg, rgba(40, 40, 80, 0.9), rgba(50, 50, 90, 0.9)) !important;
+      box-shadow: 0 0 0 3px rgba(107, 110, 249, 0.5), 0 16px 40px rgba(107, 110, 249, 0.3) !important;
+    }
+  }
+
+  // Nav buttons
+  .nav-btn {
+    background: rgba(30, 30, 60, 0.7) !important;
+    border-color: rgba(107, 110, 249, 0.25) !important;
+    color: #c5c6ff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+
+    &:hover:not(:disabled) {
+      background: var(--primary, #6b6ef9) !important;
+      color: white !important;
+    }
+  }
+
+  // Empty state
+  .empty-cards-state {
+    background: rgba(30, 30, 60, 0.4) !important;
+    border-color: rgba(107, 110, 249, 0.2) !important;
+    color: #6B6B8D !important;
+  }
+
+  // Step 2 — selected card chip
+  .selected-card-chip {
+    background: rgba(30, 30, 60, 0.65) !important;
+    border-color: rgba(107, 110, 249, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+
+    .chip-info span:first-child { color: #E8E8F0 !important; }
+    .chip-info span:last-child { color: #6B6B8D !important; }
+
+    .change-btn {
+      background: rgba(107, 110, 249, 0.12) !important;
+      border-color: rgba(107, 110, 249, 0.2) !important;
+    }
+  }
+
+  // Payment section
+  .payment-section {
+    background: rgba(30, 30, 60, 0.55) !important;
+    border-color: rgba(107, 110, 249, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  // Quick select buttons
+  .quick-select button {
+    background: rgba(30, 30, 60, 0.6) !important;
+    border-color: rgba(107, 110, 249, 0.15) !important;
+    color: #A0A0C0 !important;
+
+    &:hover {
+      color: #c5c6ff !important;
+      background: rgba(107, 110, 249, 0.1) !important;
+      border-color: var(--primary, #6b6ef9) !important;
+    }
+  }
+
+  // Amount input
+  .amount-input-box {
+    label { color: #A0A0C0 !important; }
+
+    input {
+      background: rgba(20, 20, 45, 0.6) !important;
+      border-color: rgba(107, 110, 249, 0.2) !important;
+      color: #E8E8F0 !important;
+
+      &:focus {
+        background: rgba(30, 30, 60, 0.8) !important;
+        border-color: var(--primary, #6b6ef9) !important;
+      }
+    }
+  }
+
+  // Summary box
+  .summary-box {
+    background: rgba(30, 30, 60, 0.5) !important;
+    border-color: rgba(107, 110, 249, 0.12) !important;
+
+    .row {
+      color: #A0A0C0 !important;
+      &.total { 
+        color: #E8E8F0 !important;
+        border-top-color: rgba(107, 110, 249, 0.15) !important;
+      }
+    }
+  }
+
+  // Recent Transactions Section
+  .recent-txns-section {
+    .section-title { color: #E8E8F0 !important; }
+    .section-sub { color: #6B6B8D !important; }
+  }
+
+  .txn-count-badge {
+    background: rgba(107, 110, 249, 0.15) !important;
+    color: #c5c6ff !important;
+  }
+
+  .txn-empty {
+    background: rgba(30, 30, 60, 0.3) !important;
+    border-color: rgba(107, 110, 249, 0.15) !important;
+    p { color: #6B6B8D !important; }
+  }
+
+  .txn-loading span { color: #6B6B8D !important; }
+
+  .txn-row {
+    background: rgba(30, 30, 60, 0.55) !important;
+    border-color: rgba(60, 60, 100, 0.25) !important;
+
+    &:hover {
+      border-color: rgba(107, 110, 249, 0.3) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    &__title { color: #E8E8F0 !important; }
+    &__id { color: #6B6B8D !important; }
+    &__card { color: #A0A0C0 !important; }
+    &__date { color: #6B6B8D !important; }
+    &__amount { 
+      &.text-danger { color: #E8E8F0 !important; }
+    }
+  }
+
+  // Pagination
+  .txn-pagination {
+    button {
+      background: rgba(30, 30, 60, 0.6) !important;
+      border-color: rgba(107, 110, 249, 0.2) !important;
+      color: #c5c6ff !important;
+
+      &:hover:not(:disabled) {
+        background: var(--primary, #6b6ef9) !important;
+        color: white !important;
+      }
+    }
+    .page-indicator { color: #A0A0C0 !important; }
+  }
+
+  // Skeleton
+  .skeleton-card {
+    background: rgba(107, 110, 249, 0.08) !important;
+  }
+}
