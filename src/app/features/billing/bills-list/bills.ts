@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { GlobalUiService } from '../../../core/services/global-ui.service';
 import { ComingSoonComponent } from '../../../shared/components/coming-soon/coming-soon.component';
 import { AuthService } from '../../../core/services/auth.service';
 import { BillerFormModalComponent } from '../biller-form-modal/biller-form-modal';
+import { CardService } from '../../../core/services/card.service';
 
 export interface Bill {
     id: number;
@@ -60,14 +61,25 @@ interface ApiBill {
     styleUrls: ['./bills.scss'],
 })
 export class BillsComponent implements OnInit {
-    activeFilter = signal<string>('All Status');
+    // Hidden internal filter for potential future use or if we want to default to pending
+    activeFilter = signal<string>('Pending');
 
     // Missing template properties
     userName = signal<string>('Vault User');
     upcomingBills = signal<any[]>([]);
     billingSummary = signal<{ totalOutstanding: number; pendingCount: number }>({ totalOutstanding: 0, pendingCount: 0 });
 
-    filters = ['All Status', 'Pending', 'Paid'];
+    private readonly globalUiService = inject(GlobalUiService);
+    private readonly authService = inject(AuthService);
+    private readonly cardService = inject(CardService);
+
+    // Computed total outstanding from all card balances
+    totalOutstanding = computed(() => {
+        return this.cardService.cards().reduce((sum, card) => sum + (card.currentBalance || 0), 0);
+    });
+
+    // filters = ['All Status', 'Pending', 'Paid']; // Filter removed as requested to focus on pending bills only
+
 
     quickPayCategories: QuickPayCategory[] = [
         { id: 'electricity', label: 'Electricity', icon: 'bolt', category: 'ELECTRICITY' },
@@ -85,16 +97,17 @@ export class BillsComponent implements OnInit {
     activeBillerCategory = signal('');
 
     billGroups: BillGroup[] = [];
-    private readonly globalUiService = inject(GlobalUiService);
-    private readonly authService = inject(AuthService);
 
     constructor(private router: Router, private http: HttpClient) {}
 
     ngOnInit(): void {
         this.userName.set(this.authService.getUserName());
+        this.cardService.refreshCards(); // Load cards to calculate total outstanding balance
+
         const userId = this.authService.getUserId();
         if (userId) {
             this.loadBillsFromApi(userId);
+            this.loadUpcomingBills(userId);
         }
     }
 
@@ -118,7 +131,21 @@ export class BillsComponent implements OnInit {
         const userId = this.authService.getUserId();
         if (userId) {
             this.loadBillsFromApi(userId);
+            this.loadUpcomingBills(userId);
+            this.cardService.refreshCards(true);
         }
+    }
+
+    private loadUpcomingBills(userId: string): void {
+        this.http
+            .get<any>(`/api/billing/bills/user/${userId}/upcoming?days=7`)
+            .subscribe({
+                next: (res) => {
+                    const data = Array.isArray(res) ? res : (res?.data ?? []);
+                    this.upcomingBills.set(data);
+                },
+                error: () => this.upcomingBills.set([])
+            });
     }
 
     // Used Auth Service instead of legacy check
@@ -130,9 +157,7 @@ export class BillsComponent implements OnInit {
                 next: (res) => {
                     // Handle both ApiResponse<T> wrapper and raw array
                     const apiBills = Array.isArray(res) ? res : (res?.data ?? []);
-                    if (apiBills && apiBills.length > 0) {
-                        this.billGroups = this.mapApiBillsToGroups(apiBills);
-                    }
+                    this.billGroups = this.mapApiBillsToGroups(apiBills);
                 },
                 error: () => {
                     // Silently fallback to demo data already loaded
@@ -141,9 +166,12 @@ export class BillsComponent implements OnInit {
     }
 
     private mapApiBillsToGroups(apiBills: ApiBill[]): BillGroup[] {
+        // PERMANENT REMOVAL: Filter out all 'PAID' bills as requested by user
+        const nonPaidBills = apiBills.filter(b => b.status?.toUpperCase() !== 'PAID');
+
         // Group by billingMonth
         const groupMap = new Map<string, ApiBill[]>();
-        for (const b of apiBills) {
+        for (const b of nonPaidBills) {
             const key = b.billingMonth ?? 'Unknown';
             if (!groupMap.has(key)) groupMap.set(key, []);
             groupMap.get(key)!.push(b);

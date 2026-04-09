@@ -32,12 +32,6 @@
                 <p class="title-section__sub">Manage your monthly commitments and track pending payments with precision.
                 </p>
             </div>
-            <div class="title-section__filters">
-                <button *ngFor="let f of filters" class="filter-pill" [class.filter-pill--active]="activeFilter() === f"
-                    (click)="setFilter(f)">
-                    {{ f }}
-                </button>
-            </div>
         </section>
 
         <!-- QUICK Pay -->
@@ -76,7 +70,10 @@
                 </div>
 
                 <!-- BILL ROWS -->
-                <div class="bill-card" *ngFor="let bill of group.bills">
+                <div class="bill-card" *ngFor="let bill of group.bills"
+                    [class.status-overdue]="bill.status === 'OVERDUE'"
+                    [class.status-pending]="bill.status === 'PENDING'"
+                    [class.status-partial]="bill.status === 'PARTIALLYPAID'">
 
                     <!-- Icon + Title -->
                     <div class="bill-card__identity">
@@ -125,34 +122,38 @@
                 </div>
             </div>
 
-            <div *ngIf="billGroups.length === 0" class="empty-bills glass-card">
-                <span class="material-symbols-outlined empty-icon">receipt_long</span>
-                <h3>No bills found</h3>
-                <p>Your bills will appear here.</p>
-            </div>
+
         </div>
 
         <!-- BOTTOM ROW -->
         <div class="bottom-row">
 
             <!-- Upcoming Dues -->
-            <div class="upcoming-summary-card glass-card">
-                <div class="autopay-card__content">
-                    <h3 class="autopay-card__title">Upcoming Dues</h3>
+            <div class="upcoming-dues-card glass-card">
+                <div class="upcoming-dues-card__glow"></div>
+                <div class="upcoming-dues-card__content">
+                    <div class="upcoming-dues-card__header">
+                        <span class="material-symbols-outlined upcoming-dues-card__icon">calendar_clock</span>
+                        <h3 class="upcoming-dues-card__title">Upcoming Dues</h3>
+                    </div>
+                    
                     @if (upcomingBills().length > 0) {
-                        <p class="autopay-card__body">
+                        <p class="upcoming-dues-card__body">
                             You have <strong>{{ upcomingBills().length }} recurring bills</strong> scheduled for the next 7 days.
-                            Ensure your account is funded.
+                            Ensure your account is funded to avoid any service interruptions.
                         </p>
                     } @else {
-                        <p class="autopay-card__body">No upcoming bills scheduled within the next 7 days.</p>
+                        <div class="upcoming-dues-card__empty-state">
+                            <p class="upcoming-dues-card__body">No upcoming bills scheduled within the next 7 days. Your financial schedule is clear.</p>
+                        </div>
                     }
-                    <button class="autopay-card__btn" (click)="onWalletClick()">
+
+                    <button class="upcoming-dues-card__btn" (click)="onWalletClick()">
                         <span class="material-symbols-outlined">payments</span>
                         Make a Payment
                     </button>
                 </div>
-                <span class="material-symbols-outlined autopay-card__watermark">event_upcoming</span>
+                <span class="material-symbols-outlined upcoming-dues-card__watermark">event_upcoming</span>
             </div>
 
             <!-- Total Outstanding -->
@@ -160,7 +161,7 @@
                 <div class="stats-card__top">
                     <span class="stats-card__label">TOTAL OUTSTANDING</span>
                     <div class="stats-card__amount-row">
-                        <span class="stats-card__amount">Rs.{{ billingSummary().totalOutstanding || 0 }}</span>
+                        <span class="stats-card__amount">Rs.{{ totalOutstanding().toLocaleString('en-IN', { minimumFractionDigits: 2 }) }}</span>
                         <span class="status-pill status-pill--pending">{{ billingSummary().pendingCount }} PENDING</span>
                     </div>
                 </div>

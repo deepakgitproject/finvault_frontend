@@ -27,10 +27,60 @@
     color: var(--text-muted);
 }
 
+// -- Ambient orbs ---------------------------------------------------
+.ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.18;
+    animation: orb-float 25s infinite alternate ease-in-out;
+
+    &.orb-top-right {
+        top: -150px;
+        right: -100px;
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(circle, var(--primary) 0%, rgba(107, 110, 249, 0) 70%);
+    }
+
+    &.orb-bottom-left {
+        bottom: -150px;
+        left: -100px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--secondary) 0%, rgba(196, 181, 253, 0) 70%);
+        animation-delay: -10s;
+    }
+}
+
+@keyframes orb-float {
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(30px, 50px) scale(1.05) rotate(5deg); }
+    66% { transform: translate(-20px, 20px) scale(0.95) rotate(-5deg); }
+    100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+
 // -- Root layout -----------------------------------------------------
 .bills-page {
     display: flex;
     min-height: 100vh;
+    background: var(--bg-primary);
+    position: relative;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(107, 110, 249, 0.15);
+        border-radius: 99px;
+        &:hover { background: var(--primary); }
+    }
 }
 
 // -------------------------------------------------------------------
@@ -81,9 +131,10 @@ $sidebar-width: 300px;
     &__name {
         display: block;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.95rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: 800;
         color: var(--text-primary);
+        letter-spacing: -0.01em;
     }
 
     &__tier {
@@ -156,9 +207,11 @@ $sidebar-width: 300px;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
-    margin-bottom: 36px;
+    gap: 32px;
+    margin-bottom: 48px;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
 
     &__heading {
         font-family: 'Plus Jakarta Sans', sans-serif;
@@ -280,21 +333,45 @@ $sidebar-width: 300px;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    height: 120px;
-    min-height: 120px;
+    height: 130px;
+    min-height: 130px;
     min-width: 140px;
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    @include glass-card;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     padding: 0 12px;
     position: relative;
     overflow: hidden;
 
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
     &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: var(--icon-color);
+        
+        &::after {
+            opacity: 1;
+        }
+
+        .qp-tile__icon-circle {
+            transform: scale(1.1) rotate(5deg);
+            background: var(--icon-color);
+
+            .material-symbols-outlined {
+                color: #fff;
+            }
+        }
     }
 
     &:active {
@@ -469,21 +546,42 @@ $sidebar-width: 300px;
     display: flex;
     align-items: center;
     gap: 0;
-    padding: 20px 24px;
-    border-radius: 20px;
+    padding: 24px 28px;
+    border-radius: 24px;
     @include glass-card-strong;
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
-    margin-bottom: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    margin-bottom: 16px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid transparent;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, var(--accent-color, transparent) 0%, transparent 100%);
+        opacity: 0.03;
+        pointer-events: none;
+    }
 
     &:last-child {
         margin-bottom: 0;
     }
 
+    &.status-overdue { border-left-color: var(--error); --accent-color: var(--error); }
+    &.status-pending { border-left-color: var(--warning); --accent-color: var(--warning); }
+    &.status-partial { border-left-color: #F57C00; --accent-color: #F57C00; }
+
+    animation: card-entry 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    @for $i from 1 through 10 {
+        &:nth-child(#{$i}) { animation-delay: #{$i * 0.08}s; }
+    }
+
     &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(107, 110, 249, 0.14);
+        transform: translateY(-4px) scale(1.005);
+        box-shadow: 0 12px 36px rgba(107, 110, 249, 0.12), 0 0 0 1px var(--primary-light) inset;
     }
 
     // Identity: icon + title
@@ -496,49 +594,40 @@ $sidebar-width: 300px;
     }
 
     &__icon-wrap {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
+        width: 52px;
+        height: 52px;
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        @include glass-card;
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
         .material-symbols-outlined {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-variation-settings: 'FILL' 1;
         }
 
         &--blue {
-            background: rgba(59, 130, 246, 0.14);
-
-            .material-symbols-outlined {
-                color: #3B82F6;
-            }
+            background: rgba(59, 130, 246, 0.12);
+            .material-symbols-outlined { color: #3B82F6; }
         }
 
         &--purple {
-            background: rgba(167, 139, 250, 0.16);
-
-            .material-symbols-outlined {
-                color: var(--secondary);
-            }
+            background: rgba(167, 139, 250, 0.14);
+            .material-symbols-outlined { color: var(--secondary); }
         }
 
         &--green {
-            background: rgba(34, 197, 94, 0.14);
-
-            .material-symbols-outlined {
-                color: var(--success);
-            }
+            background: rgba(34, 197, 94, 0.12);
+            .material-symbols-outlined { color: var(--success); }
         }
 
         &--grey {
-            background: rgba(136, 136, 170, 0.14);
-
-            .material-symbols-outlined {
-                color: var(--text-muted);
-            }
+            background: rgba(136, 136, 170, 0.12);
+            .material-symbols-outlined { color: var(--text-muted); }
         }
     }
 
@@ -594,8 +683,13 @@ $sidebar-width: 300px;
         flex: 0.9;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
         padding: 0 12px;
+    }
+
+    @keyframes card-entry {
+        from { opacity: 0; transform: translateY(20px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     // Action button
@@ -690,18 +784,67 @@ $sidebar-width: 300px;
 }
 
 // -- Auto-Pay Card -----------------------------------------------------
-.autopay-card {
+// -- Upcoming Dues Card -----------------------------------------------
+.upcoming-dues-card {
     flex: 1.6;
-    border-radius: 28px;
+    border-radius: 32px;
     @include glass-card-strong;
-    box-shadow: 0 4px 24px rgba(107, 110, 249, 0.09);
-    padding: 36px 40px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    padding: 40px;
     position: relative;
     overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+
+    &:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 20px 60px rgba(107, 110, 249, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        
+        .upcoming-dues-card__glow {
+            opacity: 0.8;
+            transform: scale(1.2);
+        }
+
+        .upcoming-dues-card__watermark {
+            transform: scale(1.1) rotate(-5deg);
+            opacity: 0.1;
+        }
+    }
+
+    &__glow {
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(107, 110, 249, 0.15) 0%, rgba(107, 110, 249, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        transition: all 0.6s ease;
+        z-index: 0;
+    }
 
     &__content {
         position: relative;
-        z-index: 1;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    &__icon {
+        font-size: 2rem;
+        color: var(--primary);
+        background: rgba(107, 110, 249, 0.1);
+        padding: 10px;
+        border-radius: 16px;
+        font-variation-settings: 'FILL' 1;
     }
 
     &__title {
@@ -709,60 +852,77 @@ $sidebar-width: 300px;
         font-size: 1.8rem;
         font-weight: 800;
         color: var(--text-primary);
-        margin: 0 0 14px;
-        letter-spacing: -0.01em;
+        margin: 0;
+        letter-spacing: -0.02em;
     }
 
     &__body {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: var(--text-secondary);
-        line-height: 1.65;
-        margin: 0 0 28px;
-        max-width: 480px;
+        line-height: 1.6;
+        margin: 0 0 32px;
+        max-width: 440px;
 
         strong {
             color: var(--primary);
             font-weight: 700;
+            background: linear-gradient(120deg, rgba(107, 110, 249, 0.1) 0%, rgba(107, 110, 249, 0.1) 100%);
+            padding: 0 4px;
+            border-radius: 4px;
         }
     }
 
     &__btn {
+        margin-top: auto;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 12px 26px;
-        border-radius: 999px;
+        width: fit-content;
+        gap: 10px;
+        padding: 14px 32px;
+        border-radius: 20px;
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: #fff;
         border: none;
         cursor: pointer;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         font-weight: 700;
-        box-shadow: 0 6px 20px rgba(107, 110, 249, 0.4);
-        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 8px 24px rgba(107, 110, 249, 0.35);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
         .material-symbols-outlined {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
         }
 
         &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(107, 110, 249, 0.5);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(107, 110, 249, 0.45);
+            
+            .material-symbols-outlined {
+                transform: translateX(3px) rotate(-10deg);
+            }
+        }
+
+        &:active {
+            transform: translateY(-1px) scale(0.98);
         }
     }
 
     &__watermark {
         position: absolute;
-        bottom: -16px;
+        bottom: -20px;
         right: -10px;
-        font-size: 9rem;
-        color: rgba(107, 110, 249, 0.055);
+        font-size: 10rem;
+        color: var(--primary);
+        opacity: 0.04;
         pointer-events: none;
         user-select: none;
         line-height: 1;
         font-variation-settings: 'FILL' 1;
+        transition: all 0.6s ease;
+        z-index: 1;
     }
 }
 
