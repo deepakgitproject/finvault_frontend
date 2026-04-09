@@ -93,7 +93,12 @@
     &:hover { border-color: #3395ff; background: #f0f7ff; }
     &.active { border-color: #3395ff; background: #f0f7ff; box-shadow: 0 0 0 2px rgba(51, 149, 255, 0.1); }
 
-    .icon { font-size: 1.5rem; }
+    .method-logo { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: 8px; 
+      object-fit: contain; 
+    }
     span { font-size: 0.85rem; font-weight: 500; color: #4a5568; }
   }
 }

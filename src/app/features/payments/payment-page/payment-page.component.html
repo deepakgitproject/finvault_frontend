@@ -102,6 +102,68 @@
             Next →
           </button>
         </div>
+
+        <!-- Recent Payment Transactions -->
+        <section class="recent-txns-section">
+          <div class="section-header-row">
+            <div>
+              <h2 class="section-title">Recent Payments</h2>
+              <p class="section-sub">Your latest card bill payment activity</p>
+            </div>
+            <span class="txn-count-badge" *ngIf="recentTransactions().length > 0">
+              {{ recentTransactions().length }} records
+            </span>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="isLoadingTxns()" class="txn-loading">
+            <div class="spinner-sm"></div>
+            <span>Loading transactions...</span>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="!isLoadingTxns() && recentTransactions().length === 0" class="txn-empty">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <p>No payment transactions yet. Your activity will appear here after your first payment.</p>
+          </div>
+
+          <!-- Transaction List -->
+          <div *ngIf="!isLoadingTxns() && paginatedTxns().length > 0" class="txn-list">
+            <div class="txn-row" *ngFor="let txn of paginatedTxns()">
+              <div class="txn-row__left">
+                <div class="txn-row__icon {{ txn.categoryColor }}">
+                  <span class="material-symbols-outlined">{{ txn.categoryIcon }}</span>
+                </div>
+                <div class="txn-row__info">
+                  <span class="txn-row__title">{{ txn.categoryLabel }}</span>
+                  <span class="txn-row__id mono">{{ txn.paymentId || txn.id }}</span>
+                </div>
+              </div>
+              <div class="txn-row__mid">
+                <span class="txn-row__card">
+                  <span class="material-symbols-outlined">credit_card</span>
+                  {{ txn.cardDisplay || 'Vault Wallet' }}
+                </span>
+                <span class="txn-row__date">{{ txn.createdAt | date:'MMM d, y - h:mm a' }}</span>
+              </div>
+              <div class="txn-row__amount" [class.text-danger]="txn.type !== 'Reversal'" [class.text-success]="txn.type === 'Reversal'">
+                {{ txn.type === 'Reversal' ? '+' : '-' }}{{ txn.amount | currency:'INR' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="txn-pagination" *ngIf="txnTotalPages() > 1">
+            <button (click)="txnPrevPage()" [disabled]="txnPage() === 1">
+              <span class="material-symbols-outlined">chevron_left</span> Prev
+            </button>
+            <span class="page-indicator">{{ txnPage() }} / {{ txnTotalPages() }}</span>
+            <button (click)="txnNextPage()" [disabled]="txnPage() === txnTotalPages()">
+              Next <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </section>
+
       </div>
 
       <!-- Step 2: Amount Entry -->
