@@ -60,6 +60,9 @@ export class PaymentPageComponent implements OnInit {
   showRazorpayModal: boolean = false;
   showSuccessModal: boolean = false;
   lastPaymentResponse: any = null;
+  
+  // Carousel State
+  focusedCardIndex: number = 0;
 
   paymentType = computed(() => {
     if (!this.selectedCard) return 'card';
@@ -73,6 +76,34 @@ export class PaymentPageComponent implements OnInit {
   });
 
   constructor() {}
+
+  // Carousel Logic
+  nextCard(): void {
+    const total = this.mappedCards().length;
+    if (this.focusedCardIndex < total - 1) {
+      this.focusedCardIndex++;
+    }
+  }
+
+  prevCard(): void {
+    if (this.focusedCardIndex > 0) {
+      this.focusedCardIndex--;
+    }
+  }
+
+  selectCard(card: CardResponse, index: number): void {
+    this.selectedCard = card;
+    this.focusedCardIndex = index;
+  }
+
+  getCarouselTransform(): string {
+    // 340px card width + 24px gap = 364px per item step
+    const cardStep = 364; 
+    // We want the focused card to be in the center. We'll simply offset by index
+    // and rely on a parent container with justify-content: center or a calc shift in CSS.
+    // The easiest way is translating by -index * cardStep.
+    return `translateX(${-this.focusedCardIndex * cardStep}px)`;
+  }
 
   ngOnInit(): void {
     this.extractUserInfo();

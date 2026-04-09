@@ -31,34 +31,60 @@
         </header>
 
         <!-- Skeleton Loading State -->
-        <div *ngIf="cardService.isLoading()" class="cards-grid">
-          <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+        <div *ngIf="cardService.isLoading()" class="carousel-container loading-state">
+          <div class="carousel-viewport">
+             <div class="carousel-track skeleton-track">
+               <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+             </div>
+          </div>
         </div>
 
-        <!-- Cards List -->
-        <div *ngIf="!cardService.isLoading()" class="cards-grid">
-          <div 
-            *ngFor="let card of mappedCards()" 
-            class="card-tile"
-            [class.card-selected]="selectedCard?.id === card.id"
-            (click)="selectedCard = card">
-            <div class="issuer">{{ card.issuerName }}</div>
-            <div class="number">{{ card.maskedNumber }}</div>
-            <div class="holder">{{ card.cardholderName }}</div>
-            
-            <div class="balance-info">
-              <div>
-                <span class="label">Outstanding</span>
-                <span class="value" [class.balance-danger]="card.outstandingBalance > 0" [class.balance-safe]="card.outstandingBalance === 0">
-                  {{ card.outstandingBalance === 0 ? 'All Clear ✓' : (card.outstandingBalance | currency:'INR') }}
-                </span>
-              </div>
-              <div>
-                <span class="label">Available Credit</span>
-                <span class="value">{{ card.availableCredit | currency:'INR' }}</span>
+        <!-- Carousel Cards List -->
+        <div *ngIf="!cardService.isLoading() && mappedCards().length > 0" class="carousel-container">
+          <button class="nav-btn prev-btn" (click)="prevCard()" [disabled]="focusedCardIndex === 0">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          <div class="carousel-viewport">
+            <!-- 
+              To center the focused card, we translate the track. 
+              The CSS will handle centering the track's virtual "center" 
+              and then we offset it exactly. 
+            -->
+            <div class="carousel-track" [style.transform]="getCarouselTransform()">
+              <div 
+                *ngFor="let card of mappedCards(); let i = index" 
+                class="card-tile"
+                [class.card-focused]="i === focusedCardIndex"
+                [class.card-selected]="selectedCard?.id === card.id"
+                (click)="selectCard(card, i)">
+                
+                <div class="card-interior">
+                  <div class="issuer">{{ card.issuerName }}</div>
+                  <div class="number">{{ card.maskedNumber }}</div>
+                  <div class="holder">{{ card.cardholderName }}</div>
+                  
+                  <div class="balance-info">
+                    <div>
+                      <span class="label">Outstanding</span>
+                      <span class="value" [class.balance-danger]="card.outstandingBalance > 0" [class.balance-safe]="card.outstandingBalance === 0">
+                        {{ card.outstandingBalance === 0 ? 'All Clear ✓' : (card.outstandingBalance | currency:'INR') }}
+                      </span>
+                    </div>
+                    <div>
+                      <span class="label">Available Credit</span>
+                      <span class="value">{{ card.availableCredit | currency:'INR' }}</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
+
+          <button class="nav-btn next-btn" (click)="nextCard()" [disabled]="focusedCardIndex === mappedCards().length - 1">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
         </div>
 
         <!-- Initial Load Empty State -->
